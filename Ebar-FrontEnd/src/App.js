@@ -9,6 +9,7 @@ import AuthService from "./services/auth.service";
 import BarList from "./components/bar-list.component";
 import Login from "./components/login.component";
 import Profile from "./components/profile.component";
+import BarTable from "./components/bar-table.component";
 
 class App extends Component {
     constructor(props) {
@@ -54,6 +55,13 @@ class App extends Component {
                             </Link>
                         </li>
                     </div>
+                    <div className="navbar-nav mr-auto">
+                        <li className="nav-item active">
+                            <Link to={"/bill"} className="nav-link">
+                                Menu
+                            </Link>
+                        </li>
+                    </div>
                     {currentUser ? (
                         <div className="navbar-nav ml-auto">
                             <li className="nav-item">
@@ -81,6 +89,7 @@ class App extends Component {
                 <div className="container mt-3">
                     <Switch>
                         <Route exact path={"/bares"} component={BarList}/>
+                        <Route exact path={"/bill"} component={BarTable}/>
                         <Route exact path={"/login"} component={Login}/>
                         <Route exact path={"/profile"} component={Profile}/>
                     </Switch>

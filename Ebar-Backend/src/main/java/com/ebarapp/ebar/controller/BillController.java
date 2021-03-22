@@ -11,22 +11,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ebarapp.ebar.model.Cuenta;
+import com.ebarapp.ebar.model.Bill;
 
-import service.CuentaService;
+import service.BillService;
 
 @RestController
-@RequestMapping("/api/cuenta")
-public class CuentaController {
+@RequestMapping("/api/bill")
+public class BillController {
 
 	@Autowired
-	private CuentaService cuentaService;
+	private BillService billService;
 
 	@PostMapping("")
-	public ResponseEntity<? extends Object> createCuenta(@RequestBody Cuenta nuevaCuenta) {
+	public ResponseEntity<? extends Object> createBill(@RequestBody Bill newBill) {
 		try {
-			Cuenta cuenta = cuentaService.createCuenta(nuevaCuenta);
-			return new ResponseEntity<Cuenta>(cuenta, HttpStatus.OK);
+			Bill bill = billService.createBill(newBill);
+			return new ResponseEntity<Bill>(bill, HttpStatus.OK);
 
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -34,20 +34,20 @@ public class CuentaController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<? extends Object> getCuentaById(@PathVariable("id") Long id) {
+	public ResponseEntity<? extends Object> getBillById(@PathVariable("id") Long id) {
 		try {
-			Cuenta cuenta = cuentaService.getCuentaById(id);
-			return new ResponseEntity<Cuenta>(cuenta, HttpStatus.OK);
+			Bill bill = billService.getBillById(id);
+			return new ResponseEntity<Bill>(bill, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<? extends Object> deleteCuenta(@PathVariable("id") Long id) {
+	public ResponseEntity<? extends Object> deleteBill(@PathVariable("id") Long id) {
 		try {
-			cuentaService.removeCuenta(id);
-			return new ResponseEntity<Cuenta>(HttpStatus.OK);
+			billService.removeBill(id);
+			return new ResponseEntity<Bill>(HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}

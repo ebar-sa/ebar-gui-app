@@ -1,0 +1,13 @@
+dist: xenial
+language: node_js
+node_js:
+  - "12"
+addons:
+  sonarcloud:
+    organization: ebar-sa
+    token:
+      secure: "ZIRDgGy63emhHeQF9KqaXuTi4mWgDrzTjCcobKzXaEttS6Oc6bbvPHGBg6W3rhAmdULeZCqVV1htY7Y85weIPZRdcPpqYjlkDhE7+8YZAPrmPQmzmKAk1uEjVgX6OWxAAgm2xUj2qRyNr0bN3PeL6mGe88D3jFfzk38umCMah8YYLb25VU9oNz4pXmavtVKY5Psn7DtLp8TJIjH392QB3p0UEthtCMo+mHUE+cKefvpFoUhAObshblLda5c4twCDc41TwLj3DdTHVbWxvUxpxj4S79IsMhObbVpUO1dlr0M8/OQJrp8rZlOXIrMbIXoSsOGgw81Ics9RnEPNUVUMTUNgUGZEbVvVQnD5Weuv7yh3zRBPhPyJToOiOn2mVlyjp8848jOYYu1oh3899C1FGpHrQNbKA1Yg1s6D3CoBvBVIQA1uvgr3yLPKjyoDMQkW96P1f86tx3miuKtOuYJ4rAqrbEO/oKxoWvh0vx3MHVAmDWPkpdU7kwryvL2LXNYqyBGNy9p0b3QcjXaEkCfeJDN/QwVvVFQjFud0pj2l36/IQ1xxFhf0XuY5ddE6yYse0VesFBxNPX78lJSTObxQQOX4DK2/CCXaPzEKbh5vsCwvzRkS7oEhIlgWn3ibGy3tJDcvkiYkdFxtwYRYeP7uoS7SOHghbLTvTgrJAf2mnfA="
+script:
+  - npm install
+  - npm run build
+  - sonar-scanner

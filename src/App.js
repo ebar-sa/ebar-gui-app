@@ -9,6 +9,7 @@ import AuthService from "./services/auth.service";
 import BarList from "./components/bar-list.component";
 import Login from "./components/login.component";
 import Profile from "./components/profile.component";
+import Votations from "./components/votation-list.component";
 
 class App extends Component {
   constructor(props) {
@@ -51,7 +52,12 @@ class App extends Component {
             <li className="nav-item active">
               <Link to={"/bares"} className="nav-link">
                 Bares
-                            </Link>
+              </Link>
+            </li>
+            <li className="nav-item active">
+              <Link to="/votations" className="nav-link">
+                Votaciones
+              </Link>
             </li>
           </div>
           {currentUser ? (
@@ -64,7 +70,7 @@ class App extends Component {
               <li className="nav-item">
                 <a href="/login" className="nav-link" onClick={this.logOut}>
                   Salir
-                                </a>
+                </a>
               </li>
             </div>
           ) : (
@@ -72,7 +78,7 @@ class App extends Component {
               <li className="nav-item">
                 <Link to={"/login"} className="nav-link">
                   Iniciar sesión
-                                </Link>
+                </Link>
               </li>
             </div>
           )}
@@ -83,6 +89,7 @@ class App extends Component {
             <Route exact path={"/bares"} component={BarList} />
             <Route exact path={"/login"} component={Login} />
             <Route exact path={"/profile"} component={Profile} />
+            <Route exact path={"/votations"} component={Votations} />
           </Switch>
         </div>
       </div>

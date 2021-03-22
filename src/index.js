@@ -1,3 +1,4 @@
+import { CssBaseline } from "@material-ui/core";
 import React from "react";
 import ReactDOM from "react-dom";
 import { HashRouter } from "react-router-dom";
@@ -7,6 +8,7 @@ import * as serviceWorker from "./serviceWorker";
 
 ReactDOM.render(
   <HashRouter>
+    <CssBaseline />
     <App />
   </HashRouter>,
   document.getElementById("root")

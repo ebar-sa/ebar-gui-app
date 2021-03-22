@@ -17,7 +17,7 @@ export default class BarTable extends Component{
     };
 
     componentDidMount(){
-        this.getBar(this.props.match.params.id);
+        this.getBarTable(this.props.match.params.id);
     }
 
     

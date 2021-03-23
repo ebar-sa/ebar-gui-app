@@ -23,4 +23,5 @@ yarn-debug.log*
 yarn-error.log*
 /react-client.iml
 
+package-lock.json
 /.idea

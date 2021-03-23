@@ -5,7 +5,7 @@ const ENDPOINT = 'http://localhost:8080/api/'
 
 export function getTables() {
   const URL = ENDPOINT + 'tables'
-  return axios.get(URL, { headers: authHeader() }).then((res) => {
-    return res.json()
+  return axios.get(URL, { headers: authHeader() }).then((response) => {
+    return response.data
   })
 }

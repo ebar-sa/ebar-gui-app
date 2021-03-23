@@ -1,8 +1,6 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
-import { UserContextProvider } from './context/UserContext'
-
-import { SnackbarProvider } from 'notistack'
+import { makeStyles } from '@material-ui/core/styles'
 
 import Home from './pages/Home'
 import Login from './pages/Login'
@@ -12,7 +10,6 @@ import BarList from './pages/BarList'
 import Header from './components/Header'
 
 import clsx from 'clsx'
-import { makeStyles, useTheme } from '@material-ui/core/styles'
 import Sidebar from './components/Sidebar'
 import useUser from './hooks/useUser'
 import Mesas from './pages/Mesas'

@@ -10,6 +10,7 @@ import BarList from "./components/bar-list.component";
 import Login from "./components/login.component";
 import Profile from "./components/profile.component";
 import BarTable from "./components/bar-table.component";
+import Menu from "./components/admin/menu-admin.component";
 
 class App extends Component {
     constructor(props) {
@@ -90,6 +91,7 @@ class App extends Component {
                     <Switch>
                         <Route exact path={"/bares"} component={BarList}/>
                         <Route exact path={"/bill"} component={BarTable}/>
+                        <Route exact path={"/menu"} component={Menu}/>
                         <Route exact path={"/login"} component={Login}/>
                         <Route exact path={"/profile"} component={Profile}/>
                     </Switch>

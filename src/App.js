@@ -10,6 +10,7 @@ import BarList from "./components/bar-list.component";
 import Login from "./components/login.component";
 import Profile from "./components/profile.component";
 import Votations from "./components/votation-list.component";
+import PrivateRoute from "./components/private-route.js";
 
 class App extends Component {
   constructor(props) {
@@ -55,7 +56,7 @@ class App extends Component {
               </Link>
             </li>
             <li className="nav-item active">
-              <Link to="/votations" className="nav-link">
+              <Link to={"/votations"} className="nav-link">
                 Votaciones
               </Link>
             </li>
@@ -89,8 +90,8 @@ class App extends Component {
             <Route exact path={"/bares"} component={BarList} />
             <Route exact path={"/login"} component={Login} />
             <Route exact path={"/profile"} component={Profile} />
-            <Route exact path={"/votations"} component={Votations} />
-          </Switch>
+            <PrivateRoute exact path={"/votations"} authenticated={currentUser} component={Votations} />
+            </Switch>
         </div>
       </div>
     );

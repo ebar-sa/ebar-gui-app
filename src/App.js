@@ -9,7 +9,7 @@ import AuthService from "./services/auth.service";
 import BarList from "./components/bar-list.component";
 import Login from "./components/login.component";
 import Profile from "./components/profile.component";
-import Votations from "./components/votation-list.component";
+import Votings from "./components/votings-list.component";
 import PrivateRoute from "./components/private-route.js";
 
 class App extends Component {
@@ -24,7 +24,6 @@ class App extends Component {
 
   componentDidMount() {
     const user = AuthService.getCurrentUser();
-
     if (user) {
       this.setState({
         currentUser: user
@@ -35,9 +34,11 @@ class App extends Component {
   logOut() {
     AuthService.logout();
   }
+  
 
 
   render() {
+    console.log('User', this.state.currentUser) 
     const style = {
       height: '40px',
     }
@@ -90,7 +91,7 @@ class App extends Component {
             <Route exact path={"/bares"} component={BarList} />
             <Route exact path={"/login"} component={Login} />
             <Route exact path={"/profile"} component={Profile} />
-            <PrivateRoute exact path={"/votations"} authenticated={currentUser} component={Votations} />
+            <PrivateRoute path={"/votations"} component={Votings} />
             </Switch>
         </div>
       </div>

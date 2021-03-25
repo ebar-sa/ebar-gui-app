@@ -6,13 +6,18 @@ import styles from '../styles/votations.css'
 import VotationDataService from "../services/votations.service";
 import { Link } from "react-router-dom";
 import AuthService from "../services/auth.service";
+import AddIcon from '@material-ui/icons/Add';
 
-function Votations() {
+function Votings() {
 
     const [votations, setVotations] = useState([])
     const [expanded, setExpanded] = useState({});
     const [time, setTime] = useState(new Date());
     const username = AuthService.getCurrentUser().username
+    const roles = AuthService.getCurrentUser().roles
+    const admin = roles.includes('ROLE_OWNER') || roles.includes('ROLE_EMPLOYEE');
+
+    console.log('Roles', roles)
 
     const handleClick = (id) => {
         setExpanded({
@@ -23,6 +28,7 @@ function Votations() {
 
     useEffect(() => {
         VotationDataService.getVotations().then(res => {
+            console.log(res)
             setVotations(res)
         }).catch(err => {
             console.log('Error', err.response.status)
@@ -43,9 +49,17 @@ function Votations() {
                 <div className="div-vot">Votaciones</div>
             </div>
             <div>
-                <h5 style={styles.h5}>
-                    A continuación, podrá encontrar la lista de votaciones disponibles en las que puede participar
-                </h5>
+                {admin ? 
+                <div className="header">
+                    <Link to={"/votations/votation/create"}>
+                        <Button variant="contained" color="primary" style={{ ...stylesComponent.buttonCrear }} startIcon={<AddIcon />}>
+                            Crear votación
+                        </Button>
+                    </Link>
+                </div> : 
+                    <h5>
+                        A continuación, podrá encontrar la lista de votaciones disponibles en las que puede participar
+                    </h5>}
             </div>
             <div className='div-list'>
                 <h5>Votaciones finalizadas</h5>
@@ -86,11 +100,18 @@ function Votations() {
                         <div key={x.id}>
                             <ListItem button onClick={() => handleClick(x.id)} style={{ ...stylesComponent.listitem }}>
                                 <ListItemText disableTypography style={{ ...stylesComponent.listItemText1 }} primary={x.title} />
-                                {!x.votersUsernames.includes(username) ? <Link to={"/votations/votation/" + x.id}>
-                                    <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.button }} >
+                                {admin ? 
+                                    <Link to={"/votations/votation/" + x.id}>
+                                        <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} >
+                                            Editar
+                                    </Button>
+                                    </Link>
+                                :
+                                (!x.votersUsernames.includes(username) ? <Link to={"/votations/votation/" + x.id}>
+                                    <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} >
                                         Acceder
-                                </Button>
-                                </Link> : null}
+                                    </Button>
+                                </Link> : null)}
                                 {!expanded[x.id] ? <ExpandLess /> : <ExpandMore />}
                             </ListItem>
                             <Collapse in={expanded[x.id]} timeout="auto" unmountOnExit>
@@ -112,7 +133,15 @@ function Votations() {
 }
 
 const stylesComponent = {
-    button: {
+
+    buttonCrear: {
+        backgroundColor: '#007bff',
+        textTransform: 'none',
+        letterSpacing: 'normal',
+        fontSize: '15px',
+        fontWeight: '600'
+    },
+    buttonAcceder: {
         backgroundColor: '#007bff',
         marginRight: '60px',
         textTransform: 'none',
@@ -139,4 +168,4 @@ const stylesComponent = {
     }
 }
 
-export default Votations
+export default Votings

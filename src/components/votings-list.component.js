@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import events from '../img/even.jpg'
 import { List, ListItem, ListItemText, Collapse, Button } from '@material-ui/core';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
-import styles from '../styles/votations.css'
-import VotationDataService from "../services/votations.service";
+import styles from '../styles/votings.css'
+import VotationDataService from "../services/votings.service";
 import { Link } from "react-router-dom";
 import AuthService from "../services/auth.service";
 import AddIcon from '@material-ui/icons/Add';
@@ -111,7 +111,7 @@ function Votings() {
                                     <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} >
                                         Acceder
                                     </Button>
-                                </Link> : null)}
+                                </Link> : <div className='div-voting'>Ya has votado</div>)}
                                 {!expanded[x.id] ? <ExpandLess /> : <ExpandMore />}
                             </ListItem>
                             <Collapse in={expanded[x.id]} timeout="auto" unmountOnExit>

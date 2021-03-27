@@ -7,6 +7,7 @@ import { List, ListItem, ListItemText, Collapse, Button, TableRow, Table, TableB
 
 //import styles from '../styles/votations.css'
 import MenuDataService from "../../services/menu.service";
+import Bill from "./bill-admin.component";
 
 function Menu() {
 
@@ -154,10 +155,6 @@ function Menu() {
         }
     ]
 
-    //esto hay que cambiarlo pero nose como iba pq nose si lo necesitamos
-    //const vot = [{ id: 1, titulo: 'Siguiente canción', descripcion: 'Vote para seleccionar la siguiente canción reproducida por nuestro DJ', opciones: [{ 1: 'Despacito' }, { 2: 'Baby Shark' }, { 3: 'Dale Don Dale' }] },
-   // { id: 2, titulo: 'Última canción de la noche', descripcion: 'Temón', opciones: [{ 1: 'Despacito' }, { 2: 'Baby Shark' }, { 3: 'Dale Don Dale' }] }]
-
     const handleClick = (id) => {
         setExpanded({
             ...expanded,
@@ -174,44 +171,11 @@ function Menu() {
         })
     }, [])
 
-    /*Paco nos dijo algo de usar esto
-    useEffect(() => {
-        axios.get(API_URL)
-            .then(res => {
-                json = res.data
-            })
-    const [json, setJson] = useState('')
-    */
+   
 
-    const GetRows=()=>{
-
-        const tableRows = menu.items.map(row => {
-           const {id,name} ={row}
-              return (
-                <TableRow>
-                <TableCell>{{id}}</TableCell>
-                <TableCell>{name}</TableCell>
-        
-                </TableRow>
-            );
-          });
-          return tableRows;
-        }
-
-    const columns = [
-            { field: 'id', headerName: 'ID', width: 70 },
-            { field: 'name', headerName: 'name', width: 130 }]
-    const rows = [ menu.items.map(x=>{
-            
-               // { id: x.id, name: x.name}
-            })]
-
-
-            const rows2 = [
-                { id: 1, name:'Test'},
-                { id: 2, name:'Test2'}]
 
     return(
+        <div>
     <div  style={{ height: 400, width: '100%' }}>
         <Table size="small" aria-label="a dense table">
         <TableHead>
@@ -234,27 +198,59 @@ function Menu() {
         </Table>    
     </div>
       
+      ////////-CUENTA-------/////
+      <div  style={{ height: 400, width: '100%' }}>
 
+         //TABLA DE PRODUCTOS PEDIDOS PERO NO ENTREGADOS
+         <Table size="small" aria-label="a dense table">
+   <TableHead>
+           <TableRow>
+      <TableCell>Nombre</TableCell>
+             <TableCell>Precio</TableCell>
+             <TableCell>Cantidad</TableCell>
+             <TableCell>Total</TableCell>
+           </TableRow>
+         </TableHead>
+         <TableBody>
+           {Bill.itemBill.map((row) => (
+           <TableRow key={row.amount}>
+             <TableCell component="th" scope="row">
+                 {row.amount}
+               </TableCell>
+             <TableCell align="left">{row.itemMenu.name}</TableCell>
+
+            </TableRow>
+         ))}
+       </TableBody> 
+         </Table>    
+
+             //TABLA DE PRODUCTOS PEDIDOS Y ENTREGADOS
+         <Table size="small" aria-label="a dense table">
+         <TableHead>
+           <TableRow>
+             <TableCell>Nombre</TableCell>
+             <TableCell>Precio</TableCell>
+             <TableCell>Cantidad</TableCell>
+             <TableCell>Total</TableCell>
+           </TableRow>
+         </TableHead>
+         <TableBody>
+           {Bill.itemOrder.map((row) => (
+             <TableRow key={row.amount}>
+               <TableCell component="th" scope="row">
+                 {row.amount}
+               </TableCell>
+               <TableCell align="left">{row.itemMenu.name}</TableCell>
+
+             </TableRow>
+           ))}
+         </TableBody> 
+        </Table>    
+     </div>
+     </div>
         );
     }
 
 export default Menu;
 
 
-// items.map(x=>{
-//     return(
-//         <div>
-//             <Table>
-//                 <TableHead>
-//                     <TableRow>
-//                         <TableCell>Id</TableCell>
-//                         <TableCell>Name</TableCell>
-//                     </TableRow>
-//                 </TableHead>
-//                 <TableBody>
-//                     {GetRows()}
-//                 </TableBody>
-//             </Table>
-//         </div>
-//     )
-// })}

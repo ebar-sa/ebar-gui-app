@@ -1,74 +1,57 @@
-import React, { Component } from "react";
-import {FormHelperText, FormControl, Radio, RadioGroup, FormControlLabel, Button, Divider, CardContent, Typography, Card} from "@material-ui/core"
-import Icon from '@material-ui/core/Icon';
+import React, { useEffect, useState } from 'react';
+import AuthService from "../services/auth.service";
+import VotingDataService from "../services/voting.service";
+import { Icon, Typography, FormControl, RadioGroup, FormHelperText, Button, FormControlLabel, Radio, Card, CardContent, Divider } from "@material-ui/core"
 
-export default class VotingDetailUser extends Component{
-    constructor(props) {
-      super(props)
-      this.state = {
-         currentBar: {
-             id: null,
-             nombre:"",
-             descripcion: "",
-             ubicacion: ""
-         },
-         value: " ",
-         error: false,
-         helperText: "Elige bien",
-         voting: {
-          id: 1,
-          titulo: "Votación para música",
-          descripcion: "Una votación para elegir la música",
-          inicio: "20-03-2021 21:24:00",
-          fin: null,
-          opciones: [
-            {
-              id: 1,
-              nombre: "Despacito",
-              votacion: 1
-            },
-            {
-              id: 2,
-              nombre: "Despacito otra vez",
-              votacion: 1
-            }
+function VotingDetailUser() {
+    
+  const [currentBar, setCurrentBar] = useState({})
+  const [radioValue, setRadioValue] = useState()
+  const [formError, setFormError] = useState(false)
+  const [helperText, setHelperText] = useState("Elige bien!")
+  const [voting, setVoting] = useState({})
+  const currentToken = AuthService.getCurrentUser().accessToken
   
-          ]
-        }
-      };
-    }
-
-    handleSubmit = (event) => {
+    const handleSubmit = (event) => {
       
     }
 
-    handleRadioChange = (event) => {
+    const handleRadioChange = (event) => {
       event.persist()
 
-      console.log(event.target.value)
-
-      this.setState({
-        value: event.target.value,
-        helperText: " ",
-        error: false
-      })
+      setRadioValue(event.target.value)
+      setHelperText(" ")
+      setFormError(false)
     }
 
-    createOptions = (options) => {
+    const createOptions = (options) => {
       let res = [];
-      
-      for (let i = 0; i < options.length; i++) {
-        res.push(<FormControlLabel key={options[i].id.toString()} value={options[i].id.toString()} control={<Radio />} label={options[i].nombre}/>)
+
+      if(!options || options.length === 0) {
+        res.push(<Icon>info</Icon>,<Typography> Sin opciones disponibles</Typography>)
+      }else{
+        for (let i = 0; i < options.length; i++) {
+          res.push(<FormControlLabel key={options[i].id.toString()} value={options[i].id.toString()} control={<Radio />} label={options[i].nombre}/>)
+        }
       }
 
       return res;
     }
 
-    render(){
-      const {voting ,value, error, helperText} = this.state;
+    useEffect(() => {
+      //This is sample code. Replace with real data
+      VotingDataService.getVoting(1, currentToken).then(res => {
+        console.log(currentToken)
+        setVoting(res)
+      }).catch(err => {
+        console.log("Error", err.response.status)
+      })
+    }, []);
 
-      return (
+    return (
         <div>
+        { voting && voting.length !== 0 ? 
+          <div>
           <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
           <div>
             <Card className=".card">
@@ -77,15 +60,15 @@ export default class VotingDetailUser extends Component{
                   Votación
                 </Typography>
                 <Typography variant="h5" component = "h2">
-                  {voting.titulo}
+                  {voting.title}
                 </Typography>
                 <br/>
                 <Typography variant="body2" component="p">
-                  {voting.descripcion}
+                  {voting.description}
                 </Typography>
                 <br/>
                 <Typography color="textSecondary" variant="subtitle2" gutterBottom>
-                  {voting.inicio}
+                  {voting.openingHour}
                 </Typography>
               </CardContent>
             </Card>
@@ -96,10 +79,10 @@ export default class VotingDetailUser extends Component{
           <div id="voting_options_id" name="voting_options">
             <Card>
               <CardContent>
-                <form onSubmit={this.handleSubmit}>
-                  <FormControl component="fieldset" error={error} className=".formControl">
-                    <RadioGroup aria-label="options" name="options" value={value} onChange={this.handleRadioChange}>
-                      {this.createOptions(voting.opciones)}  
+                <form onSubmit={handleSubmit}>
+                  <FormControl component="fieldset" error={formError} className=".formControl">
+                    <RadioGroup aria-label="options" name="options" value={radioValue} onChange={()=>handleRadioChange()}>
+                      {createOptions(voting.options)}  
                     </RadioGroup>
                     <FormHelperText>{helperText}</FormHelperText>
                   <Button
@@ -115,9 +98,10 @@ export default class VotingDetailUser extends Component{
               </CardContent>
             </Card>
           </div>
-        </div>
+        </div> : <div></div> }
+      
+      </div>
       );
     }
-    
-    
-}
+
+export default VotingDetailUser

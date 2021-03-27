@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/api/menu/bar/";
+const API_URL = "http://localhost:8080/api/menu/";
 
 class MenuDataService {
     getMenu = () => {

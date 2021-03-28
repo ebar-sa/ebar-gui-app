@@ -35,19 +35,15 @@ function Bill() {
                         "price": 2.75,
                         "category": {
                             "id": 1,
-                            "name": "picoteamos",
-                            "new": false
+                            "name": "picoteamos"
                         },
                         "image": {
                             "id": 1,
                             "fileName": "name",
                             "fileType": "type",
-                            "data": null,
-                            "new": false
-                        },
-                        "new": false
-                    },
-                    "new": false
+                            "data": null
+                        }
+                    }
                 },
                 {
                     "id": 2,
@@ -60,19 +56,15 @@ function Bill() {
                         "price": 9.0,
                         "category": {
                             "id": 3,
-                            "name": "sugerencias",
-                            "new": false
+                            "name": "sugerencias"
                         },
                         "image": {
                             "id": 1,
                             "fileName": "name",
                             "fileType": "type",
-                            "data": null,
-                            "new": false
-                        },
-                        "new": false
-                    },
-                    "new": false
+                            "data": null
+                        }
+                    }
                 },
                 {
                     "id": 1,
@@ -85,23 +77,18 @@ function Bill() {
                         "price": 2.5,
                         "category": {
                             "id": 1,
-                            "name": "picoteamos",
-                            "new": false
+                            "name": "picoteamos"
                         },
                         "image": {
                             "id": 1,
                             "fileName": "name",
                             "fileType": "type",
-                            "data": null,
-                            "new": false
-                        },
-                        "new": false
-                    },
-                    "new": false
+                            "data": null
+                        }
+                    }
                 }
             ],
-            "itemOrder": null,
-            "new": false
+            "itemOrder": null
         }
     ]
 

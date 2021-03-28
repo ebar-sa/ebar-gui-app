@@ -5,7 +5,7 @@ import http from "../http-common";
 class AuthService {
     login(username, password) {
         return http
-            .post("/signin", {
+            .post("/auth/signin", {
                 username,
                 password
             })
@@ -23,7 +23,7 @@ class AuthService {
     }
 
     register(username, email, password) {
-        return http.post("/signup", {
+        return http.post("/auth/signup", {
             username,
             email,
             password

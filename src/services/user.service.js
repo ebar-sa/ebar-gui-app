@@ -1,8 +1,6 @@
 import http from "../http-common";
 import authHeader from './auth-header';
 
-// const API_URL = 'http://localhost:8080/api/test/';
-
 class UserService {
     getPublicContent() {
         return http.get('/all');

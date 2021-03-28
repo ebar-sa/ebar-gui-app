@@ -1,7 +1,5 @@
 import http from "../http-common";
 
-// const API_URL = "http://localhost:8080/api/auth/";
-
 class AuthService {
     login(username, password) {
         return http

@@ -1,7 +1,7 @@
 import { useCallback, useContext, useState } from "react";
 import Context from '../context/UserContext'
 import * as authService from '../services/auth'
-
+import { useHistory } from 'react-router'
 export default function useUser () {
     const {auth, setAuth} = useContext(Context)
     const [state, setState] = useState({loading: false, error: false})
@@ -19,11 +19,12 @@ export default function useUser () {
                 setState({loading: false, error: err.response.data.error})
             })
         }, [setAuth])
-    
+    const history = useHistory()
     const logout = useCallback(() => {
+        history.push("/")  
         window.sessionStorage.removeItem('user')
         setAuth(null)
-    }, [setAuth])
+    }, [setAuth,history])
 
     return {
         isLogged: Boolean(auth),

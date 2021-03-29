@@ -176,6 +176,7 @@ function Menu() {
 
     return(
         <div>
+
     <div  style={{ height: 400, width: '100%' }}>
         <Table size="small" aria-label="a dense table">
         <TableHead>
@@ -203,10 +204,10 @@ function Menu() {
     </div>
       
       
-    ////////-CUENTA-------/////
+    
       <div  style={{ height: 400, width: '100%' }}>
 
-         //TABLA DE PRODUCTOS PEDIDOS PERO NO ENTREGADOS
+        PRODUCTOS PEDIDOS PERO NO ENTREGADOS
          <Table size="small" aria-label="a dense table">
    <TableHead>
            <TableRow>
@@ -229,7 +230,10 @@ function Menu() {
        </TableBody> 
          </Table>    
 
-             //TABLA DE PRODUCTOS PEDIDOS Y ENTREGADOS
+         </div>
+
+        <div>
+            PRODUCTOS PEDIDOS Y ENTREGADOS
          <Table size="small" aria-label="a dense table">
          <TableHead>
            <TableRow>
@@ -246,7 +250,10 @@ function Menu() {
                  {row.amount}
                </TableCell>
                <TableCell align="left">{row.itemMenu.name}</TableCell>
-
+               </TableRow>
+               ))}
+               </TableBody>
+               </Table>
         </div>
 
 

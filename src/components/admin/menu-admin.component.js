@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 //import events from '../img/even.jpg'
-import { List, ListItem, ListItemText, Collapse, Button, TableRow, Table, TableBody, TableHead, TableCell
+import { Button, TableRow, Table, TableBody, TableHead, TableCell
  } from '@material-ui/core';
- import { DataGrid } from '@material-ui/data-grid';
 //import { ExpandLess, ExpandMore } from '@material-ui/icons';
 
 //import styles from '../styles/votations.css'

@@ -185,7 +185,7 @@ function Menu() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {menu.items.map((row) => (
+          {menu.items && menu.items.map((row) => (
             <TableRow key={row.name}>
               <TableCell component="th" scope="row">
                 {row.name}
@@ -212,7 +212,7 @@ function Menu() {
            </TableRow>
          </TableHead>
          <TableBody>
-           {Bill.itemBill.map((row) => (
+           {Bill.itemBill && Bill.itemBill.map((row) => (
            <TableRow key={row.amount}>
              <TableCell component="th" scope="row">
                  {row.amount}
@@ -235,7 +235,7 @@ function Menu() {
            </TableRow>
          </TableHead>
          <TableBody>
-           {Bill.itemOrder.map((row) => (
+           {Bill.itemBill && Bill.itemOrder.map((row) => (
              <TableRow key={row.amount}>
                <TableCell component="th" scope="row">
                  {row.amount}

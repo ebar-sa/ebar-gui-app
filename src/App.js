@@ -10,6 +10,7 @@ import BarList from "./components/bar-list.component";
 import Login from "./components/login.component";
 import Profile from "./components/profile.component";
 import Votings from "./components/votings-list.component";
+import VotingDetailUser from "./components/voting-detail-user.component";
 import PrivateRoute from "./components/private-route.js";
 
 class App extends Component {
@@ -20,7 +21,10 @@ class App extends Component {
     this.state = {
       currentUser: undefined
     };
+    
   }
+      
+
 
   componentDidMount() {
     const user = AuthService.getCurrentUser();
@@ -57,7 +61,7 @@ class App extends Component {
               </Link>
             </li>
             <li className="nav-item active">
-              <Link to={"/votations"} className="nav-link">
+              <Link to={"/votings"} className="nav-link">
                 Votaciones
               </Link>
             </li>
@@ -90,9 +94,10 @@ class App extends Component {
           <Switch>
             <Route exact path={"/"} />
             <Route exact path={"/bares"} component={BarList} />
-            <Route exact path={"/login"} component={Login} />
+            <Route path={"/login"} component={Login} />
             <Route exact path={"/profile"} component={Profile} />
-            <PrivateRoute path={"/votations"} component={Votings} />
+            <PrivateRoute exact path={"/votings"} component={Votings} />
+            <PrivateRoute path={'/votings/voting/1'} component={VotingDetailUser} />
             </Switch>
         </div>
       </div>

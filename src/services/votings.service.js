@@ -1,18 +1,50 @@
 import axios from "axios";
 import authHeader from './auth-header';
 
-const API_URL = "http://localhost:8080/api/votacion/bar/";
+const API_URL = "http://localhost:8080/api/";
 
-class VotationDataService {
-    getVotations = () => {
+
+class VotingDataService {
+    getVotingsByBarId = () => {
     return new Promise((resolve, reject) => {
-        axios.get(API_URL + '1', { headers: authHeader() })
+        axios.get(API_URL + 'bar/1/voting', { headers: authHeader() })
         .then(res => {
             resolve(res.data)
         })
-        .catch(error => reject(error));
+        .catch(error => {
+            console.log('Error', error)
+            reject(error)
+        }
+            );
     })
     }
+
+
+    vote(votingId, optionId, token) {
+        return axios
+            .post(API_URL + "voting/" + votingId + "/option/" + optionId + "/vote")
+    }
+
+
+    getVoting = async (votingId, token) => {
+        return axios
+            .get(API_URL + "voting/" + votingId + "/", {
+                headers:
+                {
+                    "Authorization": "Bearer " + token,
+                    "Access-Control-Allow-Origin": "*"
+                }
+            })
+            .catch(error => {
+                console.log("This:" + error)
+            })
+            .then(response => {
+                if (response) {
+                    return response.data
+                }
+            })
+    }
+
 }
 
-export default new VotationDataService()
+export default new VotingDataService()

@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import events from '../img/even.jpg'
-import { List, ListItem, ListItemText, Collapse, Button } from '@material-ui/core';
+import { List, ListItem, ListItemText, Collapse, Button, ListItemSecondaryAction } from '@material-ui/core';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
 import styles from '../styles/votings.css'
-import VotationDataService from "../services/votings.service";
+import VotingDataService from "../services/votings.service";
 import { Link } from "react-router-dom";
 import AuthService from "../services/auth.service";
 import AddIcon from '@material-ui/icons/Add';
 
+
 function Votings() {
 
-    const [votations, setVotations] = useState([])
+    const [votings, setVotings] = useState([])
     const [expanded, setExpanded] = useState({});
     const [time, setTime] = useState(new Date());
     const username = AuthService.getCurrentUser().username
     const roles = AuthService.getCurrentUser().roles
     const admin = roles.includes('ROLE_OWNER') || roles.includes('ROLE_EMPLOYEE');
-
-    console.log('Roles', roles)
 
     const handleClick = (id) => {
         setExpanded({
@@ -27,9 +26,8 @@ function Votings() {
     }
 
     useEffect(() => {
-        VotationDataService.getVotations().then(res => {
-            console.log(res)
-            setVotations(res)
+        VotingDataService.getVotingsByBarId().then(res => {
+            setVotings(res)
         }).catch(err => {
             console.log('Error', err.response.status)
         })
@@ -42,6 +40,38 @@ function Votings() {
         };
     }, []);
 
+    const convertDate = (x) => {
+        const openSplit = x.openingHour.split(" ");
+        const date = openSplit[0].split('-')
+        const ti = openSplit[1].split(':')
+        const openDate = new Date(date[2], date[1] - 1, +date[0], ti[0], ti[1], ti[2]);
+        const closeSplit = x.closingHour.split(' ')
+        const date2 = closeSplit[0].split('-')
+        const ti2 = closeSplit[1].split(':')
+        const closingDate = new Date(date2[2], date2[1] - 1, +date2[0], ti2[0], ti2[1], ti2[2]);
+        openDate.setTime(openDate.getTime() + openDate.getTimezoneOffset() * 60 * 1000);
+        closingDate.setTime(closingDate.getTime() + closingDate.getTimezoneOffset() * 60 * 1000);
+
+        return [openDate, closingDate]
+    }
+
+    const getPastDates = (item) => {
+        const list = convertDate(item)
+        if(time > list[1]){
+            return item;
+        }
+    }
+
+    const getCurrentDates = (item) => {
+        const list = convertDate(item)
+        if (time > list[0] && time < list[1]) {
+            return item;
+        }
+    }
+
+    const pastVotings = votings.filter(getPastDates)
+    const currentVotings = votings.filter(getCurrentDates)
+
     return (
         <div>
             <div className='container'>
@@ -51,7 +81,7 @@ function Votings() {
             <div>
                 {admin ? 
                 <div className="header">
-                    <Link to={"/votations/votation/create"}>
+                    <Link to={"/votings/voting/create"}>
                         <Button variant="contained" color="primary" style={{ ...stylesComponent.buttonCrear }} startIcon={<AddIcon />}>
                             Crear votación
                         </Button>
@@ -64,10 +94,7 @@ function Votings() {
             <div className='div-list'>
                 <h5>Votaciones finalizadas</h5>
                 <List component="nav">
-                    {votations.filter(x => {
-                        const endDate = new Date(x.closingHour)
-                        return (time>endDate)
-                    }).map(x => 
+                    {pastVotings.length>0 ? pastVotings.map(x =>
                     <div key={x.id}>
                         <ListItem button onClick={() => handleClick(x.id)} style={{ ...stylesComponent.listitem }}>
                             <ListItemText disableTypography style={{ ...stylesComponent.listItemText1 }} primary={x.title} />
@@ -87,27 +114,24 @@ function Votings() {
                             </List>
                         </Collapse>
                     </div>)
-                    }
+                    : <div>No existen votaciones finalizadas</div>}
                 </List>
 
                 <h5>Votaciones en curso</h5>
                 <List component="nav">
-                    {votations.filter(x => {
-                        const openDate = new Date(x.openingHour)
-                        const endDate = new Date(x.closingHour)
-                        return (time < endDate && time>openDate)
-                    }).map(x => 
+                    
+                    {currentVotings.length>0 ? currentVotings.map(x =>
                         <div key={x.id}>
                             <ListItem button onClick={() => handleClick(x.id)} style={{ ...stylesComponent.listitem }}>
                                 <ListItemText disableTypography style={{ ...stylesComponent.listItemText1 }} primary={x.title} />
-                                {admin ? 
-                                    <Link to={"/votations/votation/" + x.id}>
+                                {admin ?
+                                    <Link to={"/votings/voting/1"}>
                                         <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} >
                                             Editar
                                     </Button>
                                     </Link>
                                 :
-                                (!x.votersUsernames.includes(username) ? <Link to={"/votations/votation/" + x.id}>
+                                (!x.votersUsernames.includes(username) ? <Link to={"/votings/voting/" + x.id}>
                                     <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} >
                                         Acceder
                                     </Button>
@@ -125,7 +149,7 @@ function Votings() {
                                 </List>
                             </Collapse>
                         </div>
-                    )}
+                    ) : <div>No existen votaciones en curso</div>}
                 </List>
             </div>
         </div>

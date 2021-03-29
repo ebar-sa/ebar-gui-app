@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AuthService from "../services/auth.service";
-import VotingDataService from "../services/voting.service";
+import VotingDataService from "../services/votings.service";
 import { Icon, Typography, FormControl, RadioGroup, FormHelperText, Button, FormControlLabel, Radio, Card, CardContent, Divider } from "@material-ui/core"
 
 function VotingDetailUser() {
@@ -31,7 +31,7 @@ function VotingDetailUser() {
         res.push(<Icon>info</Icon>,<Typography> Sin opciones disponibles</Typography>)
       }else{
         for (let i = 0; i < options.length; i++) {
-          res.push(<FormControlLabel key={options[i].id.toString()} value={options[i].id.toString()} control={<Radio />} label={options[i].nombre}/>)
+          res.push(<FormControlLabel key={options[i].id.toString()} value={options[i].id.toString()} control={<Radio />} label={options[i].description}/>)
         }
       }
 

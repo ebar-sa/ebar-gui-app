@@ -191,21 +191,26 @@ function Menu() {
                 {row.name}
               </TableCell>
               <TableCell align="left">{row.price}</TableCell>
-
+              <TableCell align="left">
+              <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAñadir }} >
+                                        Añadir
+                                    </Button>
+                                    </TableCell>
             </TableRow>
           ))}
         </TableBody> 
         </Table>    
     </div>
       
-      ////////-CUENTA-------/////
+      
+    ////////-CUENTA-------/////
       <div  style={{ height: 400, width: '100%' }}>
 
          //TABLA DE PRODUCTOS PEDIDOS PERO NO ENTREGADOS
          <Table size="small" aria-label="a dense table">
    <TableHead>
            <TableRow>
-      <TableCell>Nombre</TableCell>
+            <TableCell>Nombre</TableCell>
              <TableCell>Precio</TableCell>
              <TableCell>Cantidad</TableCell>
              <TableCell>Total</TableCell>
@@ -242,14 +247,84 @@ function Menu() {
                </TableCell>
                <TableCell align="left">{row.itemMenu.name}</TableCell>
 
-             </TableRow>
-           ))}
-         </TableBody> 
-        </Table>    
-     </div>
+        </div>
+
+
+
+
      </div>
         );
     }
+
+    const stylesComponent = {
+
+        buttonAñadir: {
+            backgroundColor: '#007bff',
+            textTransform: 'none',
+            letterSpacing: 'normal',
+            fontSize: '15px',
+            fontWeight: '600'
+        }
+    }
+
+
+
+/*
+    AQUI ESTA MEDIO HECHO, PARA IR COGIENDO LAS COSAS E IR PROBANDO
+    ////////-CUENTA-------/////
+    <div  style={{ height: 400, width: '100%' }}>
+
+    //TABLA DE PRODUCTOS PEDIDOS PERO NO ENTREGADOS
+    <Table size="small" aria-label="a dense table">
+<TableHead>
+      <TableRow>
+ <TableCell>Nombre</TableCell>
+        <TableCell>Precio</TableCell>
+        <TableCell>Cantidad</TableCell>
+        <TableCell>Total</TableCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {Bill.itemBill.map((row) => (
+      <TableRow key={row.amount}>
+        <TableCell component="th" scope="row">
+            {row.amount}
+          </TableCell>
+        <TableCell align="left">{row.itemMenu.name}</TableCell>
+
+       </TableRow>
+    ))}
+  </TableBody> 
+    </Table>    
+
+        //TABLA DE PRODUCTOS PEDIDOS Y ENTREGADOS
+    <Table size="small" aria-label="a dense table">
+    <TableHead>
+      <TableRow>
+        <TableCell>Nombre</TableCell>
+        <TableCell>Precio</TableCell>
+        <TableCell>Cantidad</TableCell>
+        <TableCell>Total</TableCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {Bill.itemOrder.map((row) => (
+        <TableRow key={row.amount}>
+          <TableCell component="th" scope="row">
+            {row.amount}
+          </TableCell>
+          <TableCell align="left">{row.itemMenu.name}</TableCell>
+
+        </TableRow>
+      ))}
+    </TableBody> 
+   </Table>    
+</div>
+
+
+
+
+*/
 
 export default Menu;
 

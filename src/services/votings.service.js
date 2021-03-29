@@ -20,10 +20,15 @@ class VotingDataService {
     }
 
 
-    vote(votingId, optionId, token) {
-        return axios
-            .post(API_URL + "voting/" + votingId + "/option/" + optionId + "/vote")
-    }
+    vote = async (votingId, optionId, token) =>{
+        axios
+            .post(API_URL + "voting/" + votingId + "/option/" + optionId + "/vote", {}, {
+                headers:
+                {
+                    "Authorization": "Bearer "+ token
+                }
+            })
+        }
 
 
     getVoting = async (votingId, token) => {

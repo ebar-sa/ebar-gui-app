@@ -1,17 +1,15 @@
-import axios from "axios";
+import http from "../http-common";
+import authHeader from './auth-header'
+class MenuDataService{
 
-const API_URL = "http://localhost:8080/api/menu/";
-
-class MenuDataService {
-    getMenu = () => {
-    return new Promise((resolve, reject) => {
-        axios.get(API_URL+'1')
-        .then(res => {
-            console.log('Dat', res.data)
-            resolve(res.data)
-        })
-        .catch(error => reject(error));
-    })
+    getMenu(id) {
+        return http.get(`/api/bill/${id}`, {headers: authHeader()});
+    }
+    addToOrder(id) {
+        return http.get(`/api/bill/addToOrder/${id}/${id}`,{headers: authHeader()});
+    }
+    addToBill(id){
+        return http.get(`/api/bill/addToBill/${id}/${id}`,{headers: authHeader()});
     }
 }
 

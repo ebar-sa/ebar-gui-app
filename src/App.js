@@ -98,8 +98,6 @@ export function App() {
           <Route exact path={'/mesas'} component={Mesas} />
           <Route exact path={'/login'} component={Login} />
           <Route exact path={'/profile'} component={Profile} />
-          <Route exact path={'/menu'} component={Menu} />
-          <Route exact path={'/bill'} component={Bill} />
           <Route exact path={'/mesas/detallesMesa/:id'} component={BarTableDetails}/>
         </Switch>
       </main>

@@ -6,6 +6,8 @@ import {TableRow, Table, TableBody, TableHead, TableCell
 } from '@material-ui/core';
   import { SettingsRemoteRounded } from '@material-ui/icons';
 
+  const TAX_RATE = 0.07;
+
 export default class UserBillDetails extends Component {
   constructor(props) {
     super(props)
@@ -123,7 +125,9 @@ export default class UserBillDetails extends Component {
            <Grid container spacing={0} justify="center">
         <Grid item component={Card} xs>
         <CardContent>
-            
+        <Typography variant="h5" align = "center"  className={useStyles.title} gutterBottom> 
+                  CUENTA
+                </Typography> 
          <Table size="small" aria-label="a dense table">
          <caption>PRODUCTOS PEDIDOS Y ENTREGADOS</caption>
          <TableHead>
@@ -150,6 +154,22 @@ export default class UserBillDetails extends Component {
 
             </StyledTableRow>
                ))}
+
+<TableRow>
+            <TableCell rowSpan={3} />
+            <TableCell colSpan={2}>Subtotal</TableCell>
+            <TableCell align="right"></TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>Tax</TableCell>
+            <TableCell align="right">{`${(TAX_RATE * 100).toFixed(0)} %`}</TableCell>
+            <TableCell align="right"></TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell colSpan={2}>Total</TableCell>
+            <TableCell align="right"></TableCell>
+          </TableRow>
+
                </TableBody>
                </Table>
                </CardContent>

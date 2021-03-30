@@ -5,7 +5,7 @@ import MenuDataService from '../services/menu.service';
 import BillDataService from '../services/bill.service';
 import {TableRow, Table, TableBody, TableHead, TableCell
 } from '@material-ui/core';
-  import { SettingsRemoteRounded } from '@material-ui/icons';
+  import { SettingsRemoteRounded, Title } from '@material-ui/icons';
 
 export default class UserMenuDetails extends Component {
   constructor(props) {
@@ -139,7 +139,9 @@ export default class UserMenuDetails extends Component {
             <Grid container spacing={0} justify="center">
             <Grid item component={Card} xs>
             <CardContent>
-            
+            <Typography variant="h5" align = "center"  className={useStyles.title} gutterBottom> 
+                  MENÚ
+                </Typography> 
             <Table size="small" aria-label="a dense table">
             <TableHead>
               <TableRow >

@@ -76,9 +76,9 @@ export default class BarTableDetails extends Component {
       })
   }
 
-  getMenu(bar_id){
-    console.log(bar_id)
-    MenuDataService.getBarMenu(bar_id).then(res => { 
+  getMenu(id){
+    console.log(id)
+    MenuDataService.getBarMenu(id).then(res => { 
       this.setState({
         menuActual : res.data
       })

@@ -21,7 +21,7 @@ export default class UserBillDetails extends Component {
             itemOrder: []
           },
        isLogged:false,
-       totalBill:0
+       totalBill: 0
     };
     
   };
@@ -152,14 +152,11 @@ export default class UserBillDetails extends Component {
                  {row.amount}
                </StyledTableCell>
              <StyledTableCell  component="th" scope="row">{row.itemMenu.price*row.amount}</StyledTableCell>
-            
-             <StyledTableRow>
-             <StyledTableCell align="left">{(row.itemMenu.price*row.amount)+totalBill}</StyledTableCell>
-             </StyledTableRow> 
             </StyledTableRow>
+
                ))}
 
-<TableRow>
+            <TableRow>
             <TableCell rowSpan={3} />
             <TableCell colSpan={2}>Subtotal</TableCell>
             <TableCell align="right"></TableCell>
@@ -171,7 +168,7 @@ export default class UserBillDetails extends Component {
           </TableRow>
           <TableRow>
             <TableCell colSpan={2}>Total</TableCell>
-            <TableCell align="right"></TableCell>
+            <TableCell align="right">{totalBill}</TableCell>
           </TableRow>
 
                </TableBody>

@@ -11,7 +11,7 @@ export default class UserMenuDetails extends Component {
   constructor(props) {
     super(props)
     this.isLogged = this.isLogged.bind(this);
-    this.getMenu = this.getMenu.bind(this);
+    this.getBarMenu = this.getBarMenu.bind(this);
 
     this.state = {
        menuActual : {
@@ -26,7 +26,7 @@ export default class UserMenuDetails extends Component {
   componentDidMount() {
     console.log(this.props.match.params.id); 
     this.isLogged();
-    this.getMenu(this.props.match.params.id);
+    this.getBarMenu(this.props.match.params.id);
   } 
   isLogged(){
     if(localStorage.getItem('user')){
@@ -40,8 +40,8 @@ export default class UserMenuDetails extends Component {
     }
   }
 
-  getMenu(id){
-    MenuDataService.getMenu(id).then(res => { 
+  getBarMenu(id){
+    MenuDataService.getBarMenu(id).then(res => { 
       this.setState({
         menuActual : res.data
       })

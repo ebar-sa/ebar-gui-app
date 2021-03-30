@@ -29,7 +29,7 @@ function Votings() {
         VotingDataService.getVotingsByBarId().then(res => {
             setVotings(res)
         }).catch(err => {
-            console.log('Error', err.response.status)
+            console.log('Error', err)
         })
     }, [])
 
@@ -45,12 +45,17 @@ function Votings() {
         const date = openSplit[0].split('-')
         const ti = openSplit[1].split(':')
         const openDate = new Date(date[2], date[1] - 1, +date[0], ti[0], ti[1], ti[2]);
-        const closeSplit = x.closingHour.split(' ')
-        const date2 = closeSplit[0].split('-')
-        const ti2 = closeSplit[1].split(':')
-        const closingDate = new Date(date2[2], date2[1] - 1, +date2[0], ti2[0], ti2[1], ti2[2]);
+        let closingDate = null
+
+        if (x.closingHour) {
+            const closeSplit = x.closingHour.split(' ')  
+            const date2 = closeSplit[0].split('-')
+            const ti2 = closeSplit[1].split(':')
+            closingDate = new Date(date2[2], date2[1] - 1, +date2[0], ti2[0], ti2[1], ti2[2]);
+            closingDate.setTime(closingDate.getTime() + closingDate.getTimezoneOffset() * 60 * 1000);
+        }
+
         openDate.setTime(openDate.getTime() + openDate.getTimezoneOffset() * 60 * 1000);
-        closingDate.setTime(closingDate.getTime() + closingDate.getTimezoneOffset() * 60 * 1000);
 
         return [openDate, closingDate]
     }

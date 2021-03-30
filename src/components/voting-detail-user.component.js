@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from "react-router"
 import AuthService from "../services/auth.service";
 import VotingDataService from "../services/votings.service";
 import { Icon, Typography, FormControl, RadioGroup, Button, FormControlLabel, Radio, Card, CardContent, Divider, Snackbar } from "@material-ui/core"
 import MuiAlert from '@material-ui/lab/Alert';
 
-function VotingDetailUser() {
+function VotingDetailUser(props) {
     
   const [radioValue, setRadioValue] = useState("0")
   const [voteSuccess, setVoteSuccess] = useState(false)
@@ -12,10 +13,10 @@ function VotingDetailUser() {
   const [voting, setVoting] = useState({})
   const [canVote, setCanVote] = useState(false)
   const currentUser = AuthService.getCurrentUser()
-  
+  const history = useHistory()
 
-    function Alert(props) {
-      return <MuiAlert elevation={6} variant="filled" {...props} />;
+    function Alert(propss) {
+      return <MuiAlert elevation={6} variant="filled" {...propss} />;
     }
 
     const handleClose = (event, reason) => {
@@ -35,6 +36,7 @@ function VotingDetailUser() {
           .then(() => {
             setCanVote(false)
             setVoteSuccess(true)
+            history.push("/votings")
           })
           .catch((error) => {
             //Show message when post return error
@@ -46,6 +48,12 @@ function VotingDetailUser() {
     const handleRadioChange = (event) => {
       event.persist()
       setRadioValue(event.target.value)
+    }
+
+    const toDateFromString = (dateString) => {
+       let aux = dateString.split(/(\d{2,})/)
+       
+       return new Date(parseInt(aux[5]), parseInt(aux[3])-1, aux[1], aux[7], aux[9], aux[11])
     }
 
     const createOptions = (options) => {
@@ -62,21 +70,31 @@ function VotingDetailUser() {
       return res;
     }
 
+    const votingHasExpired = () => {
+      let res = false
+
+      if (voting.closingHourc && toDateFromString(voting.closingHour) < Date.now()) {
+          res = true
+      }
+    
+      return res
+    }
+
     useEffect(() => {
+      const votingId = props.match.params.votingId
+
       //This is sample code. Replace with real data
-      VotingDataService.getVoting(2, currentUser.accessToken).then(res => {
+      VotingDataService.getVoting(votingId, currentUser.accessToken).then(res => {
         setVoting(res)
 
         let dateNow = Date.now()
         let schDate = false
         let sohDate = false
 
-        let soh = res.openingHour.split(/(\d{2,})/)
-        sohDate = new Date(parseInt(soh[5]), parseInt(soh[3])-1, soh[1], soh[7], soh[9], soh[11])
+        sohDate = toDateFromString(res.openingHour)
         
         if (res.closingHour != null) {
-          let sch = res.closingHour.split(/(\d{2,})/)
-          schDate = new Date(parseInt(sch[5]), parseInt(sch[3])-1, sch[1], sch[7], sch[9], sch[11])
+          schDate = toDateFromString(res.closingHour)
         }
 
         if (!res.votersUsernames.includes(currentUser.username)
@@ -91,7 +109,8 @@ function VotingDetailUser() {
 
     return (
         <div>
-        { voting && voting.length !== 0 ? 
+          {console.log(votingHasExpired())}
+        { voting && voting.length !== 0 && !votingHasExpired() ? 
           <div>
           <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
           <div>
@@ -140,7 +159,7 @@ function VotingDetailUser() {
                     color="secondary"
                     className="button"
                     endIcon={<Icon>warning</Icon>}>
-                      Ya has votado
+                      No puedes votar ahora mismo
                     </Button>
                     </div>}
                   </FormControl>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 //import events from '../img/even.jpg'
 import { List, ListItem, ListItemText, Collapse, Button, TableRow, Table, TableBody, TableHead, TableCell
  } from '@material-ui/core';
- import { DataGrid } from '@material-ui/data-grid';
 //import { ExpandLess, ExpandMore } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles'
 //import styles from '../styles/votations.css'
@@ -39,46 +38,6 @@ export function Menu(props) {
 
   }
 
-    return(
-        <div>
-
-    <div  style={{ height: 400, width: '100%' }}>
-        <Table size="small" aria-label="a dense table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Nombre</TableCell>
-            <TableCell>Precio</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {items && items.map((row) => (
-            <TableRow key={row.name}>
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="left">{row.price}</TableCell>
-              <TableCell align="left">
-              <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAñadir }} >
-                                        Añadir
-                                    </Button>
-                                    </TableCell>
-            </TableRow>
-          ))}
-        </TableBody> 
-        </Table>    
-    </div>
-    </div>
-    )
-    const stylesComponent = {
-
-        buttonAñadir: {
-            backgroundColor: '#007bff',
-            textTransform: 'none',
-            letterSpacing: 'normal',
-            fontSize: '15px',
-            fontWeight: '600'
-        }
-    }
 
 
 

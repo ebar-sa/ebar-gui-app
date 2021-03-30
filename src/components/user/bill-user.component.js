@@ -32,7 +32,7 @@ export function Bill(props) {
   const history = useHistory()
   const routeRedirect = () => {
     console.log(id);
-    let path = `/mesas/detallesMesa/${id}`;
+    let path = `/bar/bill/${id}`;
     history.push(path);
 
   }

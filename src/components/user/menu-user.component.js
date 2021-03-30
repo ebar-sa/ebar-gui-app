@@ -5,7 +5,8 @@ import { List, ListItem, ListItemText, Collapse, Button, TableRow, Table, TableB
 //import { ExpandLess, ExpandMore } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles'
 //import styles from '../styles/votations.css'
-import BillDataService from "../../services/bill.service";
+import MenuDataService from "../../services/menu.service";
+import Bill from "./bill-user.component";
 import { useHistory } from "react-router"
 
 const useStyles = makeStyles({
@@ -26,16 +27,16 @@ const useStyles = makeStyles({
   },
 })
 
-export function Bill(props) {
+export function UserMenu(props) {
   const classes = useStyles()
-  const {id, itemBill, itemOrder} = props
+  const {id, items} = props
   const history = useHistory()
   const routeRedirect = () => {
     console.log(id);
-    let path = `/mesas/detallesMesa/${id}`;
+    let path = `/bar/menu/${id}`;
     history.push(path);
 
   }
 
   }
-  export default Bill;
+  export default UserMenu;

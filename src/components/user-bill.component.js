@@ -20,7 +20,8 @@ export default class UserBillDetails extends Component {
             itemBill: [],
             itemOrder: []
           },
-       isLogged:false
+       isLogged:false,
+       totalBill:0
     };
     
   };
@@ -118,7 +119,7 @@ export default class UserBillDetails extends Component {
       }))(TableRow);
     
 
-        const {billActual, isLogged} = this.state
+        const {billActual, totalBill, isLogged} = this.state
       
         return (
         <div>
@@ -150,8 +151,11 @@ export default class UserBillDetails extends Component {
                <StyledTableCell component="th" scope="row">
                  {row.amount}
                </StyledTableCell>
-             <StyledTableCell align="left">{row.itemMenu.price*row.amount}</StyledTableCell>
-
+             <StyledTableCell  component="th" scope="row">{row.itemMenu.price*row.amount}</StyledTableCell>
+            
+             <StyledTableRow>
+             <StyledTableCell align="left">{(row.itemMenu.price*row.amount)+totalBill}</StyledTableCell>
+             </StyledTableRow> 
             </StyledTableRow>
                ))}
 

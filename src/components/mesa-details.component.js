@@ -48,7 +48,7 @@ export default class BarTableDetails extends Component {
     console.log(this.props.match.params.id); 
     this.getMesasDetails(this.props.match.params.id);
     this.isLogged();
-    this.getMenu(this.props.match.params.id);
+    this.getMenu();
     this.getBill(this.props.match.params.id);
   } 
   isLogged(){
@@ -75,8 +75,10 @@ export default class BarTableDetails extends Component {
       })
   }
 
-  getMenu(id){
-    MenuDataService.getMenu(id).then(res => { 
+  getMenu(){
+    const {mesaActual} = this.state;
+    console.log(mesaActual.bar_id);
+    MenuDataService.getBarMenu(mesaActual.bar_id).then(res => { 
       this.setState({
         menuActual : res.data
       })
@@ -122,10 +124,10 @@ export default class BarTableDetails extends Component {
     })
   }
 
-  addToOrder() {
+  addToOrder(idItem) {
     const idBill = this.props.match.params.id;
-    //const idItem = this.props.match.params.id;
-    BillDataService.addToOrder(idBill, idBill).then(res => { 
+    console.log(idItem);
+    BillDataService.addToOrder(idBill, idItem).then(res => { 
       this.setState({  
         billActual:res.data
       })
@@ -285,7 +287,7 @@ export default class BarTableDetails extends Component {
               </StyledTableCell>
               <StyledTableCell align="left">{row.price}</StyledTableCell>
               <StyledTableCell align="left">
-              <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAñadir }} onClick = {this.addToOrder} >
+              <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAñadir }} onClick = {() => this.addToOrder(row.id)}  >
                                         Añadir
                                     </Button>
                                     </StyledTableCell>

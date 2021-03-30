@@ -4,6 +4,7 @@ import { Typography, CardContent, Grid, CardActions,Card,Button } from '@materia
 import { makeStyles } from '@material-ui/core/styles'
 import mesaLibre from '../static/images/table/mesaLibre.png'
 import mesaOcupada from '../static/images/table/mesaOcupada.png'
+import AuthService from "../services/auth.service";
 
 export default class BarTableDetails extends Component {
   constructor(props) {
@@ -11,7 +12,7 @@ export default class BarTableDetails extends Component {
     this.getMesasDetails = this.getMesasDetails.bind(this);
     this.changeStateToFree = this.changeStateToFree.bind(this);
     this.changeStateToOcupated = this.changeStateToOcupated.bind(this);
-    this.isLogged = this.isLogged.bind(this);
+    this.haveOwnerRole = this.haveOwnerRole.bind(this);
     this.state = {
        mesaActual : {
            id : null,
@@ -22,23 +23,30 @@ export default class BarTableDetails extends Component {
            bar_id: null,
            trabajador_id: null
        },
-       isLogged:false
+       isLogged:false,
+       currentUser: null
     };
   };
   
   componentDidMount() {
     console.log(this.props.match.params.id); 
     this.getMesasDetails(this.props.match.params.id);
-    this.isLogged();
+    this.haveOwnerRole();
   } 
-  isLogged(){
-    if(localStorage.getItem('user')){
-      this.setState({
-        isLogged : true
+  haveOwnerRole(){
+    const user = AuthService.getCurrentUser();
+    console.log(user.roles);
+    if(user.roles){
+      user.roles.map((role,index) => {
+        if(role === 'ROLE_OWNER'){
+          this.setState({
+            isLogged : true
+          });
+        }
       })
-    }else { 
+    }else{
       this.setState({
-        isLogged:false
+        isLogged: false
       })
     }
   }
@@ -114,8 +122,8 @@ export default class BarTableDetails extends Component {
         })
         const {mesaActual,isLogged} = this.state
     return (
-      
         <div>
+          {isLogged ? 
           <Grid container spacing={0} justify="center" >
             <Grid item component={Card} xs>
               <CardContent>
@@ -171,6 +179,11 @@ export default class BarTableDetails extends Component {
               </CardContent>
             </Grid>
           </Grid>
+         : 
+         <div>
+           <p>Debes estar logueado como administrador para ver esta vista</p>
+         </div>
+        } 
         </div>
     );
   }

@@ -45,6 +45,13 @@ class VotingDataService {
             })
     }
 
+    createVoting = (barId, object) => {
+        return axios
+            .post(API_URL + "bar/1/voting", object, { headers: authHeader() })
+            .catch(error => {
+                console.log("Error" + error)
+            }).then(res => console.log('Response', res))
+    }
 }
 
 export default new VotingDataService()

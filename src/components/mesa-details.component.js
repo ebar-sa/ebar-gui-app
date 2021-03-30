@@ -16,8 +16,6 @@ export default class BarTableDetails extends Component {
     this.changeStateToFree = this.changeStateToFree.bind(this);
     this.changeStateToOcupated = this.changeStateToOcupated.bind(this);
     this.isLogged = this.isLogged.bind(this);
-    this.getMenu = this.getMenu.bind(this);
-    this.getBill = this.getBill.bind(this);
 
     this.state = {
        mesaActual : {
@@ -76,31 +74,6 @@ export default class BarTableDetails extends Component {
       })
   }
 
-  getMenu(id){
-    console.log(id)
-    MenuDataService.getBarMenu(id).then(res => { 
-      this.setState({
-        menuActual : res.data
-      })
-      console.log(res.data);
-    })
-    .catch(e => {
-    console.log(e);
-    })
-  }
-
-  getBill(id){
-    BillDataService.getBill(id).then(res => { 
-      this.setState({
-        billActual : res.data
-      })
-      console.log(res.data);
-    })
-    .catch(e => {
-    console.log(e);
-    })
-  }
-
   changeStateToFree() {
     const id = this.props.match.params.id;
     MesaDataService.updateBarTableStateToFree(id).then(res => { 
@@ -125,7 +98,7 @@ export default class BarTableDetails extends Component {
   }
 
   addToOrder(idItem) {
-    const idBill = this.props.match.params.id;
+    const idBill = this.state.billActual.id;
     console.log(idItem);
     BillDataService.addToOrder(idBill, idItem).then(res => { 
       this.setState({  

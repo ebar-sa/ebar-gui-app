@@ -20,8 +20,7 @@ export default class UserBillDetails extends Component {
             itemBill: [],
             itemOrder: []
           },
-       isLogged:false,
-       totalBill: 0
+       isLogged:false
     };
     
   };
@@ -99,6 +98,10 @@ export default class UserBillDetails extends Component {
               fontWeight: '600'
           }
       }
+      
+
+      let total = this.state.billActual.itemBill.reduce((accumulator, currentValue) => 
+      accumulator + currentValue.itemMenu.price*currentValue.amount, 0);
 
       const StyledTableCell = withStyles((theme) => ({
         head: {
@@ -119,7 +122,7 @@ export default class UserBillDetails extends Component {
       }))(TableRow);
     
 
-        const {billActual, totalBill, isLogged} = this.state
+        const {billActual, isLogged} = this.state
       
         return (
         <div>
@@ -151,7 +154,7 @@ export default class UserBillDetails extends Component {
                <StyledTableCell component="th" scope="row">
                  {row.amount}
                </StyledTableCell>
-             <StyledTableCell  component="th" scope="row">{row.itemMenu.price*row.amount}</StyledTableCell>
+             <StyledTableCell  component="th" scope="row">{row.itemMenu.price*row.amount} €</StyledTableCell>
             </StyledTableRow>
 
                ))}
@@ -168,7 +171,7 @@ export default class UserBillDetails extends Component {
           </TableRow>
           <TableRow>
             <TableCell colSpan={2}>Total</TableCell>
-            <TableCell align="right">{totalBill}</TableCell>
+            <TableCell align="left">{total} €</TableCell>
           </TableRow>
 
                </TableBody>

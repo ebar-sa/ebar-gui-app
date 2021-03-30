@@ -8,7 +8,6 @@ import MenuDataService from '../services/menu.service';
 import {TableRow, Table, TableBody, TableHead, TableCell
 } from '@material-ui/core';
 import BillDataService from '../services/bill.service';
-  import { SettingsRemoteRounded } from '@material-ui/icons';
 
 export default class BarTableDetails extends Component {
   constructor(props) {
@@ -48,8 +47,8 @@ export default class BarTableDetails extends Component {
     console.log(this.props.match.params.id); 
     this.getMesasDetails(this.props.match.params.id);
     this.isLogged();
-    this.getMenu();
-    this.getBill(this.props.match.params.id);
+    //this.getMenu();
+    //this.getBill(this.props.match.params.id);
   } 
   isLogged(){
     if(localStorage.getItem('user')){
@@ -66,19 +65,20 @@ export default class BarTableDetails extends Component {
   getMesasDetails(id) {
       MesaDataService.getBarTable(id).then(res => { 
           this.setState({
-              mesaActual : res.data
+              mesaActual : res.data[0],
+              menuActual : res.data[1],
+              billActual : res.data[2]
           })
-          console.log(res.data);
+          console.log(res.data[1]);
       })
       .catch(e => {
           console.log(e);
       })
   }
 
-  getMenu(){
-    const {mesaActual} = this.state;
-    console.log(mesaActual.bar_id);
-    MenuDataService.getBarMenu(mesaActual.bar_id).then(res => { 
+  getMenu(bar_id){
+    console.log(bar_id)
+    MenuDataService.getBarMenu(bar_id).then(res => { 
       this.setState({
         menuActual : res.data
       })
@@ -183,7 +183,7 @@ export default class BarTableDetails extends Component {
               fontWeight: '600'
           }
       }
-
+      
       const StyledTableCell = withStyles((theme) => ({
         head: {
           backgroundColor: '#2A5DBC',
@@ -204,7 +204,6 @@ export default class BarTableDetails extends Component {
     
 
         const {mesaActual, menuActual, billActual, isLogged} = this.state
-      
     return (
       <div>
         <div>

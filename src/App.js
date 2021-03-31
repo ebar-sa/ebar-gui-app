@@ -1,107 +1,111 @@
-import React, { Component } from "react";
-import { Switch, Route, Link } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./App.css";
-import logo from "./img/ebarIcon.png";
+import React from 'react'
+import { Switch, Route } from 'react-router-dom'
+import { makeStyles } from '@material-ui/core/styles'
 
-import AuthService from "./services/auth.service";
+import Home from './pages/Home'
+import Login from './pages/Login'
+import Profile from './pages/Profile'
+import BarList from './pages/BarList'
+import CreateVotings from './pages/VotingCreate'
+import Votings from './pages/VotingList'
+import VotingDetailUser from './pages/VotingDetail'
 
-import BarList from "./components/bar-list.component";
-import Login from "./components/login.component";
-import Profile from "./components/profile.component";
-import Votings from "./components/votings-list.component";
-import VotingDetailUser from "./components/voting-detail-user.component";
-import CreateVotings from "./components/voting-create.component";
+import Header from './components/Header'
+
+import clsx from 'clsx'
+import Sidebar from './components/Sidebar'
+import useUser from './hooks/useUser'
+import Mesas from './pages/Mesas'
 import PrivateRoute from "./components/private-route.js";
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.logOut = this.logOut.bind(this);
+const drawerWidth = 240
 
-    this.state = {
-      currentUser: undefined
-    };
-  }
-    
-  componentDidMount() {
-    const user = AuthService.getCurrentUser();
-    if (user) {
-      this.setState({
-        currentUser: user
-      });
-    }
-  }
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+  },
+  appBar: {
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: drawerWidth,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  hide: {
+    display: 'none',
+  },
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0,
+  },
+  drawerPaper: {
+    width: drawerWidth,
+  },
+  drawerHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    justifyContent: 'flex-end',
+  },
+  content: {
+    flexGrow: 1,
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    marginLeft: -drawerWidth,
+  },
+  contentShift: {
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    marginLeft: 0,
+  },
+  title: {
+    flexGrow: 1,
+  },
+}))
 
-  logOut() {
-    AuthService.logout();
-  }
-  
+export function App() {
+  const classes = useStyles()
+  const { isLogged } = useUser()
 
-
-  render() {
-    console.log('User', this.state.currentUser) 
-    const style = {
-      height: '40px',
-    }
-    const { currentUser } = this.state;
-
-    return (
-      <div>
-        <nav className="navbar navbar-expand navbar-dark bg-dark">
-          <Link to={"/"} className="navbar-brand">
-            <img src={logo} alt="Logo E-Bar" style={style} />
-          </Link>
-          <div className="navbar-nav mr-auto">
-            <li className="nav-item active">
-              <Link to={"/bares"} className="nav-link">
-                Bares
-              </Link>
-            </li>
-            <li className="nav-item active">
-              <Link to={"/votings"} className="nav-link">
-                Votaciones
-              </Link>
-            </li>
-          </div>
-          {currentUser ? (
-            <div className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link to={"/profile"} className="nav-link">
-                  {currentUser.username}
-                </Link>
-              </li>
-              <li className="nav-item">
-                <a href="/login" className="nav-link" onClick={this.logOut}>
-                  Salir
-                </a>
-              </li>
-            </div>
-          ) : (
-            <div className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link to={"/login"} className="nav-link">
-                  Iniciar sesión
-                </Link>
-              </li>
-            </div>
-          )}
-        </nav>
-
-        <div className="container mt-3">
-          <Switch>
-            <Route exact path={"/"} />
-            <Route exact path={"/bares"} component={BarList} />
-            <Route path={"/login"} component={Login} />
-            <Route exact path={"/profile"} component={Profile} />
-            <PrivateRoute exact path={"/votings"} component={Votings} />
-            <PrivateRoute path={'/votings/voting/create'} component={CreateVotings} />
-            <PrivateRoute path={'/votings/voting/:votingId'} component={VotingDetailUser} />
-            </Switch>
-        </div>
-      </div>
-    );
-  }
+  return (
+    <div className={classes.root}>
+      <Header classes={classes} />
+      <Sidebar classes={classes} />
+      <main
+        className={clsx(classes.content, {
+          [classes.contentShift]: isLogged,
+        })}
+      >
+        <div className={classes.drawerHeader} />
+        <Switch>
+          <Route exact path={'/'} component={Home} />
+          <Route exact path={'/bares'} component={BarList} />
+          <Route exact path={'/mesas'} component={Mesas} />
+          <Route exact path={'/login'} component={Login} />
+          <Route exact path={'/profile'} component={Profile} />
+          <PrivateRoute exact path={"/votings"} component={Votings} />
+          <PrivateRoute path={'/votings/voting/create'} component={CreateVotings} />
+          <PrivateRoute path={'/votings/voting/:votingId'} component={VotingDetailUser} />
+        </Switch>
+      </main>
+    </div>
+  )
 }
 
-export default App;
+export default App

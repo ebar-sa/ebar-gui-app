@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import VotingDataService from "../services/votings.service";
+import VotingDataService from "../../services/votings.service";
 import { makeStyles } from '@material-ui/core/styles';
-import styles from '../styles/create-voting.css'
+import styles from '../../styles/create-voting.css'
 
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider ,KeyboardDateTimePicker } from "@material-ui/pickers";

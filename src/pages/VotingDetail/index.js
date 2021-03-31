@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from "react-router"
-import AuthService from "../services/auth.service";
-import VotingDataService from "../services/votings.service";
+import VotingDataService from "../../services/votings.service";
 import { Icon, Typography, FormControl, RadioGroup, Button, FormControlLabel, Radio, Card, CardContent, Divider, Snackbar } from "@material-ui/core"
 import MuiAlert from '@material-ui/lab/Alert';
+import useUser from '../../hooks/useUser'
 
 function VotingDetailUser(props) {
     
@@ -12,7 +12,7 @@ function VotingDetailUser(props) {
   const [formError, setFormError] = useState(false)
   const [voting, setVoting] = useState({})
   const [canVote, setCanVote] = useState(false)
-  const currentUser = AuthService.getCurrentUser()
+  const {auth} = useUser()
   const history = useHistory()
 
     function Alert(propss) {
@@ -32,7 +32,7 @@ function VotingDetailUser(props) {
       if (radioValue === "0") {
         setFormError(true)
       } else {
-        VotingDataService.vote(voting.id, radioValue, currentUser.accessToken)
+        VotingDataService.vote(voting.id, radioValue, auth.accessToken)
           .then(() => {
             setCanVote(false)
             setVoteSuccess(true)
@@ -83,8 +83,7 @@ function VotingDetailUser(props) {
     useEffect(() => {
       const votingId = props.match.params.votingId
 
-      //This is sample code. Replace with real data
-      VotingDataService.getVoting(votingId, currentUser.accessToken).then(res => {
+      VotingDataService.getVoting(votingId, auth.accessToken).then(res => {
         setVoting(res)
 
         let dateNow = Date.now()
@@ -97,7 +96,7 @@ function VotingDetailUser(props) {
           schDate = toDateFromString(res.closingHour)
         }
 
-        if (!res.votersUsernames.includes(currentUser.username)
+        if (!res.votersUsernames.includes(auth.username)
         && sohDate < dateNow
         && (schDate > dateNow || res.closingHour == null)){    
           setCanVote(true)
@@ -142,7 +141,7 @@ function VotingDetailUser(props) {
                     <RadioGroup aria-label="options" name="options" value={radioValue} onChange={handleRadioChange}>
                       { createOptions(voting.options) }  
                     </RadioGroup>
-                  { canVote && currentUser && voting ? 
+                  { canVote && auth && voting ? 
                   <Button
                     onClick = {handleSubmit}
                     type="submit"

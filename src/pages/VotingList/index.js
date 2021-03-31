@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import events from '../img/even.jpg'
+import events from '../../img/even.jpg'
 import { List, ListItem, ListItemText, Collapse, Button, Snackbar } from '@material-ui/core';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
-import styles from '../styles/votings.css'
-import VotingDataService from "../services/votings.service";
+import styles from '../../styles/votings.css'
+import VotingDataService from "../../services/votings.service";
 import { Link } from "react-router-dom";
-import AuthService from "../services/auth.service";
 import AddIcon from '@material-ui/icons/Add';
 import Alert from '@material-ui/lab/Alert';
+import useUser from '../../hooks/useUser'
 
 
 function Votings(props) {
@@ -15,8 +15,9 @@ function Votings(props) {
     const [votings, setVotings] = useState([])
     const [expanded, setExpanded] = useState({});
     const [time, setTime] = useState(new Date());
-    const username = AuthService.getCurrentUser().username
-    const roles = AuthService.getCurrentUser().roles
+    const { auth } = useUser()
+    const username = auth.username
+    const roles = auth.roles
     const admin = roles.includes('ROLE_OWNER') || roles.includes('ROLE_EMPLOYEE');
     const [data, setData] = useState(false)
 

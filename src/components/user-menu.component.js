@@ -52,6 +52,19 @@ export default class UserMenuDetails extends Component {
     })
   }
 
+  addToOrder(idItem) {
+    const idBill = this.state.billActual.id;
+    console.log(idItem);
+    BillDataService.addToOrder(idBill, idItem).then(res => { 
+      this.setState({  
+        billActual:res.data
+      })
+      console.log(res.data)
+    }).catch(e =>{
+      console.log(e);
+    })
+  }
+
   addToOrderUser() {
     const idBill = this.props.match.params.id;
     //const idItem = this.props.match.params.id;
@@ -138,37 +151,36 @@ export default class UserMenuDetails extends Component {
         <div>
             <Grid container spacing={0} justify="center">
             <Grid item component={Card} xs>
-            <CardContent>
-            <Typography variant="h5" align = "center"  className={useStyles.title} gutterBottom> 
-                  MENÚ
-                </Typography> 
-            <Table size="small" aria-label="a dense table">
-            <TableHead>
-              <TableRow >
-              
-                <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
-                <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
-                <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Añadir</Typography></StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {menuActual.items && menuActual.items.map((row) => (
-                <StyledTableRow key={row.name}>
-                  <StyledTableCell component="th" scope="row">
-                    {row.name}
-                  </StyledTableCell>
-                  <StyledTableCell align="left">{row.price}</StyledTableCell>
-                  <StyledTableCell align="left">
-                  <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAñadir }} onClick = {this.addToOrder} >
-                                            Añadir
-                                        </Button>
-                                        </StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody> 
-            </Table>
-            </CardContent>
-            </Grid>
+        <CardContent>
+        <Typography align="center" variant="h6"className={useStyles.title} gutterBottom>CARTA</Typography>
+        <Table size="small" aria-label="a dense table">
+        
+        <TableHead>
+          <TableRow >
+          
+            <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
+            <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
+            <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Añadir</Typography></StyledTableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {menuActual.items && menuActual.items.map((row) => (
+            <StyledTableRow key={row.name}>
+              <StyledTableCell align="center" component="th" scope="row">
+                {row.name}
+              </StyledTableCell>
+              <StyledTableCell align="center">{row.price} €</StyledTableCell>
+              <StyledTableCell align="center">
+              <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAñadir }} onClick = {() => this.addToOrder(row.id)}  >
+                                        Añadir
+                                    </Button>
+                                    </StyledTableCell>
+            </StyledTableRow>
+          ))}
+        </TableBody> 
+        </Table>
+        </CardContent>
+        </Grid>
             </Grid>
             
         </div>

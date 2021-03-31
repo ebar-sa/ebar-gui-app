@@ -110,6 +110,19 @@ export default class BarTableDetails extends Component {
     })
   }
 
+  addToBill(idItemBill) {
+    const idBill = this.state.billActual.id;
+    console.log(idBill);
+    BillDataService.addToBill(idBill, idItemBill).then(res => { 
+      this.setState({
+        billActual:res.data
+      })
+      console.log(res.data)
+    }).catch(e =>{
+      console.log(e);
+    })
+  }
+
 
 
     render() {
@@ -157,6 +170,9 @@ export default class BarTableDetails extends Component {
           }
       }
       
+      let total = this.state.billActual.itemBill.reduce((accumulator, currentValue) => 
+      accumulator + currentValue.itemMenu.price*currentValue.amount, 0);
+
       const StyledTableCell = withStyles((theme) => ({
         head: {
           backgroundColor: '#2A5DBC',
@@ -243,22 +259,23 @@ export default class BarTableDetails extends Component {
         <CardContent>
         
         <Table size="small" aria-label="a dense table">
+        <caption>CARTA</caption>
         <TableHead>
           <TableRow >
           
-            <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
-            <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
-            <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Añadir</Typography></StyledTableCell>
+            <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
+            <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
+            <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Añadir</Typography></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {menuActual.items && menuActual.items.map((row) => (
             <StyledTableRow key={row.name}>
-              <StyledTableCell component="th" scope="row">
+              <StyledTableCell align="center" component="th" scope="row">
                 {row.name}
               </StyledTableCell>
-              <StyledTableCell align="left">{row.price}</StyledTableCell>
-              <StyledTableCell align="left">
+              <StyledTableCell align="center">{row.price} €</StyledTableCell>
+              <StyledTableCell align="center">
               <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAñadir }} onClick = {() => this.addToOrder(row.id)}  >
                                         Añadir
                                     </Button>
@@ -278,23 +295,29 @@ export default class BarTableDetails extends Component {
          <caption>PRODUCTOS PEDIDOS PERO NO ENTREGADOS</caption>
           <TableHead>
            <TableRow>
-            <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
-             <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
-             <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Cantidad</Typography></StyledTableCell>
+            <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
+             <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
+             <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Cantidad</Typography></StyledTableCell>
+             <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Entregado</Typography></StyledTableCell>
            </TableRow>
          </TableHead>
          <TableBody>
            {billActual.itemOrder && billActual.itemOrder.map((row) => (
            <StyledTableRow key={row.amount}>
-             <StyledTableCell component="th" scope="row">
+             <StyledTableCell align="center" component="th" scope="row">
                  {row.itemMenu.name}
                </StyledTableCell>
-               <StyledTableCell component="th" scope="row">
-                 {row.itemMenu.price}
+               <StyledTableCell align="center" component="th" scope="row">
+                 {row.itemMenu.price} €
                </StyledTableCell>
-               <StyledTableCell component="th" scope="row">
+               <StyledTableCell align="center" component="th" scope="row">
                  {row.amount}
                </StyledTableCell>
+               <StyledTableCell align="center">
+               <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAñadir }} onClick = {() => this.addToBill(row.id)}  >
+                                        Entregado
+                                    </Button>
+                                    </StyledTableCell>
 
             </StyledTableRow>
          ))}
@@ -312,28 +335,32 @@ export default class BarTableDetails extends Component {
          <caption>PRODUCTOS PEDIDOS Y ENTREGADOS</caption>
          <TableHead>
            <TableRow>
-             <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
-             <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
-             <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Cantidad</Typography></StyledTableCell>
-             <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Total</Typography></StyledTableCell>
+             <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
+             <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
+             <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Cantidad</Typography></StyledTableCell>
+             <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Total</Typography></StyledTableCell>
            </TableRow>
          </TableHead>
          <TableBody>
            {billActual.itemBill && billActual.itemBill.map((row) => (
             <StyledTableRow key={row.amount}>
-             <StyledTableCell component="th" scope="row">
+             <StyledTableCell align="center" component="th" scope="row">
                  {row.itemMenu.name}
                </StyledTableCell>
-               <StyledTableCell component="th" scope="row">
-                 {row.itemMenu.price}
+               <StyledTableCell align="center" component="th" scope="row">
+                 {row.itemMenu.price} €
                </StyledTableCell>
-               <StyledTableCell component="th" scope="row">
+               <StyledTableCell align="center" component="th" scope="row">
                  {row.amount}
                </StyledTableCell>
-             <StyledTableCell align="left">{row.itemMenu.price*row.amount}</StyledTableCell>
+             <StyledTableCell align="center">{row.itemMenu.price*row.amount} €</StyledTableCell>
 
             </StyledTableRow>
                ))}
+               <TableRow>
+                <TableCell align="right" colSpan={3}><Typography variant="h6"className={useStyles.body} gutterBottom>Total</Typography></TableCell>
+                  <TableCell align="center"><Typography variant="h6"className={useStyles.body} gutterBottom> {total} € </Typography></TableCell>
+              </TableRow>
                </TableBody>
                </Table>
                </CardContent>

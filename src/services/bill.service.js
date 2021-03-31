@@ -8,8 +8,8 @@ class BillDataService {
     addToOrder(idBill, idItem) {
         return http.get(`/bill/addToOrder/${idBill}/${idItem}`,{headers: authHeader()});
     }
-    addToBill(idBill, idItem){
-        return http.get(`/bill/addToBill/${idBill}/${idItem}`,{headers: authHeader()});
+    addToBill(idBill, idItemBill){
+        return http.get(`/bill/addToBill/${idBill}/${idItemBill}`,{headers: authHeader()});
     }
     addToOrderUser(amount, idBill, idItem) {
         return http.get(`/bill/user/addToOrder/${amount}/${idBill}/${idItem}`,{headers: authHeader()});

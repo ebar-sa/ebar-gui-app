@@ -127,53 +127,39 @@ export default class UserBillDetails extends Component {
         return (
         <div>
            <Grid container spacing={0} justify="center">
-        <Grid item component={Card} xs>
+           <Grid item component={Card} xs>
         <CardContent>
-        <Typography variant="h5" align = "center"  className={useStyles.title} gutterBottom> 
-                  CUENTA
-                </Typography> 
+
+        <Typography variant="h6"className={useStyles.title} gutterBottom>PRODUCTOS PEDIDOS Y ENTREGADOS</Typography>  
          <Table size="small" aria-label="a dense table">
-         <caption>PRODUCTOS PEDIDOS Y ENTREGADOS</caption>
          <TableHead>
            <TableRow>
-             <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
-             <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
-             <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Cantidad</Typography></StyledTableCell>
-             <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Total</Typography></StyledTableCell>
+             <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
+             <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
+             <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Cantidad</Typography></StyledTableCell>
+             <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Total</Typography></StyledTableCell>
            </TableRow>
          </TableHead>
          <TableBody>
            {billActual.itemBill && billActual.itemBill.map((row) => (
             <StyledTableRow key={row.amount}>
-             <StyledTableCell component="th" scope="row">
+             <StyledTableCell align="center" component="th" scope="row">
                  {row.itemMenu.name}
                </StyledTableCell>
-               <StyledTableCell component="th" scope="row">
-                 {row.itemMenu.price}
+               <StyledTableCell align="center" component="th" scope="row">
+                 {row.itemMenu.price} €
                </StyledTableCell>
-               <StyledTableCell component="th" scope="row">
+               <StyledTableCell align="center" component="th" scope="row">
                  {row.amount}
                </StyledTableCell>
-             <StyledTableCell  component="th" scope="row">{row.itemMenu.price*row.amount} €</StyledTableCell>
+             <StyledTableCell align="center">{row.itemMenu.price*row.amount} €</StyledTableCell>
+
             </StyledTableRow>
-
                ))}
-
-            <TableRow>
-            <TableCell rowSpan={3} />
-            <TableCell colSpan={2}>Subtotal</TableCell>
-            <TableCell align="right"></TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Tax</TableCell>
-            <TableCell align="right">{`${(TAX_RATE * 100).toFixed(0)} %`}</TableCell>
-            <TableCell align="right"></TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell colSpan={2}>Total</TableCell>
-            <TableCell align="left">{total} €</TableCell>
-          </TableRow>
-
+               <TableRow>
+                <TableCell align="right" colSpan={3}><Typography variant="h6"className={useStyles.body} gutterBottom>Total</Typography></TableCell>
+                  <TableCell align="center"><Typography variant="h6"className={useStyles.body} gutterBottom> {total} € </Typography></TableCell>
+              </TableRow>
                </TableBody>
                </Table>
                </CardContent>

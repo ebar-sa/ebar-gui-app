@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-import { Typography, CardContent, Grid, CardActions,Card,Button } from '@material-ui/core';
+import { Typography, CardContent, Grid,Card } from '@material-ui/core';
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import BillDataService from '../services/bill.service';
 import {TableRow, Table, TableBody, TableHead, TableCell
 } from '@material-ui/core';
-  import { SettingsRemoteRounded } from '@material-ui/icons';
-
-  const TAX_RATE = 0.07;
 
 export default class UserBillDetails extends Component {
   constructor(props) {
@@ -87,18 +84,6 @@ export default class UserBillDetails extends Component {
             backgroundColor: '#fff',
           },
         })
-
-        const stylesComponent = {
-
-          buttonAñadir: {
-              backgroundColor: '#007bff',
-              textTransform: 'none',
-              letterSpacing: 'normal',
-              fontSize: '15px',
-              fontWeight: '600'
-          }
-      }
-      
 
       let total = this.state.billActual.itemBill.reduce((accumulator, currentValue) => 
       accumulator + currentValue.itemMenu.price*currentValue.amount, 0);

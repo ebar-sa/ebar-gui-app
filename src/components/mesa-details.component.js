@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import MesaDataService from '../services/mesa.service';
-import { Typography, CardContent, Grid, CardActions,Card,Button } from '@material-ui/core';
+import Input from "react-validation/build/input";
+import { Typography, CardContent, Grid, CardActions,Card,Button,Dialog, DialogActions, DialogContent,DialogContentText,DialogTitle, TextField } from '@material-ui/core';
 import { withStyles, makeStyles } from '@material-ui/core/styles'
+import MesaDataService from '../services/mesa.service';
 import mesaLibre from '../static/images/table/mesaLibre.png'
 import mesaOcupada from '../static/images/table/mesaOcupada.png'
-import MenuDataService from '../services/menu.service';
-import {TableRow, Table, TableBody, TableHead, TableCell
-} from '@material-ui/core';
+import AuthService from '../services/auth.service';
+import {TableRow, Table, TableBody, TableHead, TableCell} from '@material-ui/core';
 import BillDataService from '../services/bill.service';
 
 export default class BarTableDetails extends Component {
@@ -16,7 +16,10 @@ export default class BarTableDetails extends Component {
     this.changeStateToFree = this.changeStateToFree.bind(this);
     this.changeStateToOcupated = this.changeStateToOcupated.bind(this);
     this.isLogged = this.isLogged.bind(this);
-
+    this.handleOpen = this.handleOpen.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.automaticOcuppatioWithToken = this.automaticOcuppatioWithToken.bind(this);
+    this.handleChangeToken = this.handleChangeToken.bind(this);
     this.state = {
        mesaActual : {
            id : null,
@@ -36,7 +39,10 @@ export default class BarTableDetails extends Component {
         itemBill: [],
         itemOrder: []
       },
-       isLogged:false
+      userName: "",
+      isAdmin:false,
+      openDialog: false,
+      token: ""
     };
     
   };
@@ -49,15 +55,17 @@ export default class BarTableDetails extends Component {
     //this.getBill(this.props.match.params.id);
   } 
   isLogged(){
-    if(localStorage.getItem('user')){
+    const user = AuthService.getCurrentUser()
+    this.setState({
+      userName: user.username
+    }); 
+    user.roles.map((rol, index) => {
+    if(rol === 'ROLE_OWNER'){
       this.setState({
-        isLogged : true
-      })
-    }else { 
-      this.setState({
-        isLogged:false
+        isAdmin : true
       })
     }
+    })
   }
 
   getMesasDetails(id) {
@@ -73,14 +81,31 @@ export default class BarTableDetails extends Component {
           console.log(e);
       })
   }
-
+  handleClose(){
+    this.setState({
+      openDialog: false
+    })
+  }
+  handleOpen() {
+    this.setState({
+      openDialog: true
+    })
+  }
+  handleChangeToken(event) {
+    this.setState({
+      token: event.target.value
+    })
+  }
   changeStateToFree() {
     const id = this.props.match.params.id;
     MesaDataService.updateBarTableStateToFree(id).then(res => { 
       this.setState({  
-        mesaActual:res.data
+        mesaActual:res.data[0],
+        billActual:res.data[1],
+        openDialog:false,
       })
-      console.log(res.data)
+      console.log(res.data[0]);
+      console.log(res.data[1]);
     }).catch(e =>{
       console.log(e);
     })
@@ -91,12 +116,24 @@ export default class BarTableDetails extends Component {
       this.setState({  
         mesaActual:res.data
       })
-      console.log(res.data)
+      console.log(res.data);
     }).catch(e =>{
       console.log(e);
     })
   }
-
+  automaticOcuppatioWithToken() {
+    const id = this.props.match.params.id;
+    MesaDataService.ocupateBarTableByToken(id,this.state.token).then(res => {
+      this.setState({
+        mesaActual: res.data,
+        //billActual: res.data[1]
+      })
+      console.log(res.data);
+      //console.log(res.data[1]);
+    }).catch(e => {
+      console.log(e);
+    })
+  }
   addToOrder(idItem) {
     const idBill = this.state.billActual.id;
     console.log(idItem);
@@ -137,9 +174,16 @@ export default class BarTableDetails extends Component {
           title: {
             fontSize: 16,
           },
-          botton: {
-            fontSize: 16,
-
+          buttonOcupar:{
+            marginTop: 5
+          },
+          mesaLibre: {
+            textAlign: 'center', // <-- the magic
+            fontWeight: 'bold',
+            fontSize: 18,
+            marginTop: 10,
+            width: 200,
+            backgroundColor: 'yellow',
           },
           cardAction: {
             width: '100%',
@@ -192,7 +236,7 @@ export default class BarTableDetails extends Component {
       }))(TableRow);
     
 
-        const {mesaActual, menuActual, billActual, isLogged} = this.state
+        const {mesaActual, menuActual, billActual, isAdmin,userName,openDialog} = this.state
     return (
       <div>
         <div>
@@ -212,30 +256,58 @@ export default class BarTableDetails extends Component {
 
             <Grid item component={Card} xs>
               <CardContent>
+                {isAdmin ?
                 <Typography variant="h5"className={useStyles.title} gutterBottom> 
                   Código
-                </Typography> 
-                <Typography variant="h4" component="h2">
-                   {mesaActual.token}
                 </Typography>
-              </CardContent>
-              <CardActions>
-                {mesaActual.free ? 
-                <Button variant="contained" color="primary" onClick = {this.changeStateToOcupated}>
-                    Ocupar Manualmente
-                </Button>
                 :
-                <Button variant="contained" color="secondary" onClick = {this.changeStateToFree}>
-                    Desocupar Manualmente
-                </Button>
+                mesaActual.free ? 
+                <Typography variant="h6"className={useStyles.title} gutterBottom> 
+                  Bienvenido comience ingresando el Código
+                </Typography>
+                :
+                <Typography variant="h6"className={useStyles.title} gutterBottom>
+                  Bienvenido {userName}
+                </Typography>
+                }
+                {isAdmin ? 
+                  <Typography variant="h5"className={useStyles.title} gutterBottom> 
+                    {mesaActual.token}
+                  </Typography>
+                  :
+                  <p></p>
+                }
+              </CardContent>
+              {isAdmin ? 
+              <CardActions>
+                  { mesaActual.free ? 
+                    <Button variant="contained" color="primary" onClick = {this.changeStateToOcupated}>
+                      Ocupar Manualmente
+                    </Button>
+                    :
+                    <Button variant="contained" color="secondary" onClick = {this.handleOpen}>
+                      Desocupar Manualmente
+                    </Button>
+                  }
+              </CardActions>
+              :
+              <CardActions className={useStyles.buttonOcupar}>
+                {mesaActual.free ? 
+                <form onSubmit={this.automaticOcuppatioWithToken}>
+                  <TextField label="Outlined" variant="outlined" type="text" value={this.state.value} onChange={this.handleChangeToken} /><br></br>
+                  <Button style={useStyles.buttonOcupar} variant="contained" color="primary" type="submit">Ocupar</Button>
+                </form>
+                :
+                <h4>Ya tienes ocupada la mesa disfruta de tu estancia. De desocupar la mesa se encarga el Camarero.</h4>
                 }
               </CardActions>
+              }
             </Grid>
 
             <Grid item component={Card} xs>
               <CardContent>
                 <Typography variant="h5" className={useStyles.title} gutterBottom> 
-                  Informacion
+                  Información
                 </Typography> 
                 <Typography variant="h6" className={useStyles.pos}>
                    
@@ -254,6 +326,7 @@ export default class BarTableDetails extends Component {
         </div>
 
         <div>
+        {!mesaActual.free ? 
         <Grid container spacing={0} justify="center">
         <Grid item component={Card} xs>
         <CardContent>
@@ -304,25 +377,31 @@ export default class BarTableDetails extends Component {
          <TableBody>
            {billActual.itemOrder && billActual.itemOrder.map((row) => (
            <StyledTableRow key={row.amount}>
-             <StyledTableCell align="center" component="th" scope="row">
+              <StyledTableCell align="center" component="th" scope="row">
                  {row.itemMenu.name}
-               </StyledTableCell>
-               <StyledTableCell align="center" component="th" scope="row">
-                 {row.itemMenu.price} €
-               </StyledTableCell>
-               <StyledTableCell align="center" component="th" scope="row">
-                 {row.amount}
-               </StyledTableCell>
-               <StyledTableCell align="center">
-               <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAñadir }} onClick = {() => this.addToBill(row.id)}  >
-                                        Entregado
-                                    </Button>
-                                    </StyledTableCell>
-
+              </StyledTableCell>
+              <StyledTableCell align="center" component="th" scope="row">
+                {row.itemMenu.price} €
+              </StyledTableCell>
+              <StyledTableCell align="center" component="th" scope="row">
+                {row.amount}
+              </StyledTableCell>
+              <StyledTableCell align="center">
+              {isAdmin ? 
+              <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAñadir }} onClick = {() => this.addToBill(row.id)}  >
+                Entregado
+              </Button>
+              :
+              <p>-</p>
+              }
+              </StyledTableCell>
             </StyledTableRow>
          ))}
-       </TableBody> 
+        </TableBody> 
          </Table>
+         <Button variant="contained" size='small' onClick = {() => window.location.reload()}>
+              <span>Refrescar Comanda</span>
+         </Button>
 
          </CardContent>
         </Grid>
@@ -366,7 +445,35 @@ export default class BarTableDetails extends Component {
                </CardContent>
                </Grid>
         </Grid>
-               </div>
+          :
+            <h3 style={useStyles.mesaLibre}>La {mesaActual.name} se encuentra libre, ocupe la mesa para comenzar.</h3>
+        }
+      {openDialog ? 
+      <Dialog
+        open={openDialog}
+        onClose={this.handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"¿Seguro que quieres desocupar la mesa?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Si lo haces todos los datos relacionados con la cuenta de esta mesa, serán eliminados, asegurate de que hayan pagado. 
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.handleClose} color="secondary">
+            Cancelar
+          </Button>
+          <Button onClick={this.changeStateToFree} color="primary" autoFocus>
+            Si
+          </Button>
+        </DialogActions>
+      </Dialog>
+      :
+      <p></p>
+      }
+          </div>
         </div>
     );
   }

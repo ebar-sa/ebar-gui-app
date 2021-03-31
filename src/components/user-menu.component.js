@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Typography, CardContent, Grid, CardActions,Card,Button } from '@material-ui/core';
+import { Typography, CardContent, Grid,Card,Button } from '@material-ui/core';
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import MenuDataService from '../services/menu.service';
 import BillDataService from '../services/bill.service';
 import {TableRow, Table, TableBody, TableHead, TableCell
 } from '@material-ui/core';
-  import { SettingsRemoteRounded, Title } from '@material-ui/icons';
 
 export default class UserMenuDetails extends Component {
   constructor(props) {

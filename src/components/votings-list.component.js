@@ -141,7 +141,7 @@ function Votings(props) {
                             <ListItem button onClick={() => handleClick(x.id)} style={{ ...stylesComponent.listitem }}>
                                 <ListItemText disableTypography style={{ ...stylesComponent.listItemText1 }} primary={x.title} />
                                 {admin ?
-                                    <Link to={"/votings/voting/1"}>
+                                    <Link to={"/"}>
                                         <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} >
                                             Editar
                                     </Button>

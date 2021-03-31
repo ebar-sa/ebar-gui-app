@@ -9,6 +9,7 @@ import AuthService from "./services/auth.service";
 import BarList from "./components/bar-list.component";
 import Login from "./components/login.component";
 import Profile from "./components/profile.component";
+import Menu from './components/menu-admin.component'
 
 class App extends Component {
     constructor(props) {
@@ -83,6 +84,7 @@ class App extends Component {
                         <Route exact path={"/bares"} component={BarList}/>
                         <Route exact path={"/login"} component={Login}/>
                         <Route exact path={"/profile"} component={Profile}/>
+                        <Route exact path={"/:idBar/menu"} component={Menu}/>
                     </Switch>
                 </div>
             </div>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import events from '../../img/even.jpg'
 import { List, ListItem, ListItemText, Collapse, Button, Snackbar } from '@material-ui/core';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
-import styles from '../../styles/votings.css'
 import VotingDataService from "../../services/votings.service";
 import { Link } from "react-router-dom";
 import AddIcon from '@material-ui/icons/Add';
@@ -42,7 +41,7 @@ function Votings(props) {
         return () => {
             clearInterval(interval);
         };
-    }, []);
+    }, [props.history.location.state]);
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {

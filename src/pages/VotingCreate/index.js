@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import VotingDataService from "../../services/votings.service";
 import { makeStyles } from '@material-ui/core/styles';
-import styles from '../../styles/create-voting.css'
 
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider ,KeyboardDateTimePicker } from "@material-ui/pickers";
@@ -42,14 +41,21 @@ export default function CreateVotings(props){
     //     })
     // }, [])
 
+    
+
     useEffect(() => {
+        const isError = () => {
+            if(openingHour<now){
+                return true
+            }
+        }
         const interval = setInterval(() => setNow(new Date()), 5000);
         const interval2 = setInterval(() => isError(), 1000);
         return () => {
             clearInterval(interval);
             clearInterval(interval2);
         };
-    }, []);
+    }, [now, openingHour]);
 
 
     const handleSubmit = (evt) => {
@@ -138,13 +144,6 @@ export default function CreateVotings(props){
             setErrorClose('')
         }
     };
-
-
-    const isError = () => {
-        if(openingHour<now){
-            return true
-        }
-    }
 
     const addInputField = (event) => {
         if(add.length <=10){

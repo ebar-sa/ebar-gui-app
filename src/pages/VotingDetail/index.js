@@ -104,7 +104,7 @@ function VotingDetailUser(props) {
       }).catch(err => {
         console.log("Error", err)
       })
-    }, []);
+    }, [auth.accessToken, auth.username, props.match.params.votingId]);
 
     return (
         <div>

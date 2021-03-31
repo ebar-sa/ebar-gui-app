@@ -11,6 +11,7 @@ import Login from "./components/login.component";
 import Profile from "./components/profile.component";
 import Votings from "./components/votings-list.component";
 import VotingDetailUser from "./components/voting-detail-user.component";
+import CreateVotings from "./components/voting-create.component";
 import PrivateRoute from "./components/private-route.js";
 
 class App extends Component {
@@ -94,6 +95,7 @@ class App extends Component {
             <Route path={"/login"} component={Login} />
             <Route exact path={"/profile"} component={Profile} />
             <PrivateRoute exact path={"/votings"} component={Votings} />
+            <PrivateRoute path={'/votings/voting/create'} component={CreateVotings} />
             <PrivateRoute path={'/votings/voting/:votingId'} component={VotingDetailUser} />
             </Switch>
         </div>

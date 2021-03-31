@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import events from '../img/even.jpg'
-import { List, ListItem, ListItemText, Collapse, Button, ListItemSecondaryAction } from '@material-ui/core';
+import { List, ListItem, ListItemText, Collapse, Button, Snackbar } from '@material-ui/core';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
 import styles from '../styles/votings.css'
 import VotingDataService from "../services/votings.service";
 import { Link } from "react-router-dom";
 import AuthService from "../services/auth.service";
 import AddIcon from '@material-ui/icons/Add';
+import Alert from '@material-ui/lab/Alert';
 
 
-function Votings() {
+function Votings(props) {
 
     const [votings, setVotings] = useState([])
     const [expanded, setExpanded] = useState({});
@@ -17,6 +18,7 @@ function Votings() {
     const username = AuthService.getCurrentUser().username
     const roles = AuthService.getCurrentUser().roles
     const admin = roles.includes('ROLE_OWNER') || roles.includes('ROLE_EMPLOYEE');
+    const [data, setData] = useState(false)
 
     const handleClick = (id) => {
         setExpanded({
@@ -34,11 +36,19 @@ function Votings() {
     }, [])
 
     useEffect(() => {
+        setData(typeof props.history.location.state !== 'undefined' ? true : false)
         const interval = setInterval(() => setTime(Date.now()), 60000);
         return () => {
             clearInterval(interval);
         };
     }, []);
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setData(false)        
+    };
 
     const convertDate = (x) => {
         const openSplit = x.openingHour.split(" ");
@@ -48,7 +58,7 @@ function Votings() {
         let closingDate = null
 
         if (x.closingHour) {
-            const closeSplit = x.closingHour.split(' ')  
+            const closeSplit = x.closingHour.split(' ')
             const date2 = closeSplit[0].split('-')
             const ti2 = closeSplit[1].split(':')
             closingDate = new Date(date2[2], date2[1] - 1, +date2[0], ti2[0], ti2[1], ti2[2]);
@@ -62,7 +72,7 @@ function Votings() {
 
     const getPastDates = (item) => {
         const list = convertDate(item)
-        if(time > list[1]){
+        if (time > list[1]) {
             return item;
         }
     }
@@ -84,14 +94,14 @@ function Votings() {
                 <div className="div-vot">Votaciones</div>
             </div>
             <div>
-                {admin ? 
-                <div className="header">
-                    <Link to={"/votings/voting/create"}>
-                        <Button variant="contained" color="primary" style={{ ...stylesComponent.buttonCrear }} startIcon={<AddIcon />}>
-                            Crear votación
+                {admin ?
+                    <div className="header">
+                        <Link to={"/votings/voting/create"}>
+                            <Button variant="contained" color="primary" style={{ ...stylesComponent.buttonCrear }} startIcon={<AddIcon />}>
+                                Crear votación
                         </Button>
-                    </Link>
-                </div> : 
+                        </Link>
+                    </div> :
                     <h5>
                         A continuación, podrá encontrar la lista de votaciones disponibles en las que puede participar
                     </h5>}
@@ -99,33 +109,34 @@ function Votings() {
             <div className='div-list'>
                 <h5>Votaciones finalizadas</h5>
                 <List component="nav">
-                    {pastVotings.length>0 ? pastVotings.map(x =>
-                    <div key={x.id}>
-                        <ListItem button onClick={() => handleClick(x.id)} style={{ ...stylesComponent.listitem }}>
-                            <ListItemText disableTypography style={{ ...stylesComponent.listItemText1 }} primary={x.title} />
-                            {!expanded[x.id] ? <ExpandLess /> : <ExpandMore />}
-                        </ListItem>
-                        <Collapse in={expanded[x.id]} timeout="auto" unmountOnExit>
-                            <List component="div" disablePadding style={{ ...stylesComponent.listdetail }}>
-                                <ListItem>
-                                    <ListItemText disableTypography style={{ ...stylesComponent.listItemText2 }}>
-                                        <p>{x.description}</p>
-                                        <p style={{fontWeight:'600', textDecoration: 'underline'}}>Resultados</p>
-                                        {x.options.map(y => {
-                                            return <p key={y.id}>{y.description}: {y.votes} votos</p  >
-                                        })}
+                    {pastVotings.length > 0 ? pastVotings.map(x =>
+                        <div key={x.id}>
+                            <ListItem button onClick={() => handleClick(x.id)} style={{ ...stylesComponent.listitem }}>
+                                <ListItemText disableTypography style={{ ...stylesComponent.listItemText1 }} primary={x.title} />
+                                {!expanded[x.id] ? <ExpandLess /> : <ExpandMore />}
+                            </ListItem>
+                            <Collapse in={expanded[x.id]} timeout="auto" unmountOnExit>
+                                <List component="div" disablePadding style={{ ...stylesComponent.listdetail }}>
+                                    <ListItem>
+                                        <ListItemText disableTypography style={{ ...stylesComponent.listItemText2 }}>
+                                            <p>{x.description}</p>
+                                            {x.options.length > 0 ? 
+                                                <div><p style={{ fontWeight: '600', textDecoration: 'underline' }}>Resultados</p> 
+                                                <div>{x.options.map(y => 
+                                                 <p key={y.id}>{y.description}: {y.votes} votos</p >
+                                                )}</div></div> : null}
                                         </ListItemText>
-                                </ListItem>
-                            </List>
-                        </Collapse>
-                    </div>)
-                    : <div>No existen votaciones finalizadas</div>}
+                                    </ListItem>
+                                </List>
+                            </Collapse>
+                        </div>)
+                        : <div>No existen votaciones finalizadas</div>}
                 </List>
 
                 <h5>Votaciones en curso</h5>
                 <List component="nav">
-                    
-                    {currentVotings.length>0 ? currentVotings.map(x =>
+
+                    {currentVotings.length > 0 ? currentVotings.map(x =>
                         <div key={x.id}>
                             <ListItem button onClick={() => handleClick(x.id)} style={{ ...stylesComponent.listitem }}>
                                 <ListItemText disableTypography style={{ ...stylesComponent.listItemText1 }} primary={x.title} />
@@ -135,12 +146,12 @@ function Votings() {
                                             Editar
                                     </Button>
                                     </Link>
-                                :
-                                (!x.votersUsernames.includes(username) ? <Link to={"/votings/voting/" + x.id}>
-                                    <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} >
-                                        Acceder
+                                    :
+                                    (!x.votersUsernames.includes(username) ? <Link to={"/votings/voting/" + x.id}>
+                                        <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} >
+                                            Acceder
                                     </Button>
-                                </Link> : <div className='div-voting'>Ya has votado</div>)}
+                                    </Link> : <div className='div-voting'>Ya has votado</div>)}
                                 {!expanded[x.id] ? <ExpandLess /> : <ExpandMore />}
                             </ListItem>
                             <Collapse in={expanded[x.id]} timeout="auto" unmountOnExit>
@@ -157,6 +168,11 @@ function Votings() {
                     ) : <div>No existen votaciones en curso</div>}
                 </List>
             </div>
+            < Snackbar open={data} autoHideDuration={6000} onClose={handleClose} >
+                <Alert onClose={handleClose} severity="success">
+                    Votación creada con éxito!
+                </Alert>
+            </Snackbar >
         </div>
     )
 }

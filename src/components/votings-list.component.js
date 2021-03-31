@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import events from '../img/even.jpg'
-import { List, ListItem, ListItemText, Collapse, Button, ListItemSecondaryAction } from '@material-ui/core';
+import { List, ListItem, ListItemText, Collapse, Button, Snackbar } from '@material-ui/core';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
 import styles from '../styles/votings.css'
 import VotingDataService from "../services/votings.service";
 import { Link } from "react-router-dom";
 import AuthService from "../services/auth.service";
 import AddIcon from '@material-ui/icons/Add';
+import Alert from '@material-ui/lab/Alert';
 
 
-function Votings() {
+function Votings(props) {
 
     const [votings, setVotings] = useState([])
     const [expanded, setExpanded] = useState({});
@@ -17,6 +18,7 @@ function Votings() {
     const username = AuthService.getCurrentUser().username
     const roles = AuthService.getCurrentUser().roles
     const admin = roles.includes('ROLE_OWNER') || roles.includes('ROLE_EMPLOYEE');
+    const [data, setData] = useState(false)
 
     const handleClick = (id) => {
         setExpanded({
@@ -34,11 +36,19 @@ function Votings() {
     }, [])
 
     useEffect(() => {
+        setData(typeof props.history.location.state !== 'undefined' ? true : false)
         const interval = setInterval(() => setTime(Date.now()), 60000);
         return () => {
             clearInterval(interval);
         };
     }, []);
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setData(false)        
+    };
 
     const convertDate = (x) => {
         const openSplit = x.openingHour.split(" ");
@@ -110,10 +120,11 @@ function Votings() {
                                     <ListItem>
                                         <ListItemText disableTypography style={{ ...stylesComponent.listItemText2 }}>
                                             <p>{x.description}</p>
-                                            <p style={{ fontWeight: '600', textDecoration: 'underline' }}>Resultados</p>
-                                            {x.options.map(y => {
-                                                return <p key={y.id}>{y.description}: {y.votes} votos</p  >
-                                            })}
+                                            {x.options.length > 0 ? 
+                                                <div><p style={{ fontWeight: '600', textDecoration: 'underline' }}>Resultados</p> 
+                                                <div>{x.options.map(y => 
+                                                 <p key={y.id}>{y.description}: {y.votes} votos</p >
+                                                )}</div></div> : null}
                                         </ListItemText>
                                     </ListItem>
                                 </List>
@@ -157,6 +168,11 @@ function Votings() {
                     ) : <div>No existen votaciones en curso</div>}
                 </List>
             </div>
+            < Snackbar open={data} autoHideDuration={6000} onClose={handleClose} >
+                <Alert onClose={handleClose} severity="success">
+                    Votación creada con éxito!
+                </Alert>
+            </Snackbar >
         </div>
     )
 }

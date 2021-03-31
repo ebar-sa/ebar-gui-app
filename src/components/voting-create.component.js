@@ -5,7 +5,7 @@ import styles from '../styles/create-voting.css'
 
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider ,KeyboardDateTimePicker } from "@material-ui/pickers";
-import AddCircle from "@material-ui/icons/AddCircle";
+import {AddCircle, Delete}from "@material-ui/icons";
 import Alert from '@material-ui/lab/Alert';
 import {TextField, Button, IconButton, Snackbar, Container, Grid} from '@material-ui/core';
 
@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function CreateVotings(){
+export default function CreateVotings(props){
     const classes = useStyles();
     const [state, setState] = useState('')
     const [now, setNow] = useState(new Date())
@@ -29,6 +29,9 @@ export default function CreateVotings(){
     const [add, setAdd] = useState([])
     const [open, setOpen] = useState(false)
     const [openVal, setOpenVal] = useState(false)
+    const [openSubmitCorrect, setOpenSubmitCorrect] = useState(false)
+    const [openSubmitIncorrect, setOpenSubmitIncorrect] = useState(false)
+
     const [errors, setErrors] = useState({})
     // useEffect(() => {
     //     VotingDataService.createVoting(1).then(res => {
@@ -61,7 +64,16 @@ export default function CreateVotings(){
             }), "votersUsernames": []
             }
 
-            VotingDataService.createVoting(1, object).then(res => console.log('Response',res))
+            VotingDataService.createVoting(1, object).catch(error => {
+                console.log("Error" + error)
+            }).then(response => {
+                if(response.status ===201){
+                    setOpenSubmitCorrect(true)
+                    props.history.push({ pathname: '/votings', state:{ data: openSubmitCorrect }});
+                }else{
+                    setOpenSubmitIncorrect(true)
+                }
+            })
         } else {
             setOpenVal(true)
         }
@@ -74,9 +86,8 @@ export default function CreateVotings(){
     }
 
     const handleValidation = () => {
-        let errors = {};
         let formIsValid = true;
-
+        let errors = {}
         if (!state.title) {
             formIsValid = false;
             errors["title"] = "No puede estar vacío";
@@ -115,7 +126,6 @@ export default function CreateVotings(){
     };
 
     const handleCloseChange = (date) => {   
-        console.log('Datt', date)
         setClosingHour(date);
         if (isNaN(date)){
             setErrorClose('La fecha no es válida')
@@ -146,12 +156,22 @@ export default function CreateVotings(){
         }
     };
 
+    const deleteInputField = (event) => {
+        if (add.length > 0) {
+            setAdd(add.slice(0, -1))
+        } else {
+            setOpen(true)
+        }
+    };
+
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;
         }
         setOpen(false);
         setOpenVal(false)
+        setOpenSubmitCorrect(false)
+        setOpenSubmitIncorrect(false)
     };
 
     function formatDate(date) {
@@ -180,7 +200,6 @@ export default function CreateVotings(){
 
         const dateStr = [day, month, year].join('-');
         const timeStr = [hour, minutes, sec].join(':')
-        console.log('dateS', timeStr)
         return dateStr+' '+timeStr;
         }
     }
@@ -249,6 +268,10 @@ export default function CreateVotings(){
                             <AddCircle /> 
                             <span style={{color: 'black', marginBottom: '4px', marginLeft:'4px', fontSize: '18px'}}>Añadir</span>
                         </IconButton>
+                        <IconButton onClick={(e) => deleteInputField(e)}>
+                            <Delete />
+                            <span style={{ color: 'black', marginBottom: '4px', marginLeft: '4px', fontSize: '18px' }}>Eliminar</span>
+                        </IconButton>
                         {add.map(index => {
                             return (
                                 <div key={index}>
@@ -274,9 +297,14 @@ export default function CreateVotings(){
                         Enviar
                     </Button> 
                     <div>
+                        <Snackbar open={openSubmitIncorrect} autoHideDuration={6000} onClose={handleClose}>
+                            <Alert onClose={handleClose} severity="error">
+                                Tienes que rellenar el formulario correctamente
+                            </Alert>
+                        </Snackbar>
                         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
                             <Alert onClose={handleClose} severity="warning">
-                                No puedes crear más votaciones
+                                No puedes crear o eliminar más opciones
                                 </Alert>
                         </Snackbar>
                         <Snackbar open={openVal} autoHideDuration={6000} onClose={handleClose}>
@@ -284,6 +312,7 @@ export default function CreateVotings(){
                                 Tienes que rellenar el formulario correctamente
                                 </Alert>
                         </Snackbar>
+                        
                     </div>
                 </form>
             </div>

@@ -22,11 +22,8 @@ class App extends Component {
     this.state = {
       currentUser: undefined
     };
-    
   }
-      
-
-
+    
   componentDidMount() {
     const user = AuthService.getCurrentUser();
     if (user) {
@@ -98,8 +95,8 @@ class App extends Component {
             <Route path={"/login"} component={Login} />
             <Route exact path={"/profile"} component={Profile} />
             <PrivateRoute exact path={"/votings"} component={Votings} />
-            <PrivateRoute path={'/votings/voting/1'} component={VotingDetailUser} />
             <PrivateRoute path={'/votings/voting/create'} component={CreateVotings} />
+            <PrivateRoute path={'/votings/voting/:votingId'} component={VotingDetailUser} />
             </Switch>
         </div>
       </div>

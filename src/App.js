@@ -19,6 +19,8 @@ import BarTableDetails from './components/mesa-details.component'
 import UserMenuDetails from './components/user-menu.component'
 import UserBillDetails from './components/user-bill.component'
 import MenuGestion from './components/admin/menu-admin-gestion.component'
+import Mesas from './pages/Mesas'
+import Bar from "./pages/Bar";
 
 const drawerWidth = 240
 
@@ -101,6 +103,7 @@ export function App() {
           <Route exact path={'/mesas'} component={Mesas} />
           <Route exact path={'/login'} component={Login} />
           <Route exact path={'/profile'} component={Profile} />
+          <Route exact path={'/bares/:barId'} component={Bar} />
           <Route exact path={'/bar/bill/:id'} component={UserBillDetails} />
           <Route exact path={'/bar/menu/:id'} component={UserMenuDetails} />
           <Route exact path={'/mesas/detallesMesa/:id'} component={BarTableDetails}/>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from "react-router"
 import VotingDataService from "../../services/votings.service";
-import { Icon, Typography, FormControl, RadioGroup, Button, FormControlLabel, Radio, Card, CardContent, Divider, Snackbar } from "@material-ui/core"
+import { Icon, Typography, FormControl, RadioGroup, Button, FormControlLabel, Radio, Card, CardContent, Snackbar } from "@material-ui/core"
 import MuiAlert from '@material-ui/lab/Alert';
 import useUser from '../../hooks/useUser'
 

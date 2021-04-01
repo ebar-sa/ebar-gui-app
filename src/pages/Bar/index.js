@@ -52,7 +52,7 @@ export default function Bar(props){
         BarDataService.getBar(barId).then(res => {
             setBar(res.data);
         })
-    }, [])
+    }, [props.match.params.barId])
 
     console.log(logo)
 

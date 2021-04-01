@@ -13,6 +13,7 @@ import clsx from 'clsx'
 import Sidebar from './components/Sidebar'
 import useUser from './hooks/useUser'
 import Mesas from './pages/Mesas'
+import Bar from "./pages/Bar";
 
 const drawerWidth = 240
 
@@ -95,6 +96,7 @@ export function App() {
           <Route exact path={'/mesas'} component={Mesas} />
           <Route exact path={'/login'} component={Login} />
           <Route exact path={'/profile'} component={Profile} />
+          <Route exact path={'/bares/:barId'} component={Bar} />
         </Switch>
       </main>
     </div>

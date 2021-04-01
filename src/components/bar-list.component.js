@@ -11,7 +11,7 @@ export default class BarList extends Component {
         bares: [],
         currentIndex: -1, 
     };
-  };
+  }
 
   componentDidMount() {
       this.getAllBares();

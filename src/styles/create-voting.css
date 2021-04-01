@@ -4,6 +4,7 @@
 
 .input-margin{
     margin-top: 50px;
+    text-align: center;
 }
 
 .MuiTouchRipple-root{
@@ -13,4 +14,9 @@
 .p-style {
     margin-top: 20px;
     color: rgb(204, 6, 6);
+    text-align: center;
+}
+
+.buttons-margin{
+    margin-top: 20px;
 }

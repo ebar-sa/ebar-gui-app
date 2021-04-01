@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import events from '../../img/even.jpg'
-import { List, ListItem, ListItemText, Collapse, Button, Snackbar } from '@material-ui/core';
+import { List, ListItem, ListItemText, Collapse, Button, Snackbar, Typography } from '@material-ui/core';
 import { ExpandLess, ExpandMore } from '@material-ui/icons';
 import VotingDataService from "../../services/votings.service";
 import { Link } from "react-router-dom";
 import AddIcon from '@material-ui/icons/Add';
 import Alert from '@material-ui/lab/Alert';
 import useUser from '../../hooks/useUser'
+import '../../styles/votings.css'
 
 
 function Votings(props) {
@@ -19,6 +19,7 @@ function Votings(props) {
     const roles = auth.roles
     const admin = roles.includes('ROLE_OWNER') || roles.includes('ROLE_EMPLOYEE');
     const [data, setData] = useState(false)
+    const [openVal, setOpenVal] = useState(false)
 
     const handleClick = (id) => {
         setExpanded({
@@ -31,6 +32,7 @@ function Votings(props) {
         VotingDataService.getVotingsByBarId().then(res => {
             setVotings(res)
         }).catch(err => {
+            setOpenVal(true)
             console.log('Error', err)
         })
     }, [])
@@ -47,8 +49,16 @@ function Votings(props) {
         if (reason === 'clickaway') {
             return;
         }
-        setData(false)        
+        setData(false)    
+        setOpenVal(false)    
     };
+
+    const formatDate = (date) => {
+        const closeSplit = date.split(' ')
+        const date2 = closeSplit[0].split('-')
+        const ti2 = closeSplit[1].split(':')
+        return ' '+date2[0]+'-'+date2[1]+'-'+date2[2]+' '+ti2[0]+':'+ti2[1]
+    }
 
     const convertDate = (x) => {
         const openSplit = x.openingHour.split(" ");
@@ -62,10 +72,8 @@ function Votings(props) {
             const date2 = closeSplit[0].split('-')
             const ti2 = closeSplit[1].split(':')
             closingDate = new Date(date2[2], date2[1] - 1, +date2[0], ti2[0], ti2[1], ti2[2]);
-            closingDate.setTime(closingDate.getTime() + closingDate.getTimezoneOffset() * 60 * 1000);
         }
 
-        openDate.setTime(openDate.getTime() + openDate.getTimezoneOffset() * 60 * 1000);
 
         return [openDate, closingDate]
     }
@@ -81,6 +89,8 @@ function Votings(props) {
         const list = convertDate(item)
         if (time > list[0] && time < list[1]) {
             return item;
+        }else if(list[1]===null && time>list[0]){
+            return item
         }
     }
 
@@ -88,10 +98,11 @@ function Votings(props) {
     const currentVotings = votings.filter(getCurrentDates)
 
     return (
-        <div>
+        <div className='global'>
             <div className='container'>
-                <img className='img' alt="events" src={events} />
-                <div className="div-vot">Votaciones</div>
+                <Typography className='h5' variant="h4" gutterBottom>
+                    Votaciones
+                </Typography>
             </div>
             <div>
                 {admin ?
@@ -102,12 +113,14 @@ function Votings(props) {
                         </Button>
                         </Link>
                     </div> :
-                    <h5>
-                        A continuación, podrá encontrar la lista de votaciones disponibles en las que puede participar
-                    </h5>}
+                    <Typography style={{ ...stylesComponent.subtitule }} variant="subtitule1" gutterBottom>
+                        A continuación, podrá encontrar la lista de votaciones disponibles en las que puede participar, junto con las finalizadas
+                    </Typography>}
             </div>
             <div className='div-list'>
-                <h5>Votaciones finalizadas</h5>
+                <Typography className='h5' variant="h6" gutterBottom>
+                    Votaciones finalizadas
+                </Typography>
                 <List component="nav">
                     {pastVotings.length > 0 ? pastVotings.map(x =>
                         <div key={x.id}>
@@ -130,49 +143,59 @@ function Votings(props) {
                                 </List>
                             </Collapse>
                         </div>)
-                        : <div>No existen votaciones finalizadas</div>}
+                        : <div className='center'>No existen votaciones finalizadas</div>}
                 </List>
-
-                <h5>Votaciones en curso</h5>
-                <List component="nav">
-
-                    {currentVotings.length > 0 ? currentVotings.map(x =>
-                        <div key={x.id}>
-                            <ListItem button onClick={() => handleClick(x.id)} style={{ ...stylesComponent.listitem }}>
-                                <ListItemText disableTypography style={{ ...stylesComponent.listItemText1 }} primary={x.title} />
-                                {admin ?
-                                    <Link to={"/"}>
-                                        <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} >
-                                            Editar
-                                    </Button>
-                                    </Link>
-                                    :
-                                    (!x.votersUsernames.includes(username) ? <Link to={"/votings/voting/" + x.id}>
-                                        <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} >
-                                            Acceder
-                                    </Button>
-                                    </Link> : <div className='div-voting'>Ya has votado</div>)}
-                                {!expanded[x.id] ? <ExpandLess /> : <ExpandMore />}
-                            </ListItem>
-                            <Collapse in={expanded[x.id]} timeout="auto" unmountOnExit>
-                                <List component="div" disablePadding style={{ ...stylesComponent.listdetail }}>
-                                    <ListItem>
-                                        <ListItemText disableTypography style={{ ...stylesComponent.listItemText2 }}>
-                                            <p>{x.description}</p>
-                                            <p className='p'>Fecha fin: 22/05/2021 23:45</p>
-                                        </ListItemText>
-                                    </ListItem>
-                                </List>
-                            </Collapse>
-                        </div>
-                    ) : <div>No existen votaciones en curso</div>}
-                </List>
+                <div className='current'>
+                    <Typography className='h5' variant="h6" gutterBottom>
+                        Votaciones en curso
+                    </Typography>
+                    <List component="nav">
+                        {currentVotings.length > 0 ? currentVotings.map(x =>
+                            <div key={x.id}>
+                                <ListItem button onClick={() => handleClick(x.id)} style={{ ...stylesComponent.listitem }}>
+                                    <ListItemText disableTypography style={{ ...stylesComponent.listItemText1 }} primary={x.title} />
+                                    {admin ?
+                                        <Link to={"/"}>
+                                            <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} >
+                                                Editar
+                                        </Button>
+                                        </Link>
+                                        :
+                                        (!x.votersUsernames.includes(username) ? <Link to={"/votings/voting/" + x.id}>
+                                            <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} >
+                                                Acceder
+                                        </Button>
+                                        </Link> : <div className='div-voting'>Ya has votado</div>)}
+                                    {!expanded[x.id] ? <ExpandLess /> : <ExpandMore />}
+                                </ListItem>
+                                <Collapse in={expanded[x.id]} timeout="auto" unmountOnExit>
+                                    <List component="div" disablePadding style={{ ...stylesComponent.listdetail }}>
+                                        <ListItem>
+                                            <ListItemText disableTypography style={{ ...stylesComponent.listItemText2 }}>
+                                                <p>{x.description}</p>
+                                                <p className='p'>Fecha fin:  
+                                                {x.closingHour === null || x.closingHour === '' ?
+                                                ' Indefinida' : formatDate(x.closingHour)}
+                                                </p>
+                                            </ListItemText>
+                                        </ListItem>
+                                    </List>
+                                </Collapse>
+                            </div>
+                        ) : <div className='center'>No existen votaciones en curso</div>}
+                    </List>
+                </div>
             </div>
             < Snackbar open={data} autoHideDuration={6000} onClose={handleClose} >
                 <Alert onClose={handleClose} severity="success">
                     Votación creada con éxito!
                 </Alert>
             </Snackbar >
+            <Snackbar open={openVal} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="error">
+                    Error obteniendo las votaciones
+                </Alert>
+            </Snackbar>
         </div>
     )
 }
@@ -210,7 +233,12 @@ const stylesComponent = {
     },
     listItemText2: {
         marginTop: '10px'
-    }
+    },
+    subtitule: {
+        margin: 'auto', 
+        display: 'table',
+        fontSize: '16px'
+    },
 }
 
 export default Votings

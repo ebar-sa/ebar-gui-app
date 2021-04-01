@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import VotingDataService from "../../services/votings.service";
 import { makeStyles } from '@material-ui/core/styles';
+import '../../styles/create-voting.css'
 
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider ,KeyboardDateTimePicker } from "@material-ui/pickers";
 import {AddCircle, Delete}from "@material-ui/icons";
 import Alert from '@material-ui/lab/Alert';
-import {TextField, Button, IconButton, Snackbar, Container, Grid} from '@material-ui/core';
+import {TextField, Button, IconButton, Snackbar, Container, Grid, Typography} from '@material-ui/core';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -30,7 +31,6 @@ export default function CreateVotings(props){
     const [openVal, setOpenVal] = useState(false)
     const [openSubmitCorrect, setOpenSubmitCorrect] = useState(false)
     const [openSubmitIncorrect, setOpenSubmitIncorrect] = useState(false)
-
     const [errors, setErrors] = useState({})
     // useEffect(() => {
     //     VotingDataService.createVoting(1).then(res => {
@@ -40,23 +40,19 @@ export default function CreateVotings(props){
     //         console.log('Error', err.response.status)
     //     })
     // }, [])
-
     
 
     useEffect(() => {
-        const isError = () => {
-            if(openingHour<now){
-                return true
+        const interval = setInterval(() => {
+            setNow(new Date())
+            if (openingHour < now) {
+                setErrorOpen('La fecha no puede estar en pasado')
             }
-        }
-        const interval = setInterval(() => setNow(new Date()), 5000);
-        const interval2 = setInterval(() => isError(), 1000);
+        }, 5000);
         return () => {
             clearInterval(interval);
-            clearInterval(interval2);
         };
     }, [now, openingHour]);
-
 
     const handleSubmit = (evt) => {
         evt.preventDefault();
@@ -70,15 +66,16 @@ export default function CreateVotings(props){
             }), "votersUsernames": []
             }
 
-            VotingDataService.createVoting(1, object).catch(error => {
-                console.log("Error" + error)
-            }).then(response => {
+            VotingDataService.createVoting(1, object).then(response => {
                 if(response.status ===201){
                     setOpenSubmitCorrect(true)
                     props.history.push({ pathname: '/votings', state:{ data: openSubmitCorrect }});
                 }else{
                     setOpenSubmitIncorrect(true)
                 }
+            }).catch(error => {
+                setOpenVal(true)
+                console.log("Error" + error)
             })
         } else {
             setOpenVal(true)
@@ -117,7 +114,6 @@ export default function CreateVotings(props){
         setErrors(errors);
         return formIsValid;
     }
-
 
     const handleDateOpenChange = (date) => {
         setOpeningHour(date);
@@ -206,15 +202,19 @@ export default function CreateVotings(props){
     return(
         <Container fixed>
         <div style={{marginTop:'50px'}}>
-            <h4>Creación de votación</h4>
+            <Typography className='h5' variant="h5" gutterBottom>
+                Creación de votación
+            </Typography>
             <div style={{marginTop: '60px'}}>
                 <form onSubmit={(e) => handleSubmit(e)} className={classes.root}>
                     <Grid container spacing={0} justify="center" alignItems="center">
-                    <Grid item xs={6}>
+                    <Grid container justify="center" alignItems="center" item xs={6}>
+                    <div>
                     <TextField className='input-title' id="title" label="Título" name="title" onChange={(e) => handleChange(e)}/>
                     <p className="p-style">{errors["title"]}</p>
+                    </div>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid container justify="center" alignItems="center" item xs={6}>
                     <div>
                         <TextField className='input-title' id="description" label="Descripción" name="description" onChange={(e) => handleChange(e)} multiline rows={4} variant="outlined"/>
                         <p className="p-style">{errors["description"]}</p>
@@ -223,7 +223,7 @@ export default function CreateVotings(props){
                     </Grid>
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <Grid container spacing={0} justify="center" alignItems="center">
-                    <Grid item xs={6}>
+                    <Grid container justify="center" alignItems="center" item xs={6}>
                     <div className='input-margin'>
                     <KeyboardDateTimePicker
                         ampm={false}
@@ -241,7 +241,7 @@ export default function CreateVotings(props){
                     />
                     </div >
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid container justify="center" alignItems="center"  item xs={6}>
                     <div className='input-margin'>
                     <KeyboardDateTimePicker
                         ampm={false}
@@ -262,7 +262,10 @@ export default function CreateVotings(props){
                     </Grid>
                     </MuiPickersUtilsProvider>
                     <div className='input-margin'>
-                        <h5>Opciones</h5>
+                        <Typography variant="h5" gutterBottom>
+                            Opciones
+                        </Typography>
+                        <div className='buttons-margin'>
                         <IconButton onClick={(e) => addInputField(e)}>
                             <AddCircle /> 
                             <span style={{color: 'black', marginBottom: '4px', marginLeft:'4px', fontSize: '18px'}}>Añadir</span>
@@ -271,6 +274,7 @@ export default function CreateVotings(props){
                             <Delete />
                             <span style={{ color: 'black', marginBottom: '4px', marginLeft: '4px', fontSize: '18px' }}>Eliminar</span>
                         </IconButton>
+                        </div>
                         {add.map(index => {
                             return (
                                 <div key={index}>
@@ -327,6 +331,9 @@ const stylesComponent = {
         letterSpacing: 'normal',
         fontSize: '15px',
         fontWeight: '600',
-        marginTop: '40px'
+        textAlign: 'center',
+        margin: 'auto',
+        display: 'block',
+        marginTop: '30px'
     }
 }

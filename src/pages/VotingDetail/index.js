@@ -56,20 +56,6 @@ function VotingDetailUser(props) {
        return new Date(parseInt(aux[5]), parseInt(aux[3])-1, aux[1], aux[7], aux[9], aux[11])
     }
 
-    const createOptions = (options) => {
-      let res = [];
-
-      if(!options || options.length === 0) {
-        res.push(<Icon>info</Icon>,<Typography> Sin opciones disponibles</Typography>)
-      }else{
-        for (let i = 0; i < options.length; i++) {
-          res.push(<FormControlLabel key={options[i].id.toString()} value={options[i].id.toString()} control={<Radio />} label={options[i].description}/>)
-        }
-      }
-
-      return res;
-    }
-
     const votingHasExpired = () => {
       let res = false
 
@@ -108,7 +94,7 @@ function VotingDetailUser(props) {
 
     return (
         <div>
-        { voting && voting.length !== 0 && !votingHasExpired() ? 
+        { auth && voting && voting.length !== 0 && !votingHasExpired() ? 
           <div>
           <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
           <div>
@@ -132,16 +118,24 @@ function VotingDetailUser(props) {
             </Card>
           </div>
           <br/>
-          <Divider />
-          <br/>
           <div id="voting_options_id" name="voting_options">
             <Card>
               <CardContent>
                   <FormControl component="fieldset" className=".formControl">
                     <RadioGroup aria-label="options" name="options" value={radioValue} onChange={handleRadioChange}>
-                      { createOptions(voting.options) }  
+                      {voting.options && voting.options.length !== 0 ? voting.options.map((option, idx) => (
+                        <FormControlLabel key={option.id.toString()} value={option.id.toString()} control={<Radio />} label={option.description}/>
+                      )) : 
+                      <div >
+                        <div style={{float:"left", paddingRight:"10px"}}>
+                        <Icon>info</Icon>
+                        </div>
+                        <div style={{float:"right"}}>
+                        <Typography> Sin opciones disponibles</Typography>
+                        </div>
+                      </div>}
                     </RadioGroup>
-                  { canVote && auth && voting ? 
+                  { canVote && auth && voting ?     
                   <Button
                     onClick = {handleSubmit}
                     type="submit"
@@ -176,7 +170,6 @@ function VotingDetailUser(props) {
           </Snackbar>
         </div>
         : <div>
-
         </div> }
       </div>
       );

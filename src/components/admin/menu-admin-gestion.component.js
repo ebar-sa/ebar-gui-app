@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
-import MenuDataService from '../services/menu.service';
+import MenuDataService from '../../../src/services/menu.service';
 import {withStyles, makeStyles } from '@material-ui/core/styles'
 import {Typography, CardContent, Grid, Card} from '@material-ui/core';
 import {TableRow, Table, TableBody, TableHead, TableCell} from '@material-ui/core';
 
 export default class Menu extends Component {
-
+    
     constructor(props) {
         super(props);
         this.getMenuDetails = this.getMenuDetails.bind(this);
         this.isLogged = this.isLogged.bind(this);
         this.state = {
-            menu : {
+            menuActual : {
                 id: null,
                 items : []
             }, 
@@ -19,11 +19,45 @@ export default class Menu extends Component {
         };
     };
 
+    /*
     componentDidMount() {
         console.log(this.props.match.params.idBar);
         this.getMenuDetails(this.props.match.params.idBar);
         this.isLogged();
     }
+
+    getMenuDetails(idBar) {
+        MenuDataService.getMenu(idBar).then(res => {
+            this.setState({
+                menuActual : res.data
+            })
+            console.log(res.data);
+        })
+        .catch(e => {
+            console.log(e)
+        })
+    }
+    */
+
+    componentDidMount() {
+        console.log(this.props.match.params.idBar);
+        this.getMenuDetails(this.props.match.params.idBar);
+        this.isLogged();
+    }
+
+    getMenuDetails() {
+        MenuDataService.getMenu().then(res => {
+            this.setState({
+                menuActual : res.data
+            })
+            console.log(res.data);
+        })
+        .catch(e => {
+            console.log(e)
+        })
+    }
+
+    /********************************/ 
 
     isLogged() {
         if(localStorage.getItem('user')) {
@@ -31,19 +65,6 @@ export default class Menu extends Component {
         } else {
             this.setState({ isLogged: false})
         }
-    }
-
-    // Duda
-    getMenuDetails(idBar) {
-        MenuDataService.getMenu(idBar).then(res => {
-            this.setState({
-                menu : res.data
-            })
-            console.log(res.data);
-        })
-        .catch(e => {
-            console.log(e)
-        })
     }
 
     render() {
@@ -80,7 +101,7 @@ export default class Menu extends Component {
             },
           })
 
-        const {menu,isLogged} = this.state
+        const {menuActual,isLogged} = this.state
         
         const StyledTableRow = withStyles((theme) => ({
             root: {
@@ -89,7 +110,6 @@ export default class Menu extends Component {
               },
             },
           }))(TableRow);
-        
         
         const StyledTableCell = withStyles((theme) => ({
           head: {
@@ -100,8 +120,6 @@ export default class Menu extends Component {
             fontSize: 14,
           },
         }))(TableCell);
-
-        
 
         return (
             <div>
@@ -119,20 +137,20 @@ export default class Menu extends Component {
                     <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Descripción</Typography></StyledTableCell>
                     <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Categoria</Typography></StyledTableCell>
                     <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Cantidad</Typography></StyledTableCell>
+                    <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Ver Imagen</Typography></StyledTableCell>
 
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {menu.items && menu.items.map((row) => (
+                  {menuActual.items && menuActual.items.map((row) => (
                     <StyledTableRow key={row.name}>
+                      <StyledTableCell align="left">{row.category.name}</StyledTableCell>
                       <StyledTableCell component="th" scope="row">
                         {row.name}
                       </StyledTableCell>
-                      <StyledTableCell align="left">{row.price}</StyledTableCell>
                       <StyledTableCell align="left">{row.description}</StyledTableCell>
-                      <StyledTableCell align="left">{row.id_categoria.name}</StyledTableCell>
-                      <StyledTableCell align="left">{row.ration_type}</StyledTableCell>
-                    
+                      <StyledTableCell align="left">{row.rationType}</StyledTableCell>
+                      <StyledTableCell align="left">{row.price}</StyledTableCell>
                     </StyledTableRow>
                   ))}
                 </TableBody> 

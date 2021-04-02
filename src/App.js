@@ -18,6 +18,9 @@ import useUser from './hooks/useUser'
 import Mesas from './pages/Mesas'
 import Bar from "./pages/Bar";
 import PrivateRoute from "./components/private-route.js";
+import BarTableDetails from './components/mesa-details.component'
+import UserMenuDetails from './components/user-menu.component'
+import UserBillDetails from './components/user-bill.component'
 
 const drawerWidth = 240
 
@@ -104,6 +107,9 @@ export function App() {
           <PrivateRoute exact path={"/votings"} component={Votings} />
           <PrivateRoute path={'/votings/voting/create'} component={CreateVotings} />
           <PrivateRoute path={'/votings/voting/:votingId'} component={VotingDetailUser} />
+          <Route exact path={'/bar/bill/:id'} component={UserBillDetails} />
+          <Route exact path={'/bar/menu/:id'} component={UserMenuDetails} />
+          <Route exact path={'/mesas/detallesMesa/:id'} component={BarTableDetails}/>
         </Switch>
       </main>
     </div>

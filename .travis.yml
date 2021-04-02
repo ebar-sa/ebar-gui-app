@@ -10,7 +10,7 @@ addons:
 script:
   - npm install
   - npm run build
-  - npm test
+  - npm test --coverage --watchAll
   - sonar-scanner
 deploy:
   provider: heroku

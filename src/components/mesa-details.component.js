@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Input from "react-validation/build/input";
 import { Typography, CardContent, Grid, CardActions,Card,Button,Dialog, DialogActions, DialogContent,DialogContentText,DialogTitle, TextField } from '@material-ui/core';
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import MesaDataService from '../services/mesa.service';
@@ -21,28 +20,28 @@ export default class BarTableDetails extends Component {
     this.automaticOcuppatioWithToken = this.automaticOcuppatioWithToken.bind(this);
     this.handleChangeToken = this.handleChangeToken.bind(this);
     this.state = {
-       mesaActual : {
-           id : null,
-           nombre: "",
-           token: "", 
-           estadoMesa: "",
-           seats: null,
-           bar_id: null,
-           trabajador_id: null
-       },
-       menuActual : {
-        id : null,
-        items: []
-      },
-      billActual : {
-        id : null,
-        itemBill: [],
-        itemOrder: []
-      },
-      userName: "",
-      isAdmin:false,
-      openDialog: false,
-      token: ""
+        mesaActual : {
+          id : null,
+          nombre: "",
+          token: "", 
+          estadoMesa: "",
+          seats: null,
+          bar_id: null,
+          trabajador_id: null
+        },
+        menuActual : {
+          id : null,
+          items: []
+        },
+        billActual : {
+          id : null,
+          itemBill: [],
+          itemOrder: []
+        },
+        userName: "",
+        isAdmin:false,
+        openDialog: false,
+        token: ""
     };
     
   };
@@ -51,15 +50,13 @@ export default class BarTableDetails extends Component {
     console.log(this.props.match.params.id); 
     this.getMesasDetails(this.props.match.params.id);
     this.isLogged();
-    //this.getMenu();
-    //this.getBill(this.props.match.params.id);
   } 
   isLogged(){
     const user = AuthService.getCurrentUser()
     this.setState({
       userName: user.username
     }); 
-    user.roles.map((rol, index) => {
+    user.roles.forEach((rol) => {
     if(rol === 'ROLE_OWNER'){
       this.setState({
         isAdmin : true
@@ -69,17 +66,16 @@ export default class BarTableDetails extends Component {
   }
 
   getMesasDetails(id) {
-      MesaDataService.getBarTable(id).then(res => { 
-          this.setState({
-              mesaActual : res.data[0],
-              menuActual : res.data[1],
-              billActual : res.data[2]
-          })
-          console.log(res.data[1]);
-      })
-      .catch(e => {
-          console.log(e);
-      })
+    MesaDataService.getBarTable(id).then(res => { 
+        this.setState({
+            mesaActual : res.data[0],
+            menuActual : res.data[1],
+            billActual : res.data[2]
+        })
+    })
+    .catch(e => {
+        console.log(e);
+    })
   }
   handleClose(){
     this.setState({
@@ -104,8 +100,6 @@ export default class BarTableDetails extends Component {
         billActual:res.data[1],
         openDialog:false,
       })
-      console.log(res.data[0]);
-      console.log(res.data[1]);
     }).catch(e =>{
       console.log(e);
     })
@@ -116,7 +110,6 @@ export default class BarTableDetails extends Component {
       this.setState({  
         mesaActual:res.data
       })
-      console.log(res.data);
     }).catch(e =>{
       console.log(e);
     })
@@ -126,10 +119,7 @@ export default class BarTableDetails extends Component {
     MesaDataService.ocupateBarTableByToken(id,this.state.token).then(res => {
       this.setState({
         mesaActual: res.data,
-        //billActual: res.data[1]
       })
-      console.log(res.data);
-      //console.log(res.data[1]);
     }).catch(e => {
       console.log(e);
     })
@@ -141,7 +131,6 @@ export default class BarTableDetails extends Component {
       this.setState({  
         billActual:res.data
       })
-      console.log(res.data)
     }).catch(e =>{
       console.log(e);
     })
@@ -154,7 +143,6 @@ export default class BarTableDetails extends Component {
       this.setState({
         billActual:res.data
       })
-      console.log(res.data)
     }).catch(e =>{
       console.log(e);
     })
@@ -162,81 +150,79 @@ export default class BarTableDetails extends Component {
 
 
 
-    render() {
-        const useStyles = makeStyles({
-          card: {
-            margin: 16,
-            display: "flex",
-            flexDirection: "column",
-            maxWidth: 100,
-            justifyContent: "space-between"
-          },
-          title: {
-            fontSize: 16,
-          },
-          buttonOcupar:{
-            marginTop: 5
-          },
-          mesaLibre: {
-            textAlign: 'center', // <-- the magic
-            fontWeight: 'bold',
-            fontSize: 18,
-            marginTop: 10,
-            width: 200,
-            backgroundColor: 'yellow',
-          },
-          cardAction: {
-            width: '100%',
-          },
-          nombreMesa: { 
-            textAlign:'center',
-            marginLeft: 15
-          },
-          pos: {
-            marginBottom: 12,
-          },
-          occupied: {
-            backgroundColor: '#ddd',
-          }, 
-          free: {
-            backgroundColor: '#fff',
-          },
-        })
+  render() {
+    const useStyles = makeStyles({
+      card: {
+        margin: 16,
+        display: "flex",
+        flexDirection: "column",
+        maxWidth: 100,
+        justifyContent: "space-between"
+      },
+      title: {
+        fontSize: 16,
+      },
+      buttonOcupar:{
+        marginTop: 5
+      },
+      mesaLibre: {
+        textAlign: 'center', // <-- the magic
+        fontWeight: 'bold',
+        fontSize: 18,
+        marginTop: 10,
+        width: 200,
+        backgroundColor: 'yellow',
+      },
+      cardAction: {
+        width: '100%',
+      },
+      nombreMesa: { 
+        textAlign:'center',
+        marginLeft: 15
+      },
+      pos: {
+        marginBottom: 12,
+      },
+      occupied: {
+        backgroundColor: '#ddd',
+      }, 
+      free: {
+        backgroundColor: '#fff',
+      },
+    })
 
-        const stylesComponent = {
-
-          buttonAñadir: {
-              backgroundColor: '#007bff',
-              textTransform: 'none',
-              letterSpacing: 'normal',
-              fontSize: '15px',
-              fontWeight: '600'
-          }
+    const stylesComponent = {
+      buttonAñadir: {
+          backgroundColor: '#007bff',
+          textTransform: 'none',
+          letterSpacing: 'normal',
+          fontSize: '15px',
+          fontWeight: '600'
       }
+    }
       
-      let total = this.state.billActual.itemBill.reduce((accumulator, currentValue) => 
-      accumulator + currentValue.itemMenu.price*currentValue.amount, 0);
+    let total = this.state.billActual.itemBill.reduce((accumulator, currentValue) => 
+    accumulator + currentValue.itemMenu.price*currentValue.amount, 0);
 
-      const StyledTableCell = withStyles((theme) => ({
-        head: {
-          backgroundColor: '#2A5DBC',
-          color: theme.palette.common.white,
-        },
-        body: {
-          fontSize: 14,
-        },
-      }))(TableCell);
+    const StyledTableCell = withStyles((theme) => ({
+      head: {
+        backgroundColor: '#2A5DBC',
+        color: theme.palette.common.white,
+      },
+      body: {
+        fontSize: 14,
+      },
+    }))(TableCell);
       
-      const StyledTableRow = withStyles((theme) => ({
-        root: {
-          '&:nth-of-type(odd)': {
-            backgroundColor: theme.palette.action.hover,
-          },
+    const StyledTableRow = withStyles((theme) => ({
+      root: {
+        '&:nth-of-type(odd)': {
+          backgroundColor: theme.palette.action.hover,
         },
-      }))(TableRow);
-    
+      },
+    }))(TableRow);
 
-        const {mesaActual, menuActual, billActual, isAdmin,userName,openDialog} = this.state
+    const {mesaActual, menuActual, billActual, isAdmin,userName,openDialog} = this.state
     return (
       <div>
         <div>
@@ -253,22 +239,21 @@ export default class BarTableDetails extends Component {
                 }
               </CardContent>
             </Grid>
-
             <Grid item component={Card} xs>
               <CardContent>
                 {isAdmin ?
-                <Typography variant="h5"className={useStyles.title} gutterBottom> 
-                  Código
-                </Typography>
+                  <Typography variant="h5"className={useStyles.title} gutterBottom> 
+                    Código
+                  </Typography>
                 :
                 mesaActual.free ? 
-                <Typography variant="h6"className={useStyles.title} gutterBottom> 
-                  Bienvenido comience ingresando el Código
-                </Typography>
+                  <Typography variant="h6"className={useStyles.title} gutterBottom> 
+                    Bienvenido comience ingresando el Código
+                  </Typography>
                 :
-                <Typography variant="h6"className={useStyles.title} gutterBottom>
-                  Bienvenido {userName}
-                </Typography>
+                  <Typography variant="h6"className={useStyles.title} gutterBottom>
+                    Bienvenido {userName}
+                  </Typography>
                 }
                 {isAdmin ? 
                   <Typography variant="h5"className={useStyles.title} gutterBottom> 
@@ -310,7 +295,6 @@ export default class BarTableDetails extends Component {
                   Información
                 </Typography> 
                 <Typography variant="h6" className={useStyles.pos}>
-                   
                   {mesaActual.free ? 
                       <p>ESTADO: Libre</p> 
                       :
@@ -324,157 +308,147 @@ export default class BarTableDetails extends Component {
             </Grid>
           </Grid>
         </div>
-
         <div>
         {!mesaActual.free ? 
         <Grid container spacing={0} justify="center">
-        <Grid item component={Card} xs>
-        <CardContent>
-        
-        <Table size="small" aria-label="a dense table">
-        <caption>CARTA</caption>
-        <TableHead>
-          <TableRow >
-          
-            <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
-            <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
-            <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Añadir</Typography></StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {menuActual.items && menuActual.items.map((row) => (
-            <StyledTableRow key={row.name}>
-              <StyledTableCell align="center" component="th" scope="row">
-                {row.name}
-              </StyledTableCell>
-              <StyledTableCell align="center">{row.price} €</StyledTableCell>
-              <StyledTableCell align="center">
-              <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAñadir }} onClick = {() => this.addToOrder(row.id)}  >
-                                        Añadir
-                                    </Button>
-                                    </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody> 
-        </Table>
-        </CardContent>
-        </Grid>
-        
-        
-        
-        <Grid item component={Card} xs>
-        <CardContent>
-         <Table size="small" aria-label="a dense table">
-         <caption>PRODUCTOS PEDIDOS PERO NO ENTREGADOS</caption>
-          <TableHead>
-           <TableRow>
-            <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
-             <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
-             <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Cantidad</Typography></StyledTableCell>
-             <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Entregado</Typography></StyledTableCell>
-           </TableRow>
-         </TableHead>
-         <TableBody>
-           {billActual.itemOrder && billActual.itemOrder.map((row) => (
-           <StyledTableRow key={row.amount}>
-              <StyledTableCell align="center" component="th" scope="row">
-                 {row.itemMenu.name}
-              </StyledTableCell>
-              <StyledTableCell align="center" component="th" scope="row">
-                {row.itemMenu.price} €
-              </StyledTableCell>
-              <StyledTableCell align="center" component="th" scope="row">
-                {row.amount}
-              </StyledTableCell>
-              <StyledTableCell align="center">
-              {isAdmin ? 
-              <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAñadir }} onClick = {() => this.addToBill(row.id)}  >
-                Entregado
+          <Grid item component={Card} xs>
+            <CardContent>
+              <Table size="small" aria-label="a dense table">
+                <caption>CARTA</caption>
+                <TableHead>
+                  <TableRow >
+
+                    <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
+                    <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
+                    <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Añadir</Typography></StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {menuActual.items && menuActual.items.map((row) => (
+                    <StyledTableRow key={row.name}>
+                      <StyledTableCell align="center" component="th" scope="row">
+                        {row.name}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">{row.price} €</StyledTableCell>
+                      <StyledTableCell align="center">
+                        <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAñadir }} onClick = {() => this.addToOrder(row.id)}>
+                          Añadir
+                        </Button>
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody> 
+              </Table>
+            </CardContent>
+          </Grid>
+          <Grid item component={Card} xs>
+            <CardContent>
+              <Table size="small" aria-label="a dense table">
+              <caption>PRODUCTOS PEDIDOS PERO NO ENTREGADOS</caption>
+                <TableHead>
+                  <TableRow>
+                    <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
+                     <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
+                     <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Cantidad</Typography></StyledTableCell>
+                     <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Entregado</Typography></StyledTableCell>
+                   </TableRow>
+                </TableHead>
+                <TableBody>
+                {billActual.itemOrder && billActual.itemOrder.map((row) => (
+                  <StyledTableRow key={row.amount}>
+                    <StyledTableCell align="center" component="th" scope="row">
+                       {row.itemMenu.name}
+                    </StyledTableCell>
+                    <StyledTableCell align="center" component="th" scope="row">
+                      {row.itemMenu.price} €
+                    </StyledTableCell>
+                    <StyledTableCell align="center" component="th" scope="row">
+                      {row.amount}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                    {isAdmin ? 
+                    <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAñadir }} onClick = {() => this.addToBill(row.id)}  >
+                      Entregado
+                    </Button>
+                    :
+                    <p>-</p>
+                    }
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+                </TableBody> 
+              </Table>
+              <Button variant="contained" size='small' onClick = {() => window.location.reload()}>
+                  <span>Refrescar Comanda</span>
               </Button>
-              :
-              <p>-</p>
-              }
-              </StyledTableCell>
-            </StyledTableRow>
-         ))}
-        </TableBody> 
-         </Table>
-         <Button variant="contained" size='small' onClick = {() => window.location.reload()}>
-              <span>Refrescar Comanda</span>
-         </Button>
-
-         </CardContent>
+            </CardContent>
+          </Grid>
+          <Grid item component={Card} xs>
+            <CardContent>
+              <Table size="small" aria-label="a dense table">
+              <caption>PRODUCTOS PEDIDOS Y ENTREGADOS</caption>
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
+                  <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
+                  <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Cantidad</Typography></StyledTableCell>
+                  <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Total</Typography></StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {billActual.itemBill && billActual.itemBill.map((row) => (
+                <StyledTableRow key={row.amount}>
+                  <StyledTableCell align="center" component="th" scope="row">
+                      {row.itemMenu.name}
+                  </StyledTableCell>
+                  <StyledTableCell align="center" component="th" scope="row">
+                      {row.itemMenu.price} €
+                  </StyledTableCell>
+                  <StyledTableCell align="center" component="th" scope="row">
+                      {row.amount}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">{row.itemMenu.price*row.amount} €</StyledTableCell>
+                </StyledTableRow>
+                ))}
+                <TableRow>
+                  <TableCell align="right" colSpan={3}><Typography variant="h6"className={useStyles.body} gutterBottom>Total</Typography></TableCell>
+                    <TableCell align="center"><Typography variant="h6"className={useStyles.body} gutterBottom> {total} € </Typography></TableCell>
+                </TableRow>
+              </TableBody>
+              </Table>
+            </CardContent>
+          </Grid>
         </Grid>
-
-        
-        <Grid item component={Card} xs>
-        <CardContent>
-            
-         <Table size="small" aria-label="a dense table">
-         <caption>PRODUCTOS PEDIDOS Y ENTREGADOS</caption>
-         <TableHead>
-           <TableRow>
-             <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
-             <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
-             <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Cantidad</Typography></StyledTableCell>
-             <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Total</Typography></StyledTableCell>
-           </TableRow>
-         </TableHead>
-         <TableBody>
-           {billActual.itemBill && billActual.itemBill.map((row) => (
-            <StyledTableRow key={row.amount}>
-             <StyledTableCell align="center" component="th" scope="row">
-                 {row.itemMenu.name}
-               </StyledTableCell>
-               <StyledTableCell align="center" component="th" scope="row">
-                 {row.itemMenu.price} €
-               </StyledTableCell>
-               <StyledTableCell align="center" component="th" scope="row">
-                 {row.amount}
-               </StyledTableCell>
-             <StyledTableCell align="center">{row.itemMenu.price*row.amount} €</StyledTableCell>
-
-            </StyledTableRow>
-               ))}
-               <TableRow>
-                <TableCell align="right" colSpan={3}><Typography variant="h6"className={useStyles.body} gutterBottom>Total</Typography></TableCell>
-                  <TableCell align="center"><Typography variant="h6"className={useStyles.body} gutterBottom> {total} € </Typography></TableCell>
-              </TableRow>
-               </TableBody>
-               </Table>
-               </CardContent>
-               </Grid>
-        </Grid>
-          :
-            <h3 style={useStyles.mesaLibre}>La {mesaActual.name} se encuentra libre, ocupe la mesa para comenzar.</h3>
+        :
+          <h3 style={useStyles.mesaLibre}>La {mesaActual.name} se encuentra libre, ocupe la mesa para comenzar.</h3>
         }
-      {openDialog ? 
-      <Dialog
-        open={openDialog}
-        onClose={this.handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{"¿Seguro que quieres desocupar la mesa?"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Si lo haces todos los datos relacionados con la cuenta de esta mesa, serán eliminados, asegurate de que hayan pagado. 
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={this.handleClose} color="secondary">
-            Cancelar
-          </Button>
-          <Button onClick={this.changeStateToFree} color="primary" autoFocus>
-            Si
-          </Button>
-        </DialogActions>
-      </Dialog>
-      :
-      <p></p>
-      }
-          </div>
+        {openDialog ? 
+          <Dialog
+            open={openDialog}
+            onClose={this.handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">{"¿Seguro que quieres desocupar la mesa?"}</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Si lo haces todos los datos relacionados con la cuenta de esta mesa, serán eliminados, asegurate de que hayan pagado. 
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.handleClose} color="secondary">
+                Cancelar
+              </Button>
+              <Button onClick={this.changeStateToFree} color="primary" autoFocus>
+                Si
+              </Button>
+            </DialogActions>
+          </Dialog>
+        :
+          <p></p>
+        }
         </div>
+      </div>
     );
   }
 }

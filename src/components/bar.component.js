@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import BarDataService from "../services/bar.service";
 
 export default class Bar extends Component{
     constructor(props) {
@@ -8,13 +7,17 @@ export default class Bar extends Component{
       this.state = {
          currentBar: {
              id: null,
-             nombre:"",
-             descripcion: "",
-             ubicacion: ""
+             name:"",
+             description: "",
+             contact: "",
+             location: "",
+             openingTime: "",
+             closingTime: "",
+             capacity: ""
          },
         message: ""
       };
-    };
+    }
 
     componentDidMount(){
         this.getBar(this.props.match.params.id);

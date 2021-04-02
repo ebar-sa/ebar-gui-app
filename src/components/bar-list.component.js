@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import BarDataService from "../services/bar.service";
+import BarDataService from "../../services/bar.service";
 
 export default class BarList extends Component {
   
@@ -11,7 +11,7 @@ export default class BarList extends Component {
         bares: [],
         currentIndex: -1, 
     };
-  };
+  }
 
   componentDidMount() {
       this.getAllBares();

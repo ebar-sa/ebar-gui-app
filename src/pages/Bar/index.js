@@ -11,6 +11,7 @@ import {green, red} from "@material-ui/core/colors";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Button from "@material-ui/core/Button";
 
+
 const useStyles = makeStyles((theme) => ({
     root: {
         alignSelf: "center",
@@ -46,6 +47,7 @@ export default function Bar(props){
 
     const classes = useStyles();
     const [bar, setBar] = useState({});
+    const barId = props.match.params.barId;
 
     useEffect( () => {
         const barId = props.match.params.barId;
@@ -100,7 +102,7 @@ export default function Bar(props){
                 <Grid item container xs={12} >
                     <ButtonGroup fullWidth={true} color="primary" aria-label="outlined primary button group" className={classes.buttons}>
                         <Button>Mesas</Button>
-                        <Button>Carta</Button>
+                        <Button href={`/#/bares/${barId}/menu`}>Carta</Button>
                         <Button>Votaciones</Button>
                     </ButtonGroup>
                 </Grid>

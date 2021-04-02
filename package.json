@@ -57,4 +57,5 @@
         "workbox-webpack-plugin": "^6.0.0-rc.0",
         "jest-sonar-reporter": "^2.0.0"
     }
+
 }

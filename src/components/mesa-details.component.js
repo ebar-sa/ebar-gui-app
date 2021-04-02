@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import { Typography, CardContent, Grid, CardActions,Card,Button,Dialog, DialogActions, DialogContent,DialogContentText,DialogTitle, TextField } from '@material-ui/core';
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import MesaDataService from '../services/mesa.service';
@@ -51,6 +52,7 @@ export default class BarTableDetails extends Component {
     this.getMesasDetails(this.props.match.params.id);
     this.isLogged();
   } 
+  
   isLogged(){
     const user = AuthService.getCurrentUser()
     this.setState({
@@ -92,6 +94,7 @@ export default class BarTableDetails extends Component {
       token: event.target.value
     })
   }
+  
   changeStateToFree() {
     const id = this.props.match.params.id;
     MesaDataService.updateBarTableStateToFree(id).then(res => { 
@@ -114,6 +117,7 @@ export default class BarTableDetails extends Component {
       console.log(e);
     })
   }
+
   automaticOcuppatioWithToken() {
     const id = this.props.match.params.id;
     MesaDataService.ocupateBarTableByToken(id,this.state.token).then(res => {
@@ -124,6 +128,7 @@ export default class BarTableDetails extends Component {
       console.log(e);
     })
   }
+
   addToOrder(idItem) {
     const idBill = this.state.billActual.id;
     console.log(idItem);
@@ -147,8 +152,6 @@ export default class BarTableDetails extends Component {
       console.log(e);
     })
   }
-
-
 
   render() {
     const useStyles = makeStyles({

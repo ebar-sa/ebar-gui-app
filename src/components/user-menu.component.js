@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import { Typography, CardContent, Grid,Card } from '@material-ui/core';
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import MenuDataService from '../services/menu.service';
@@ -25,6 +26,7 @@ export default class UserMenuDetails extends Component {
     console.log(this.props.match.params.id); 
     this.getBarMenu(this.props.match.params.id);
   } 
+
 
   getBarMenu(id){
     MenuDataService.getBarMenu(id).then(res => { 
@@ -117,8 +119,8 @@ export default class UserMenuDetails extends Component {
         },
       }))(TableRow);
     
-
         const {menuActual} = this.state
+
       
         return (
         <div>

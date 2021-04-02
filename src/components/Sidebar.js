@@ -29,7 +29,6 @@ export default function Sidebar(props) {
       <List>
         {[
           { label: 'Mesas', path: '/mesas' },
-          { label: 'Carta', path: '/carta' },
           { label: 'Clientes', path: '/cliente' },
           { label: 'Configuracion', path: '/settings' },
           { label: 'Votaciones', path: '/votings'},

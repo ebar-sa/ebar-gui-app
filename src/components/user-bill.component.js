@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+
 import { Typography, CardContent, Grid,Card } from '@material-ui/core';
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import BillDataService from '../services/bill.service';
 import AuthService from '../services/auth.service';
 import {TableRow, Table, TableBody, TableHead, TableCell
 } from '@material-ui/core';
+
 
 export default class UserBillDetails extends Component {
   constructor(props) {
@@ -109,7 +111,6 @@ export default class UserBillDetails extends Component {
         },
       }))(TableRow);
     
-
         const {billActual, isClient} = this.state
       
         return (
@@ -118,6 +119,7 @@ export default class UserBillDetails extends Component {
            <Grid container spacing={0} justify="center">
            <Grid item component={Card} xs>
         <CardContent>
+
 
         <Typography variant="h6"className={useStyles.title} gutterBottom>TU CUENTA</Typography>  
          <Table size="small" aria-label="a dense table">
@@ -157,6 +159,7 @@ export default class UserBillDetails extends Component {
             :
             <h3>No tiene los permisos suficientes para ver esta página.</h3>
             }
+
         </div>
     );
     }

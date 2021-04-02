@@ -11,6 +11,7 @@ class BarTableDataService{
     updateBarTableStateToBusy(id){
         return http.get(`/tables/busyTable/${id}`,{headers: authHeader()});
     }
+
     ocupateBarTableByToken(id,token) {
         return http.get(`/tables/autoOccupateTable/${id}/${token}`,{headers: authHeader()});
     }

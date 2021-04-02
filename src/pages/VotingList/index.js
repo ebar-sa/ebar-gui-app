@@ -94,6 +94,21 @@ function Votings(props) {
         }
     }
 
+    function buttonRoles(x) {
+        if (admin) {
+            return <Link to={"/"}>
+                <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} >
+                    Editar
+                </Button>
+            </Link>
+        }
+        return (!x.votersUsernames.includes(username) ? <Link to={"/votings/voting/" + x.id}>
+            <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} >
+                Acceder
+            </Button>
+        </Link> : <div className='div-voting'>Ya has votado</div>)
+    }
+
     const pastVotings = votings.filter(getPastDates)
     const currentVotings = votings.filter(getCurrentDates)
 
@@ -154,18 +169,7 @@ function Votings(props) {
                             <div key={x.id}>
                                 <ListItem button onClick={() => handleClick(x.id)} style={{ ...stylesComponent.listitem }}>
                                     <ListItemText disableTypography style={{ ...stylesComponent.listItemText1 }} primary={x.title} />
-                                    {admin ?
-                                        <Link to={"/"}>
-                                            <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} >
-                                                Editar
-                                        </Button>
-                                        </Link>
-                                        :
-                                        (!x.votersUsernames.includes(username) ? <Link to={"/votings/voting/" + x.id}>
-                                            <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} >
-                                                Acceder
-                                        </Button>
-                                        </Link> : <div className='div-voting'>Ya has votado</div>)}
+                                    {buttonRoles(x)}
                                     {!expanded[x.id] ? <ExpandLess /> : <ExpandMore />}
                                 </ListItem>
                                 <Collapse in={expanded[x.id]} timeout="auto" unmountOnExit>

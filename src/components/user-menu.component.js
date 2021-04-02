@@ -5,7 +5,7 @@ import MenuDataService from '../services/menu.service';
 import BillDataService from '../services/bill.service';
 import {TableRow, Table, TableBody, TableHead, TableCell
 } from '@material-ui/core';
-  import { SettingsRemoteRounded, Title } from '@material-ui/icons';
+import { SettingsRemoteRounded, Title } from '@material-ui/icons';
 
 export default class UserMenuDetails extends Component {
   constructor(props) {

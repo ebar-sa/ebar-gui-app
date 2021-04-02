@@ -29,7 +29,6 @@ export default function Sidebar(props) {
       <List>
         {[
           { label: 'Mesas', path: '/mesas' },
-          { label: 'Carta', path: '/menuAdmin' }, // Meter url definitiva
           { label: 'Clientes', path: '/cliente' },
           { label: 'Configuracion', path: '/settings' },
         ].map((item, index) => (

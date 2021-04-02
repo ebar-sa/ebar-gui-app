@@ -4,7 +4,7 @@ import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
 import { ButtonBase } from '@material-ui/core'
-
+import { useHistory } from "react-router"
 const useStyles = makeStyles({
   title: {
     fontSize: 16,
@@ -25,14 +25,20 @@ const useStyles = makeStyles({
 
 export function Mesa(props) {
   const classes = useStyles()
-  const { name, free, token } = props
+  const {id, name, free, token } = props
+  const history = useHistory()
+  const routeRedirect = () => {
+    console.log(id);
+    let path = `/mesas/detallesMesa/${id}`;
+    history.push(path);
+
+  }
 
   return (
     <Card className={free ? classes.free : classes.occupied} variant="outlined">
       <ButtonBase
         className={classes.cardAction}
-        onClick={() => alert('Abrir vista mesa (todo)')}
-      >
+        onClick= {routeRedirect}>
         <CardContent>
           <Typography className={classes.title} gutterBottom>
             Mesa

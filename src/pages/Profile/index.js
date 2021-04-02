@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import useUser from "../../hooks/useUser";
 import { useHistory } from 'react-router'
 

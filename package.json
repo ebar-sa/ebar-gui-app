@@ -34,7 +34,7 @@
         "start": "react-scripts start",
         "build": "react-scripts build",
         "dev": "webpack-dev-server --mode=development",
-        "test": "react-scripts test",
+        "test": "react-scripts test --coverage --watchAll=false",
         "eject": "react-scripts eject"
     },
     "eslintConfig": {
@@ -54,6 +54,7 @@
     },
     "devDependencies": {
         "webpack-cli": "^4.5.0",
-        "workbox-webpack-plugin": "^6.0.0-rc.0"
+        "workbox-webpack-plugin": "^6.0.0-rc.0",
+        "jest-sonar-reporter": "^2.0.0"
     }
 }

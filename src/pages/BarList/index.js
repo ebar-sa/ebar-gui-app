@@ -1,75 +1,58 @@
-import React, { Component } from "react";
+import React, {useState, useEffect} from "react";
 import BarDataService from "../../services/bar.service";
+import Container from "@material-ui/core/Container";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Typography from "@material-ui/core/Typography";
+import Divider from "@material-ui/core/Divider";
+import {makeStyles} from "@material-ui/core/styles";
+import {Link} from "react-router-dom";
+import {Paper} from "@material-ui/core";
 
-export default class BarList extends Component {
-  
-  constructor(props) {
-    super(props)
-    this.getAllBares = this.getAllBares.bind(this);
-    console.log('El componente aun no está disponible en el DOM');
-    this.state = {
-        bares: [],
-        currentIndex: -1, 
-    };
-  };
+const useStyles = makeStyles((theme) => ({
+    container: {
+        marginTop: "10px"
+    },
+    list: {
+        textAlign: 'left',
+        margin: 'auto',
+        backgroundColor: theme.palette.background.paper
+    }
+}))
 
-  componentDidMount() {
-      this.getAllBares();
-      console.log('El componente está disponible en el DOM');
-  }
-  
-  getAllBares() {
-      BarDataService.getAll().then(res => {
-          this.setState({
-              bares : res.data
-          });
-          console.log(res.data);
-      })
-      .catch(e => {
-          console.log("El error es ",e);
-      });
-  }
+export default function BarList() {
 
-  refreshList() {
-    this.getAllBares();
-    this.setState({
-      currentBar: null,
-      currentIndex: -1
-    });
-  }
-  
-  
-    render() {
-        const {bares} = this.state;
+    const classes = useStyles()
+    const [bars, setBars] = useState([])
+
+    useEffect(() => {
+        BarDataService.getAllWithCapacity().then(res => {
+            setBars(res.data);
+        })
+            .catch(e => {
+                console.log("El error es ", e);
+            });
+    }, [])
     return (
-      <div className="list row"> 
-        <div className="col-md-6">
-            <h3 className="align-content-center">Lista de Bares</h3>
-            <table className="table" >
-             
-                <thead>
-                    <tr>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Descripcion</th>
-                        <th scope="col">Ubicacion</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {bares  && bares.map((bar, idx) => (
-                    <tr>
-                        <td>{bar.nombre}</td>
-                        <td>{bar.descripcion}</td>
-                        <td>{bar.ubicacion}</td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
-        </div>
-        <div>
-              <br />
-              <p>Esto es un pequeño ejemplo para asegurar el correcto funcionamiento</p>
-        </div>
-      </div>
+
+        <Container component="div" maxWidth="sm" className={classes.container}>
+            <Typography component={"h4"} variant={"h4"} align={"center"}>Lista de bares</Typography>
+            <Paper className={classes.container}>
+                <List component={"nav"} className={classes.list}>
+                    {bars  && bars.map((bar, idx) => (
+                        <div key={bar.id}>
+
+                            <ListItem button component={Link} to={"/bares/" + bar.id}>
+                                <ListItemText
+                                    primary={bar.name}
+                                    secondary={"Aforo: " + bar.capacity}/>
+                            </ListItem>
+                            {bars.length > (idx+1) ? <Divider /> : ""}
+                        </div>
+                        ))}
+                </List>
+            </Paper>
+        </Container>
     );
-  }
 }

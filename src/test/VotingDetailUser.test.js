@@ -1,6 +1,6 @@
 import React from 'react';
 import { Router } from 'react-router-dom';
-import { render } from "@testing-library/react";
+import {act, render} from "@testing-library/react";
 
 import { createMemoryHistory } from 'history';
 import MockAdapter from 'axios-mock-adapter';
@@ -54,8 +54,9 @@ describe('Render test suite', () => {
                     <VotingDetailUser {...{match: {params: {votingId: 99}}}}/>
                 </Router>
             </Context.Provider>)
-        
-        await new Promise(r => setTimeout(r, 250)); 
+
+        let promise = new Promise(r => setTimeout(r, 250));
+        await act(() => promise)
         
         let option1 = await rendered.findByText('si')
         let option2 = await rendered.findByText('no')

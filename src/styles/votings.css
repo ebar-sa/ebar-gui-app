@@ -1,18 +1,7 @@
 .container{
     text-align:center; 
     position:relative;
-}
-
-.img{
-    height: 250px;
-    width: 100%;
-}
-
-.div-vot {
-   position: absolute;
-    top: 70%; left:0;
-    color:white; font-size: 30px; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-    font-weight: bold; margin:auto; width:100%;
+    padding-bottom: 60px;
 }
 
 .header {
@@ -22,9 +11,19 @@
     margin-top:40px;
 }
 
-h5 {
+.h5 {
     text-align:center;
     margin-top:40px;
+}
+
+.global {
+    margin-top: 80px;
+    margin-bottom: 60px;
+}
+
+.center {
+    text-align: center;
+    margin: 20px 20px;
 }
 
 .lista {
@@ -62,7 +61,12 @@ h5 {
 }
 
 .div-list {
-    margin-top:40px
+    margin-top:90px;
+    padding: 0 20px 0 20px;
+}
+
+.current {
+    margin-top: 40px;
 }
 
 .div-voting {

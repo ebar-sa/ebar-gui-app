@@ -31,8 +31,8 @@
         "webpack": "4.44.2"
     },
     "scripts": {
-        "start": "react-scripts start",
-        "build": "react-scripts build",
+        "start": "react-scripts --optimize_for_size --max_old_space_size=2048 start",
+        "build": "react-scripts --optimize_for_size --max_old_space_size=2048 build",
         "dev": "webpack-dev-server --mode=development",
         "test": "react-scripts test --coverage --watchAll=false",
         "eject": "react-scripts eject"

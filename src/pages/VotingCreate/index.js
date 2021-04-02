@@ -90,28 +90,28 @@ export default function CreateVotings(props){
 
     const handleValidation = () => {
         let formIsValid = true;
-        let errors = {}
+        let objectErrors = {}
         if (!state.title) {
             formIsValid = false;
-            errors["title"] = "No puede estar vacío";
-        }
-        
-        if (!state.description) {
-            formIsValid = false;
-            errors["description"] = "No puede estar vacío";
+            objectErrors["title"] = "No puede estar vacío";
         }
 
-        add.map(index => {
+        if (!state.description) {
+            formIsValid = false;
+            objectErrors["description"] = "No puede estar vacío";
+        }
+
+        add.forEach(index => {
             let _state = "option" + index;
-            if(!state[_state]){
+            if (!state[_state]) {
                 formIsValid = false;
-                errors["option"+index] = "No puede estar vacío";
+                objectErrors["option" + index] = "No puede estar vacío";
             }
             return null;
         }
         )
 
-        setErrors(errors);
+        setErrors(objectErrors);
         return formIsValid;
     }
 

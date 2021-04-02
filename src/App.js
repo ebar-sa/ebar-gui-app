@@ -6,6 +6,9 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Profile from './pages/Profile'
 import BarList from './pages/BarList'
+import CreateVotings from './pages/VotingCreate'
+import Votings from './pages/VotingList'
+import VotingDetailUser from './pages/VotingDetail'
 
 import Header from './components/Header'
 
@@ -13,6 +16,7 @@ import clsx from 'clsx'
 import Sidebar from './components/Sidebar'
 import useUser from './hooks/useUser'
 import Mesas from './pages/Mesas'
+import PrivateRoute from "./components/private-route.js";
 
 const drawerWidth = 240
 
@@ -95,6 +99,9 @@ export function App() {
           <Route exact path={'/mesas'} component={Mesas} />
           <Route exact path={'/login'} component={Login} />
           <Route exact path={'/profile'} component={Profile} />
+          <PrivateRoute exact path={"/votings"} component={Votings} />
+          <PrivateRoute path={'/votings/voting/create'} component={CreateVotings} />
+          <PrivateRoute path={'/votings/voting/:votingId'} component={VotingDetailUser} />
         </Switch>
       </main>
     </div>

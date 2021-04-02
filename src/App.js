@@ -16,17 +16,13 @@ import clsx from 'clsx'
 import Mesas from './pages/Mesas'
 import Sidebar from './components/Sidebar'
 import useUser from './hooks/useUser'
-import Menu from './components/admin/menu-admin.component'
-import Bill from './components/admin/bill-admin.component'
 import BarTableDetails from './components/mesa-details.component'
 import UserMenuDetails from './components/user-menu.component'
 import UserBillDetails from './components/user-bill.component'
 import MenuGestion from './components/admin/menu-admin-gestion.component'
 import Bar from "./pages/Bar";
 import PrivateRoute from "./components/private-route.js";
-import BarTableDetails from './components/mesa-details.component'
-import UserMenuDetails from './components/user-menu.component'
-import UserBillDetails from './components/user-bill.component'
+
 
 const drawerWidth = 240
 

@@ -11,13 +11,11 @@ export default class Menu extends Component {
     constructor(props) {
         super(props);
         this.getMenuDetails = this.getMenuDetails.bind(this);
-        this.isLogged = this.isLogged.bind(this);
         this.state = {
             menuActual : {
                 id: null,
                 items : []
-            }, 
-            isLogged : false
+            }
         };
     };
 
@@ -25,7 +23,6 @@ export default class Menu extends Component {
     componentDidMount() {
         console.log(this.props.match.params.idBar);
         this.getMenuDetails(this.props.match.params.idBar);
-        this.isLogged();
     }
 
     getMenuDetails(idBar) {

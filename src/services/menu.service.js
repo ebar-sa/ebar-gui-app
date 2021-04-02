@@ -9,7 +9,7 @@ class MenuDataService{
     getMenu(idBar) {
         return http.get(`/bares/${idBar}/menu`, {headers: authHeader()})
     }
-    
+   
 }
 
 export default new MenuDataService()

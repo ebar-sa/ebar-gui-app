@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
-import { Typography, CardContent, Grid, CardActions,Card,Button } from '@material-ui/core';
+
+import { Typography, CardContent, Grid,Card } from '@material-ui/core';
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import MenuDataService from '../services/menu.service';
 import BillDataService from '../services/bill.service';
 import {TableRow, Table, TableBody, TableHead, TableCell
 } from '@material-ui/core';
-import { SettingsRemoteRounded, Title } from '@material-ui/icons';
 
 export default class UserMenuDetails extends Component {
   constructor(props) {
     super(props)
-    this.isLogged = this.isLogged.bind(this);
     this.getBarMenu = this.getBarMenu.bind(this);
 
     this.state = {
@@ -25,20 +24,9 @@ export default class UserMenuDetails extends Component {
   
   componentDidMount() {
     console.log(this.props.match.params.id); 
-    this.isLogged();
     this.getBarMenu(this.props.match.params.id);
   } 
-  isLogged(){
-    if(localStorage.getItem('user')){
-      this.setState({
-        isLogged : true
-      })
-    }else { 
-      this.setState({
-        isLogged:false
-      })
-    }
-  }
+
 
   getBarMenu(id){
     MenuDataService.getBarMenu(id).then(res => { 
@@ -67,8 +55,6 @@ export default class UserMenuDetails extends Component {
 
   addToOrderUser() {
     const idBill = this.props.match.params.id;
-    //const idItem = this.props.match.params.id;
-    //const amount = this.props.match.params.amount;
     BillDataService.addToOrder(idBill, idBill, idBill).then(res => { 
       this.setState({  
         billActual:res.data
@@ -115,17 +101,6 @@ export default class UserMenuDetails extends Component {
           },
         })
 
-        const stylesComponent = {
-
-          buttonAñadir: {
-              backgroundColor: '#007bff',
-              textTransform: 'none',
-              letterSpacing: 'normal',
-              fontSize: '15px',
-              fontWeight: '600'
-          }
-      }
-
       const StyledTableCell = withStyles((theme) => ({
         head: {
           backgroundColor: '#2A5DBC',
@@ -144,8 +119,8 @@ export default class UserMenuDetails extends Component {
         },
       }))(TableRow);
     
+        const {menuActual} = this.state
 
-        const {menuActual, isLogged} = this.state
       
         return (
         <div>
@@ -160,7 +135,6 @@ export default class UserMenuDetails extends Component {
           
             <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
             <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
-            <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Añadir</Typography></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -170,11 +144,6 @@ export default class UserMenuDetails extends Component {
                 {row.name}
               </StyledTableCell>
               <StyledTableCell align="center">{row.price} €</StyledTableCell>
-              <StyledTableCell align="center">
-              <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAñadir }} onClick = {() => this.addToOrder(row.id)}  >
-                                        Añadir
-                                    </Button>
-                                    </StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody> 

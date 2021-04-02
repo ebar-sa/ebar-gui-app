@@ -31,6 +31,7 @@ export default function Sidebar(props) {
           { label: 'Mesas', path: '/mesas' },
           { label: 'Clientes', path: '/cliente' },
           { label: 'Configuracion', path: '/settings' },
+          { label: 'Votaciones', path: '/votings'},
         ].map((item, index) => (
           <ListItem
             button

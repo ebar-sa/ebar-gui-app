@@ -56,8 +56,6 @@ export default function Bar(props){
         })
     }, [props.match.params.barId])
 
-    console.log(logo)
-
     return (
         <div className={classes.root}>
             <Paper className={classes.barHeader}>

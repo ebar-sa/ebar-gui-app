@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
-import { Typography, CardContent, Grid, CardActions,Card,Button } from '@material-ui/core';
+
+import { Typography, CardContent, Grid,Card } from '@material-ui/core';
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import BillDataService from '../services/bill.service';
+import AuthService from '../services/auth.service';
 import {TableRow, Table, TableBody, TableHead, TableCell
 } from '@material-ui/core';
-  import { SettingsRemoteRounded } from '@material-ui/icons';
 
-  const TAX_RATE = 0.07;
 
 export default class UserBillDetails extends Component {
   constructor(props) {
     super(props)
-    this.isLogged = this.isLogged.bind(this);
+    this.isClient = this.isClient.bind(this);
     this.getBill = this.getBill.bind(this);
 
     this.state = {
@@ -20,26 +20,28 @@ export default class UserBillDetails extends Component {
             itemBill: [],
             itemOrder: []
           },
-       isLogged:false
+        isClient:false
     };
     
   };
   
   componentDidMount() {
     console.log(this.props.match.params.id); 
-    this.isLogged();
+    this.isClient();
     this.getBill(this.props.match.params.id);
   } 
-  isLogged(){
-    if(localStorage.getItem('user')){
+  isClient(){
+    const user = AuthService.getCurrentUser()
+    this.setState({
+      userName: user.username
+    }); 
+    user.roles.forEach((rol) => {
+    if(rol === 'ROLE_CLIENT'){
       this.setState({
-        isLogged : true
-      })
-    }else { 
-      this.setState({
-        isLogged:false
+        isClient : true
       })
     }
+    })
   }
 
   getBill(id){
@@ -88,18 +90,6 @@ export default class UserBillDetails extends Component {
           },
         })
 
-        const stylesComponent = {
-
-          buttonAñadir: {
-              backgroundColor: '#007bff',
-              textTransform: 'none',
-              letterSpacing: 'normal',
-              fontSize: '15px',
-              fontWeight: '600'
-          }
-      }
-      
-
       let total = this.state.billActual.itemBill.reduce((accumulator, currentValue) => 
       accumulator + currentValue.itemMenu.price*currentValue.amount, 0);
 
@@ -121,16 +111,17 @@ export default class UserBillDetails extends Component {
         },
       }))(TableRow);
     
-
-        const {billActual, isLogged} = this.state
+        const {billActual, isClient} = this.state
       
         return (
-        <div>
+          <div>
+          {isClient ? 
            <Grid container spacing={0} justify="center">
            <Grid item component={Card} xs>
         <CardContent>
 
-        <Typography variant="h6"className={useStyles.title} gutterBottom>PRODUCTOS PEDIDOS Y ENTREGADOS</Typography>  
+
+        <Typography variant="h6"className={useStyles.title} gutterBottom>TU CUENTA</Typography>  
          <Table size="small" aria-label="a dense table">
          <TableHead>
            <TableRow>
@@ -165,6 +156,10 @@ export default class UserBillDetails extends Component {
                </CardContent>
                </Grid>
                </Grid>
+            :
+            <h3>No tiene los permisos suficientes para ver esta página.</h3>
+            }
+
         </div>
     );
     }

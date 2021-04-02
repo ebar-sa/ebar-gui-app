@@ -1,8 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import useUser from "../../hooks/useUser";
+import { useHistory } from 'react-router'
 
 export default function Profile() {
-    const { auth } = useUser()    
+    const { isLogged, auth } = useUser()
+    const history = useHistory()
+
+    if (!isLogged) {
+        history.push('/')
+        return null
+    }
 
     return (
         <div className="container">
@@ -23,9 +30,9 @@ export default function Profile() {
             <strong>Roles:</strong>
             <ul>
                 {auth.roles &&
-                auth.roles.map((role, index) => <li key={index}>{role}</li>)}
+                    auth.roles.map((role, index) => <li key={index}>{role}</li>)}
             </ul>
         </div>
-        );
-    
+    );
+
 }

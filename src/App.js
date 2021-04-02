@@ -6,13 +6,17 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Profile from './pages/Profile'
 import BarList from './pages/BarList'
+import CreateVotings from './pages/VotingCreate'
+import Votings from './pages/VotingList'
+import VotingDetailUser from './pages/VotingDetail'
 
 import Header from './components/Header'
 
 import clsx from 'clsx'
-import Mesas from './pages/Mesas'
 import Sidebar from './components/Sidebar'
 import useUser from './hooks/useUser'
+import Mesas from './pages/Mesas'
+import PrivateRoute from "./components/private-route.js";
 import BarTableDetails from './components/mesa-details.component'
 import UserMenuDetails from './components/user-menu.component'
 import UserBillDetails from './components/user-bill.component'
@@ -98,6 +102,9 @@ export function App() {
           <Route exact path={'/mesas'} component={Mesas} />
           <Route exact path={'/login'} component={Login} />
           <Route exact path={'/profile'} component={Profile} />
+          <PrivateRoute exact path={"/votings"} component={Votings} />
+          <PrivateRoute path={'/votings/voting/create'} component={CreateVotings} />
+          <PrivateRoute path={'/votings/voting/:votingId'} component={VotingDetailUser} />
           <Route exact path={'/bar/bill/:id'} component={UserBillDetails} />
           <Route exact path={'/bar/menu/:id'} component={UserMenuDetails} />
           <Route exact path={'/mesas/detallesMesa/:id'} component={BarTableDetails}/>

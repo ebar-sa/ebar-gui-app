@@ -144,11 +144,11 @@ export default class Menu extends Component {
                       <StyledTableCell align="left">{row.price}</StyledTableCell>
                       <Grid item xs={5} sm={5} align="center">
                       <StyledTableCell align="left">{(row.image != null) ? <img alt="" src={"data:" + row.image.type + ";base64," + row.image.data} 
-                          style={{"width": "120px"},
-                            {"height": "120px"}}/> :
+                          style={{"width": "120px",
+                            "height": "120px"}}/> :
                         <img alt="" src={logo.default} 
-                          style={{"width": "120px"},
-                            {"height": "120px"}}/>}</StyledTableCell>
+                          style={{"width": "120px",
+                            "height": "120px"}}/>}</StyledTableCell>
                       </Grid>
                     </StyledTableRow>
                   ))}

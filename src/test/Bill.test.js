@@ -47,17 +47,24 @@ const bill = {
                 },
                 "new": false
             },
-            "new": false
+            "isClient": true
         }
     ]}
-        
+
+    Object.defineProperty(window, "sessionStorage", {
+        value: {
+            getItem : jest.fn( () => null),
+            setItem : jest.fn(() => null) 
+        },
+        writable:true
+    }); 
  
 
 describe('Render test suite', () => {
     it('Render with a correct bill', async () => {
 
         mockAxios.onGet().replyOnce(200, bill)
-
+        window.sessionStorage.setItem("user",JSON.stringify(auth));
         let rendered = render(
             <Context.Provider value={{auth, setAuth}}>
                 <Router history={history} >
@@ -71,7 +78,7 @@ describe('Render test suite', () => {
         let amount = await rendered.findByText('3')
         let price = await rendered.findByText('2.5 €')
         let name = await rendered.findByText('Ensaladilla')
-
+        
         expect(amount).toBeInTheDocument()
         expect(price).toBeInTheDocument()
         expect(name).toBeInTheDocument()

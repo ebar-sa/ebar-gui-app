@@ -32,9 +32,6 @@ export default class UserBillDetails extends Component {
   } 
   isClient(){
     const user = AuthService.getCurrentUser()
-    this.setState({
-      userName: user.username
-    }); 
     user.roles.forEach((rol) => {
     if(rol === 'ROLE_CLIENT'){
       this.setState({

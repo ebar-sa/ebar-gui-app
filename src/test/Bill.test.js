@@ -23,35 +23,34 @@ const auth = {username: "test-user",
 
 const bill = {
     "id": 1,
-    "itemBill":[
+    "itemBill": [
         {
-        "id":1,
-        "amount":"3",
-        "itemMenu":{
-            "id":2,
-            "name":"Tortilla de patatas",
-            "description":"descripcion",
-            "rationType":null,
-            "price":null,
-            "category":null,
-            "image":null,
+            "id": 1,
+            "amount": 3,
+            "itemMenu": {
+                "id": 1,
+                "name": "Ensaladilla",
+                "description": "descripcion",
+                "rationType": "RATION",
+                "price": 2.5,
+                "category": {
+                    "id": 1,
+                    "name": "picoteamos",
+                    "new": false
+                },
+                "image": {
+                    "id": 1,
+                    "fileName": "name",
+                    "fileType": "type",
+                    "data": null,
+                    "new": false
+                },
+                "new": false
+            },
+            "new": false
         }
-     }
-     ],
-     "itemOrder":[
-         {
-        "id":2,
-        "name":"Calamares",
-        "description":"descripcion 2",
-        "rationType":null,
-        "price":3.2,
-        "category":null,
-        "image":null
-    }
-]
-
-
- }
+    ]}
+        
  
 
 describe('Render test suite', () => {
@@ -69,13 +68,15 @@ describe('Render test suite', () => {
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
 
-        let amount = await rendered.findByText('Ensaladilla')
-        let name = await rendered.findByText('Calamares')
-        let price = await rendered.findByText('3.2')
+        let amount = await rendered.findByText('3')
+        let price = await rendered.findByText('2.5 €')
+        let name = await rendered.findByText('Ensaladilla')
 
         expect(amount).toBeInTheDocument()
-        expect(name).toBeInTheDocument()
         expect(price).toBeInTheDocument()
+        expect(name).toBeInTheDocument()
+
+
     })
 
 });

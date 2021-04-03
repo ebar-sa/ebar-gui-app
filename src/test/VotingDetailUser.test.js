@@ -8,8 +8,6 @@ import MockAdapter from 'axios-mock-adapter';
 import VotingDetailUser from '../pages/VotingDetail';
 import Context from '../context/UserContext';
 import http from '../http-common';
-import votingsService from '../services/votings.service';
-import { readyException } from 'jquery';
 
 const setAuth = jest.fn()
 const mockAxios = new MockAdapter(http)

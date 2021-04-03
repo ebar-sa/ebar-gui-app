@@ -38,7 +38,7 @@ function VotingDetailUser(props) {
             setVoteFailure(true)
           })
           .then((res) => {
-            if (res && res.status == 200) {
+            if (res && res.status === 200) {
               setCanVote(false)
               setVoteSuccess(true)
               history.push("/votings")

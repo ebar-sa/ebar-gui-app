@@ -2,6 +2,7 @@
     text-align: left;
     max-width: 750px;
     margin: auto;
+    background-color: darkgray;
 }
 
 .submit-form {
@@ -46,4 +47,3 @@ label {
     -webkit-border-radius: 50%;
     border-radius: 50%;
 }
-

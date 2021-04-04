@@ -18,11 +18,13 @@ class VotingDataService {
 
 
     vote = async (votingId, optionId, token) =>{
-        http.post("/voting/" + votingId + "/option/" + optionId + "/vote", {}, {
+        return http.post("/voting/" + votingId + "/option/" + optionId + "/vote", {}, {
                 headers:
                 {
                     "Authorization": "Bearer "+ token
                 }
+            }).catch(() => {
+                return false
             })
         }
 

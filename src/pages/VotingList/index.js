@@ -80,7 +80,7 @@ function Votings(props) {
 
     const getPastDates = (item) => {
         const list = convertDate(item)
-        if (time > list[1]) {
+        if (time > list[1] && list[1]!==null) {
             return item;
         }
     }
@@ -103,7 +103,7 @@ function Votings(props) {
             </Link>
         }
         return (!x.votersUsernames.includes(username) ? <Link to={"/votings/voting/" + x.id}>
-            <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} >
+            <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} data-testid="but"  >
                 Acceder
             </Button>
         </Link> : <div className='div-voting'>Ya has votado</div>)

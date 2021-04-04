@@ -23,7 +23,7 @@ export default class UserBillDetails extends Component {
         isClient:false
     };
     
-  };
+  }
   
   componentDidMount() {
     console.log(this.props.match.params.id); 

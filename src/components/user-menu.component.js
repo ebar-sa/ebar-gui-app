@@ -20,7 +20,7 @@ export default class UserMenuDetails extends Component {
        isLogged:false
     };
     
-  };
+  }
   
   componentDidMount() {
     console.log(this.props.match.params.id); 

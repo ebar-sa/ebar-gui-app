@@ -8,7 +8,8 @@ import { MuiPickersUtilsProvider ,KeyboardDateTimePicker } from "@material-ui/pi
 import {AddCircle, Delete}from "@material-ui/icons";
 import Alert from '@material-ui/lab/Alert';
 import {TextField, Button, IconButton, Snackbar, Container, Grid, Typography} from '@material-ui/core';
-
+import { useHistory } from 'react-router'
+import useUser from '../../hooks/useUser'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -29,10 +30,17 @@ export default function CreateVotings(props){
     const [add, setAdd] = useState([])
     const [open, setOpen] = useState(false)
     const [openVal, setOpenVal] = useState(false)
-    const [openSubmitCorrect, setOpenSubmitCorrect] = useState(false)
     const [openSubmitIncorrect, setOpenSubmitIncorrect] = useState(false)
     const [errors, setErrors] = useState({})
     const barId = props.match.params.idBar
+
+    const history = useHistory()
+    const { auth } = useUser()
+    const admin = auth.roles.includes('ROLE_OWNER') || auth.roles.includes('ROLE_EMPLOYEE');
+
+    useEffect(() => {
+        if (!admin) history.push('/profile')
+    }, [admin, history])
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -60,14 +68,13 @@ export default function CreateVotings(props){
 
             VotingDataService.createVoting(barId, object).then(response => {
                 if(response.status ===201){
-                    setOpenSubmitCorrect(true)
-                    props.history.push({ pathname: '/bares/' + barId + '/votings', state:{ data: openSubmitCorrect }});
+                    props.history.push({ pathname: '/bares/' + barId + '/votings', state:{ data: true }});
                 }else{
                     setOpenSubmitIncorrect(true)
                 }
             }).catch(error => {
-                setOpenVal(true)
                 console.log("Error" + error)
+                setOpenVal(true)
             })
         } else {
             setOpenVal(true)
@@ -157,7 +164,6 @@ export default function CreateVotings(props){
         }
         setOpen(false);
         setOpenVal(false)
-        setOpenSubmitCorrect(false)
         setOpenSubmitIncorrect(false)
     };
 
@@ -183,7 +189,6 @@ export default function CreateVotings(props){
             minutes = '0' + minutes;
         if (sec.toString().length < 2)
             sec = '0' + sec;
-
 
         const dateStr = [day, month, year].join('-');
         const timeStr = [hour, minutes, sec].join(':')
@@ -218,6 +223,7 @@ export default function CreateVotings(props){
                     <Grid container justify="center" alignItems="center" item xs={6}>
                     <div className='input-margin'>
                     <KeyboardDateTimePicker
+                        id="opening"
                         ampm={false}
                         label="Fecha de inicio"
                         value={openingHour}
@@ -236,6 +242,7 @@ export default function CreateVotings(props){
                     <Grid container justify="center" alignItems="center"  item xs={6}>
                     <div className='input-margin'>
                     <KeyboardDateTimePicker
+                        id="closing"
                         ampm={false}
                         label="Fecha de fin"
                         value={closingHour}
@@ -272,7 +279,7 @@ export default function CreateVotings(props){
                                 <div key={index}>
                                     <TextField
                                         className='input-title'
-                                        id="option"
+                                        id={"option"+index}
                                         label="Descripción"
                                         name={"option"+index}
                                         onChange={(e) => handleChange(e)}

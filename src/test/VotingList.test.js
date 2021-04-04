@@ -156,15 +156,6 @@ function renderVotingsAdmin(auth) {
         </Context.Provider>)
 }
 
-function renderVotingsUserProps(auth) {
-    return render(
-        <Context.Provider value={{ auth, setAuth }}>
-            <Router history={history} >
-                <Votings {...{ match: { params: { idBar: 1 } }, history: { location: { state: {data: true} } } }} />
-            </Router>
-        </Context.Provider>)
-}
-
 
 describe('Testing Voting list', () => {
 

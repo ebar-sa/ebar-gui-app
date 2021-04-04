@@ -6,19 +6,31 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import Profile from './pages/Profile'
 import BarList from './pages/BarList'
+import CreateVotings from './pages/VotingCreate'
+import Votings from './pages/VotingList'
+import VotingDetailUser from './pages/VotingDetail'
 
 import Header from './components/Header'
 
 import clsx from 'clsx'
-import Sidebar from './components/Sidebar'
-import useUser from './hooks/useUser'
 import Mesas from './pages/Mesas'
+import BottomBar from './components/bottom-bar'
+import useUser from './hooks/useUser'
+import BarTableDetails from './components/mesa-details.component'
+import UserMenuDetails from './components/user-menu.component'
+import UserBillDetails from './components/user-bill.component'
+import MenuGestion from './components/admin/menu-admin-gestion.component'
+import Bar from "./pages/Bar";
+import PrivateRoute from "./components/private-route.js";
+
 
 const drawerWidth = 240
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
+    flex: '1',
+    overflowY: 'auto'
   },
   appBar: {
     transition: theme.transitions.create(['margin', 'width'], {
@@ -27,7 +39,6 @@ const useStyles = makeStyles((theme) => ({
     }),
   },
   appBarShift: {
-    width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
@@ -40,18 +51,10 @@ const useStyles = makeStyles((theme) => ({
   hide: {
     display: 'none',
   },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
   drawerHeader: {
     display: 'flex',
     alignItems: 'center',
     padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
     ...theme.mixins.toolbar,
     justifyContent: 'flex-end',
   },
@@ -61,7 +64,6 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    marginLeft: -drawerWidth,
   },
   contentShift: {
     transition: theme.transitions.create('margin', {
@@ -73,6 +75,9 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  colorBar: {
+    backgroundColor: 'white'
+  }
 }))
 
 export function App() {
@@ -82,7 +87,6 @@ export function App() {
   return (
     <div className={classes.root}>
       <Header classes={classes} />
-      <Sidebar classes={classes} />
       <main
         className={clsx(classes.content, {
           [classes.contentShift]: isLogged,
@@ -91,12 +95,24 @@ export function App() {
         <div className={classes.drawerHeader} />
         <Switch>
           <Route exact path={'/'} component={Home} />
-          <Route exact path={'/bares'} component={BarList} />
+          <PrivateRoute exact path={'/bares'} component={BarList} />
           <Route exact path={'/mesas'} component={Mesas} />
           <Route exact path={'/login'} component={Login} />
           <Route exact path={'/profile'} component={Profile} />
+          <PrivateRoute exact path={'/bares/:barId'} component={Bar} />
+          <PrivateRoute exact path={'/bares/:idBar/menu'} component={MenuGestion} />
+          <PrivateRoute exact path={"/votings"} component={Votings} />
+          <PrivateRoute path={'/votings/voting/create'} component={CreateVotings} />
+          <PrivateRoute path={'/votings/voting/:votingId'} component={VotingDetailUser} />
+          <PrivateRoute exact path={'/bar/bill/:id'} component={UserBillDetails} />
+          <PrivateRoute exact path={'/bar/menu/:id'} component={UserMenuDetails} />
+          <PrivateRoute exact path={'/mesas/detallesMesa/:id'} component={BarTableDetails} />
+
         </Switch>
       </main>
+      <div className={classes.colorBar}>
+        <BottomBar classes={classes} />
+      </div>
     </div>
   )
 }

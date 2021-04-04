@@ -1,10 +1,9 @@
-import axios from "axios";
 
-const ENDPOINT = 'http://localhost:8080/api/auth/'
+import http from "../http-common"
 
 export function login({username, password}) {
-  return axios
-      .post(ENDPOINT + "signin", {
+  return http
+      .post("/auth/signin", {
           username,
           password
       })
@@ -15,8 +14,8 @@ export function login({username, password}) {
 
 
 export function register({username, email, password}) {
-    return axios
-        .post(ENDPOINT + "signup", {
+    return http
+        .post("/auth/signup", {
             username,
             email,
             password,

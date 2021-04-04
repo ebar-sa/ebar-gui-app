@@ -166,7 +166,7 @@ function renderVotingsUserProps(auth) {
 }
 
 
-describe('Testing API Call', () => {
+describe('Testing Voting list', () => {
 
     it('Render with correct text user', async () => {
         mockAxios.onGet().replyOnce(200, votings)

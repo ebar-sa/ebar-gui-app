@@ -15,6 +15,7 @@ function VotingDetailUser(props) {
   const [canVote, setCanVote] = useState(false)
   const {auth} = useUser()
   const history = useHistory()
+  const barId = props.match.params.idBar
 
     function Alert(propss) {
       return <MuiAlert elevation={6} variant="filled" {...propss} />;
@@ -41,7 +42,7 @@ function VotingDetailUser(props) {
             if (res && res.status === 200) {
               setCanVote(false)
               setVoteSuccess(true)
-              history.push("/votings")
+              history.push('/bares/'+barId+'/votings')
             } else {
               setVoteFailure(true)
             }

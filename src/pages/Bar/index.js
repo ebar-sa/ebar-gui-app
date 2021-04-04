@@ -103,7 +103,7 @@ export default function Bar(props){
                     <ButtonGroup fullWidth={true} color="primary" aria-label="outlined primary button group" className={classes.buttons}>
                         <Button>Mesas</Button>
                         <Button href={`/#/bares/${barId}/menu`}>Carta</Button>
-                        <Button href={`/#/votings`}>Votaciones</Button>
+                        <Button href={`/#/bares/${barId}/votings`}>Votaciones</Button>
                     </ButtonGroup>
                 </Grid>
 

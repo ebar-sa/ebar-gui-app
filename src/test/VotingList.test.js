@@ -142,7 +142,7 @@ function renderVotingsUser(auth){
     return render(
         <Context.Provider value={{ auth, setAuth }}>
             <Router history={history} >
-                <Votings {...{ history: { location: { state: undefined } } }} />
+                <Votings {...{ match: { params: { idBar: 1 } }, history: { location: { state: {} } } }} />
             </Router>
         </Context.Provider>)
 }
@@ -151,7 +151,7 @@ function renderVotingsAdmin(auth) {
     return render(
         <Context.Provider value={{ auth, setAuth }}>
             <Router history={history} >
-                <Votings {...{ history: { location: { state: {} } } }} />
+                <Votings {...{ match: { params: { idBar: 1 } }, history: { location: { state: {} } } }} />
             </Router>
         </Context.Provider>)
 }
@@ -160,13 +160,13 @@ function renderVotingsUserProps(auth) {
     return render(
         <Context.Provider value={{ auth, setAuth }}>
             <Router history={history} >
-                <Votings {...{ history: { location: { state: {data: true} } } }} />
+                <Votings {...{ match: { params: { idBar: 1 } }, history: { location: { state: {data: true} } } }} />
             </Router>
         </Context.Provider>)
 }
 
 
-describe('Testing API Call', () => {
+describe('Testing Voting list', () => {
 
     it('Render with correct text user', async () => {
         mockAxios.onGet().replyOnce(200, votings)
@@ -181,7 +181,6 @@ describe('Testing API Call', () => {
         let title4 = await rendered.queryByText('Votación sin fin')
         let alreadyVote = await rendered.findByText('Ya has votado')
         let textButton = await rendered.findByText('Acceder')
-        let snackbar = await rendered.queryByText('Votación creada con éxito!')
 
         expect(title1).toBeInTheDocument()
         expect(title2).toBeInTheDocument()
@@ -189,7 +188,6 @@ describe('Testing API Call', () => {
         expect(title4).not.toBeInTheDocument()
         expect(alreadyVote).toBeInTheDocument()
         expect(textButton).toBeInTheDocument()
-        expect(snackbar).not.toBeInTheDocument()
     })
 
 
@@ -305,44 +303,4 @@ describe('Testing API Call', () => {
 
     })
 
-    it('Correct snackbar', async () => {
-        mockAxios.onGet().replyOnce(200, votings)
-        let rendered = renderVotingsUserProps(client)
-
-        let promise = new Promise(r => setTimeout(r, 250));
-        await act(() => promise)
-
-        let snackbar = await rendered.findByText('Votación creada con éxito!')
-    
-        expect(snackbar).toBeInTheDocument()
-        
-    })
-
-    it('Correct link to create voting', async () => {
-        mockAxios.onGet().replyOnce(200, votings)
-        renderVotingsAdmin(admin)
-
-        let promise = new Promise(r => setTimeout(r, 250));
-        await act(() => promise)
-
-        expect(screen.getByText('Crear votación').closest('a')).toHaveAttribute('href', '/votings/voting/create')
-        userEvent.click(screen.getByText('Crear votación'))
-    
-        expect(history.push).toHaveBeenCalledWith('/votings/voting/create');
-    })
-
-    it('Correct link to vote', async () => {
-        history.push = jest.fn();
-
-        mockAxios.onGet().replyOnce(200, votings)
-        renderVotingsUser(client)
-
-        let promise = new Promise(r => setTimeout(r, 250));
-        await act(() => promise)
-
-        expect(screen.getByText('Acceder').closest('a')).toHaveAttribute('href', '/votings/voting/3')
-        
-        userEvent.click(screen.getByText('Acceder'));
-        expect(history.push).toHaveBeenCalledWith('/votings/voting/3');
-    })
 })

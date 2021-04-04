@@ -9,11 +9,13 @@ function VotingDetailUser(props) {
     
   const [radioValue, setRadioValue] = useState("0")
   const [voteSuccess, setVoteSuccess] = useState(false)
+  const [voteFailure, setVoteFailure] = useState(false)
   const [formError, setFormError] = useState(false)
   const [voting, setVoting] = useState({})
   const [canVote, setCanVote] = useState(false)
   const {auth} = useUser()
   const history = useHistory()
+  const barId = props.match.params.idBar
 
     function Alert(propss) {
       return <MuiAlert elevation={6} variant="filled" {...propss} />;
@@ -33,14 +35,17 @@ function VotingDetailUser(props) {
         setFormError(true)
       } else {
         VotingDataService.vote(voting.id, radioValue, auth.accessToken)
-          .then(() => {
-            setCanVote(false)
-            setVoteSuccess(true)
-            history.push("/votings")
-          })
           .catch((error) => {
-            //Show message when post return error
-            console.log("Error de la peticion: "+error)
+            setVoteFailure(true)
+          })
+          .then((res) => {
+            if (res && res.status === 200) {
+              setCanVote(false)
+              setVoteSuccess(true)
+              history.push('/bares/'+barId+'/votings')
+            } else {
+              setVoteFailure(true)
+            }
           })
       }
     }
@@ -137,6 +142,7 @@ function VotingDetailUser(props) {
                     </RadioGroup>
                   { canVote && auth && voting ?     
                   <Button
+                    id="vote_btn"
                     onClick = {handleSubmit}
                     type="submit"
                     variant="contained"
@@ -146,6 +152,7 @@ function VotingDetailUser(props) {
                     Enviar votación
                   </Button> : <div>
                     <Button
+                    id="cannot_vote_btn"
                     type="text"
                     variant="contained"
                     color="secondary"
@@ -168,8 +175,13 @@ function VotingDetailUser(props) {
               ¡Ha votado correctamente!
             </Alert>
           </Snackbar>
+          <Snackbar open={voteFailure} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="error">
+              Ups, ha habido un error al votar... Inténtalo de nuevo
+            </Alert>
+          </Snackbar>
         </div>
-        : <div>
+        : <div id="empty_page">
         </div> }
       </div>
       );

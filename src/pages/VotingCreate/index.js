@@ -32,15 +32,7 @@ export default function CreateVotings(props){
     const [openSubmitCorrect, setOpenSubmitCorrect] = useState(false)
     const [openSubmitIncorrect, setOpenSubmitIncorrect] = useState(false)
     const [errors, setErrors] = useState({})
-    // useEffect(() => {
-    //     VotingDataService.createVoting(1).then(res => {
-    //         setVoting(res)
-    //         console.log(res)
-    //     }).catch(err => {
-    //         console.log('Error', err.response.status)
-    //     })
-    // }, [])
-    
+    const barId = props.match.params.idBar
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -66,10 +58,10 @@ export default function CreateVotings(props){
             }), "votersUsernames": []
             }
 
-            VotingDataService.createVoting(1, object).then(response => {
+            VotingDataService.createVoting(barId, object).then(response => {
                 if(response.status ===201){
                     setOpenSubmitCorrect(true)
-                    props.history.push({ pathname: '/votings', state:{ data: openSubmitCorrect }});
+                    props.history.push({ pathname: '/bares/' + barId + '/votings', state:{ data: openSubmitCorrect }});
                 }else{
                     setOpenSubmitIncorrect(true)
                 }
@@ -201,7 +193,7 @@ export default function CreateVotings(props){
 
     return(
         <Container fixed>
-        <div style={{marginTop:'50px'}}>
+            <div style={{ marginTop: '50px', marginBottom: '100px'}}>
             <Typography className='h5' variant="h5" gutterBottom>
                 Creación de votación
             </Typography>

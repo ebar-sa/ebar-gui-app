@@ -50,8 +50,8 @@ describe('Render test suite', () => {
 
         let title1 = await rendered.findByText('Burger Food Porn')
         let title2 = await rendered.findByText('Bar Casa Paco')
-        let capacity1 = await rendered.findByText('Aforo: 7/11')
-        let capacity2 = await rendered.findByText('Aforo: 2/14')
+        let capacity1 = await rendered.findByText('Mesas disponibles: 7/11')
+        let capacity2 = await rendered.findByText('Mesas disponibles: 2/14')
 
         expect(title1).toBeInTheDocument()
         expect(title2).toBeInTheDocument()

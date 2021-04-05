@@ -5,6 +5,7 @@ import { useHistory } from 'react-router'
 export default function useUser () {
     const {auth, setAuth} = useContext(Context)
     const [state, setState] = useState({loading: false, error: false})
+    const history = useHistory()
 
     const login = useCallback(({username, password}) => {
         setState({loading: true, error: false})
@@ -16,14 +17,16 @@ export default function useUser () {
             })
             .catch(err => {
                 window.sessionStorage.removeItem('user')
-                try {
-                    setState({loading: false, error: err.response.data.error})
-                } catch (e) {
-                    setState({loading: false, error: "Connection error"})
+                
+                const status = err.response.status
+                if (status === 401) {
+                    setState({loading: false, error: "Usuario o contraseña incorrectos"})
+                } else {
+                    history.push("/pageNotFound")
                 }
             })
-        }, [setAuth])
-    const history = useHistory()
+        }, [setAuth,history])
+    
     const logout = useCallback(() => {
         history.push("/")  
         window.sessionStorage.removeItem('user')

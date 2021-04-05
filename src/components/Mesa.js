@@ -25,13 +25,11 @@ const useStyles = makeStyles({
 
 export function Mesa(props) {
   const classes = useStyles()
-  const {id, name, free, token } = props
+  const {id, name, free } = props
   const history = useHistory()
   const routeRedirect = () => {
-    console.log(id);
     let path = `/mesas/detallesMesa/${id}`;
     history.push(path);
-
   }
 
   return (
@@ -45,9 +43,6 @@ export function Mesa(props) {
           </Typography>
           <Typography variant="h5" component="h2">
             {name}
-          </Typography>
-          <Typography className={classes.pos} color="textSecondary">
-            {token}
           </Typography>
           <Typography variant="body2" component="p">
             {free ? 'Libre' : 'Ocupada'}

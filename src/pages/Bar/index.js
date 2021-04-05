@@ -80,7 +80,7 @@ export default function Bar(props){
                             </Grid>
                             <Grid item>
                                 <Typography component="h6" variant="h6" align="center">
-                                    Aforo: {bar.freeTables}/{bar.tables}
+                                    Mesas disponibles: {bar.freeTables}/{bar.tables}
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -101,9 +101,9 @@ export default function Bar(props){
 
                 <Grid item container xs={12} >
                     <ButtonGroup fullWidth={true} color="primary" aria-label="outlined primary button group" className={classes.buttons}>
-                        <Button>Mesas</Button>
+                        <Button href={`/#/mesas`}>Mesas</Button>
                         <Button href={`/#/bares/${barId}/menu`}>Carta</Button>
-                        <Button href={`/#/votings`}>Votaciones</Button>
+                        <Button href={`/#/bares/${barId}/votings`}>Votaciones</Button>
                     </ButtonGroup>
                 </Grid>
 

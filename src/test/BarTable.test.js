@@ -45,10 +45,8 @@ describe('Render test suite', () => {
         await act(() => promise)
 
         let name1 = await rendered.findByText('mesa1')
-        let token1 = await rendered.findByText('ihv-57f')
 
         expect(name1).toBeInTheDocument()
-        expect(token1).toBeInTheDocument()
     })
 
 });

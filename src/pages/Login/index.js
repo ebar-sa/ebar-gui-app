@@ -17,6 +17,7 @@ import { useHistory } from 'react-router'
 
 import useUser from '../../hooks/useUser'
 import Copyright from '../../components/Copyright'
+import { Alert, AlertTitle } from '@material-ui/lab'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -45,7 +46,7 @@ export default function Login() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const { isLogged, login } = useUser()
+  const { isLogged, login, error } = useUser()
 
   useEffect(() => {
     if (isLogged) {
@@ -68,6 +69,12 @@ export default function Login() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
+        {error && (
+          <Alert severity="error" style={{width: '100%', marginTop: 30}}>
+            <AlertTitle>Error</AlertTitle>
+            {error}
+          </Alert>
+        )}
         <form className={classes.form} onSubmit={handleSubmit}>
           <TextField
             variant="outlined"

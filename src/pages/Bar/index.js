@@ -80,7 +80,7 @@ export default function Bar(props){
                             </Grid>
                             <Grid item>
                                 <Typography component="h6" variant="h6" align="center">
-                                    Aforo: {bar.freeTables}/{bar.tables}
+                                    Mesas disponibles: {bar.freeTables}/{bar.tables}
                                 </Typography>
                             </Grid>
                         </Grid>

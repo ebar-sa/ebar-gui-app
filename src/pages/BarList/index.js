@@ -46,7 +46,7 @@ export default function BarList() {
                             <ListItem button component={Link} to={"/bares/" + bar.id}>
                                 <ListItemText
                                     primary={bar.name}
-                                    secondary={"Aforo: " + bar.capacity}/>
+                                    secondary={"Mesas disponibles: " + bar.capacity}/>
                             </ListItem>
                             {bars.length > (idx+1) ? <Divider /> : ""}
                         </div>

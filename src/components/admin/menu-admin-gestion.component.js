@@ -17,7 +17,7 @@ export default class Menu extends Component {
                 items : []
             }
         };
-    };
+    }
 
     
     componentDidMount() {
@@ -35,14 +35,6 @@ export default class Menu extends Component {
         .catch(e => {
             console.log(e)
         })
-    }
-
-    isLogged() {
-        if(localStorage.getItem('user')) {
-            this.setState({ isLogged: true})
-        } else {
-            this.setState({ isLogged: false})
-        }
     }
 
     render() {
@@ -123,11 +115,11 @@ export default class Menu extends Component {
                 <Table size="small" aria-label="a dense table">
                 <TableHead>
                   <TableRow >
-                    <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
-                    <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
-                    <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Descripción</Typography></StyledTableCell>
                     <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Categoria</Typography></StyledTableCell>
+                    <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
+                    <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Descripción</Typography></StyledTableCell>
                     <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Cantidad</Typography></StyledTableCell>
+                    <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
                     <StyledTableCell><Typography variant="h5"className={useStyles.title} gutterBottom>Ver Imagen</Typography></StyledTableCell>
 
                   </TableRow>
@@ -137,11 +129,17 @@ export default class Menu extends Component {
                     <StyledTableRow key={row.name}>
                       <StyledTableCell align="left">{row.category.name}</StyledTableCell>
                       <StyledTableCell component="th" scope="row">
-                        {row.name}
+                        <span data-testid="nombreItem"> {row.name} </span>
                       </StyledTableCell>
-                      <StyledTableCell align="left">{row.description}</StyledTableCell>
-                      <StyledTableCell align="left">{row.rationType}</StyledTableCell>
-                      <StyledTableCell align="left">{row.price}</StyledTableCell>
+                      <StyledTableCell align="left">
+                        <span data-testid="descriptionItem">{row.description}</span>
+                      </StyledTableCell>
+                      <StyledTableCell align="left">
+                        <span data-testid="rationTypeItem">{row.rationType}</span>
+                      </StyledTableCell>
+                      <StyledTableCell align="left">
+                        <span data-testid="priceItem">{row.price}</span>
+                      </StyledTableCell>
                       <Grid item xs={5} sm={5} align="center">
                       <StyledTableCell align="left">{(row.image != null) ? <img alt="" src={"data:" + row.image.type + ";base64," + row.image.data} 
                           style={{"width": "120px",
@@ -155,7 +153,7 @@ export default class Menu extends Component {
                 </TableBody> 
                 </Table>
                 </CardContent>
-                <div style={{"text-align":"center"}}>
+                <div style={{"textAlign":"center"}}>
                   <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAñadir }} href={`/`}>Volver</Button>
                 </div>
                 </Grid>

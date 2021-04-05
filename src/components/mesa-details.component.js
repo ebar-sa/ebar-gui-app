@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 
-import { Typography, CardContent, Grid, CardActions,Card,Button,Dialog, DialogActions, DialogContent,DialogContentText,DialogTitle, TextField } from '@material-ui/core';
+import { Typography, CardContent, Grid, CardActions,Card,Button,Dialog, DialogActions, DialogContent,
+  DialogContentText,DialogTitle, TextField,TableRow, Table, TableBody, TableHead, TableCell } from '@material-ui/core';
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import MesaDataService from '../services/mesa.service';
 import mesaLibre from '../static/images/table/mesaLibre.png'
 import mesaOcupada from '../static/images/table/mesaOcupada.png'
 import AuthService from '../services/auth.service';
-import {TableRow, Table, TableBody, TableHead, TableCell} from '@material-ui/core';
 import BillDataService from '../services/bill.service';
+import { Redirect } from "react-router"
 
 export default class BarTableDetails extends Component {
   constructor(props) {
@@ -42,9 +43,9 @@ export default class BarTableDetails extends Component {
         userName: "",
         isAdmin:false,
         openDialog: false,
-        token: ""
-    };
-    
+        token: "",
+        error: false,
+    }
   };
   
   componentDidMount() {
@@ -72,7 +73,9 @@ export default class BarTableDetails extends Component {
         })
     })
     .catch(e => {
-        console.log(e);
+       this.setState({
+         error: true
+       })
     })
   }
   handleClose(){
@@ -221,8 +224,8 @@ export default class BarTableDetails extends Component {
       },
     }))(TableRow);
 
-    const {mesaActual, menuActual, billActual, isAdmin,userName,openDialog} = this.state
-    return (
+    const {mesaActual, menuActual, billActual, isAdmin,userName,openDialog,error} = this.state
+    return !error ?
       <div>
         <div>
           <Grid container spacing={0} justify="center" >
@@ -446,8 +449,11 @@ export default class BarTableDetails extends Component {
         :
           <p></p>
         }
-        </div>
+        </div>        
       </div>
-    );
+      :
+      <div>
+      <Redirect to="/pageNotFound"></Redirect>
+      </div>
+      }
   }
-}

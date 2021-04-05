@@ -204,23 +204,20 @@ export default function CreateVotings(props){
             </Typography>
             <div style={{marginTop: '60px'}}>
                 <form onSubmit={(e) => handleSubmit(e)} className={classes.root}>
-                    <Grid container spacing={0} justify="center" alignItems="center">
-                    <Grid container justify="center" alignItems="center" item xs={6}>
+                    <Grid container justify="center" alignItems="center" >
                     <div>
                     <TextField className='input-title' id="title" label="Título" name="title" onChange={(e) => handleChange(e)}/>
                     <p className="p-style">{errors["title"]}</p>
                     </div>
                     </Grid>
-                    <Grid container justify="center" alignItems="center" item xs={6}>
-                    <div>
+                    <Grid container justify="center" alignItems="center" >
+                    <div style={{marginTop: '20px'}}>
                         <TextField className='input-title' id="description" label="Descripción" name="description" onChange={(e) => handleChange(e)} multiline rows={4} variant="outlined"/>
                         <p className="p-style">{errors["description"]}</p>
                     </div>
                     </Grid>
-                    </Grid>
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <Grid container spacing={0} justify="center" alignItems="center">
-                    <Grid container justify="center" alignItems="center" item xs={6}>
+                    <Grid container justify="center" alignItems="center" >
                     <div className='input-margin'>
                     <KeyboardDateTimePicker
                         id="opening"
@@ -239,7 +236,7 @@ export default function CreateVotings(props){
                     />
                     </div >
                     </Grid>
-                    <Grid container justify="center" alignItems="center"  item xs={6}>
+                    <Grid container justify="center" alignItems="center"  >
                     <div className='input-margin'>
                     <KeyboardDateTimePicker
                         id="closing"
@@ -257,7 +254,6 @@ export default function CreateVotings(props){
                         format="dd-MM-yyyy HH:mm:ss"
                     />
                     </div>
-                    </Grid>
                     </Grid>
                     </MuiPickersUtilsProvider>
                     <div className='input-margin'>

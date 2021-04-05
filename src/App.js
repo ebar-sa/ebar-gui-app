@@ -110,8 +110,8 @@ export function App() {
           <PrivateRoute path={'/votings/voting/:votingId'} component={VotingDetailUser} />
           <PrivateRoute exact path={'/bar/bill/:id'} component={UserBillDetails} />
           <PrivateRoute exact path={'/bar/menu/:id'} component={UserMenuDetails} />
-          <Route exact path={'/mesas/detallesMesa/:id'} component={BarTableDetails}/>
-          <Route exact path={'/pageNotFound/'} component={NotFoundPage}/>
+          <PrivateRoute exact path={'/mesas/detallesMesa/:id'} component={BarTableDetails} />
+          <PrivateRoute exact path={'/pageNotFound/'} component={NotFoundPage}/>
         </Switch>
       </main>
       <div className={classes.colorBar}>

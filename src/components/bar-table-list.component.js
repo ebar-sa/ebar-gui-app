@@ -11,7 +11,7 @@ export default class BarTableList extends Component {
         tables: [],
         currentIndex: -1, 
     };
-  };
+  }
 
   componentDidMount() {
       this.getAllTables();

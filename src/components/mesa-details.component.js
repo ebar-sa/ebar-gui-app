@@ -23,9 +23,9 @@ export default class BarTableDetails extends Component {
     this.state = {
         mesaActual : {
           id : null,
-          nombre: "",
+          name: "",
           token: "", 
-          estadoMesa: "",
+          free: "",
           seats: null,
           bar_id: null,
           trabajador_id: null
@@ -52,12 +52,8 @@ export default class BarTableDetails extends Component {
     this.getMesasDetails(this.props.match.params.id);
     this.isLogged();
   } 
-  
   isLogged(){
     const user = AuthService.getCurrentUser()
-    this.setState({
-      userName: user.username
-    }); 
     user.roles.forEach((rol) => {
     if(rol === 'ROLE_OWNER'){
       this.setState({
@@ -233,7 +229,7 @@ export default class BarTableDetails extends Component {
             <Grid item component={Card} xs>
               <CardContent>
                 <Typography variant="h5" className={useStyles.title} gutterBottom>
-                  {mesaActual.name}
+                  <span data-testid="tableId">{mesaActual.name}</span>
                 </Typography>
                 {mesaActual.free ? 
                 <img alt="Mesa Libre" src={mesaLibre} />
@@ -260,7 +256,7 @@ export default class BarTableDetails extends Component {
                 }
                 {isAdmin ? 
                   <Typography variant="h5"className={useStyles.title} gutterBottom> 
-                    {mesaActual.token}
+                    <span data-testid="tokenId">{mesaActual.token}</span>
                   </Typography>
                   :
                   <p></p>
@@ -299,9 +295,9 @@ export default class BarTableDetails extends Component {
                 </Typography> 
                 <Typography variant="h6" className={useStyles.pos}>
                   {mesaActual.free ? 
-                      <p>ESTADO: Libre</p> 
+                      <p>ESTADO: <span data-testid="freeId">Libre</span></p> 
                       :
-                      <p>ESTADO: Ocupada</p> 
+                      <p>ESTADO: <span data-testid="notFreeId">Ocupada</span></p> 
                   } 
                 </Typography>
                 <Typography variant="h6" className={useStyles.title} gutterBottom> 

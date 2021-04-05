@@ -16,7 +16,11 @@ export default function useUser () {
             })
             .catch(err => {
                 window.sessionStorage.removeItem('user')
-                setState({loading: false, error: err.response.data.error})
+                try {
+                    setState({loading: false, error: err.response.data.error})
+                } catch (e) {
+                    setState({loading: false, error: "Connection error"})
+                }
             })
         }, [setAuth])
     const history = useHistory()

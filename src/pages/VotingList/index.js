@@ -20,6 +20,7 @@ function Votings(props) {
     const admin = roles.includes('ROLE_OWNER') || roles.includes('ROLE_EMPLOYEE');
     const [data, setData] = useState(false)
     const [openVal, setOpenVal] = useState(false)
+    const barId = props.match.params.idBar
 
     const handleClick = (id) => {
         setExpanded({
@@ -29,13 +30,13 @@ function Votings(props) {
     }
 
     useEffect(() => {
-        VotingDataService.getVotingsByBarId().then(res => {
+        VotingDataService.getVotingsByBarId(barId).then(res => {
             setVotings(res)
         }).catch(err => {
             setOpenVal(true)
             console.log('Error', err)
         })
-    }, [])
+    }, [barId])
 
     useEffect(() => {
         setData(typeof props.history.location.state !== 'undefined' ? true : false)
@@ -80,7 +81,7 @@ function Votings(props) {
 
     const getPastDates = (item) => {
         const list = convertDate(item)
-        if (time > list[1]) {
+        if (time > list[1] && list[1]!==null) {
             return item;
         }
     }
@@ -102,8 +103,8 @@ function Votings(props) {
                 </Button>
             </Link>
         }
-        return (!x.votersUsernames.includes(username) ? <Link to={"/votings/voting/" + x.id}>
-            <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} >
+        return (!x.votersUsernames.includes(username) ? <Link to={'/bares/'+barId+'/votings/voting/' + x.id}>
+            <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} data-testid="but"  >
                 Acceder
             </Button>
         </Link> : <div className='div-voting'>Ya has votado</div>)
@@ -122,13 +123,13 @@ function Votings(props) {
             <div>
                 {admin ?
                     <div className="header">
-                        <Link to={"/votings/voting/create"}>
+                        <Link to={'/bares/'+barId+'/votings/voting/create'}>
                             <Button variant="contained" color="primary" style={{ ...stylesComponent.buttonCrear }} startIcon={<AddIcon />}>
                                 Crear votación
                         </Button>
                         </Link>
                     </div> :
-                    <Typography style={{ ...stylesComponent.subtitule }} variant="subtitule1" gutterBottom>
+                    <Typography className='h5' variant="h6" gutterBottom>
                         A continuación, podrá encontrar la lista de votaciones disponibles en las que puede participar, junto con las finalizadas
                     </Typography>}
             </div>
@@ -181,6 +182,11 @@ function Votings(props) {
                                                 {x.closingHour === null || x.closingHour === '' ?
                                                 ' Indefinida' : formatDate(x.closingHour)}
                                                 </p>
+                                                {x.options.length > 0 && admin ?
+                                                    <div><p style={{ fontWeight: '600', textDecoration: 'underline' }}>Votos</p>
+                                                        <div>{x.options.map(y =>
+                                                            <p key={y.id}>{y.description}: {y.votes} votos</p >
+                                                        )}</div></div> : null}
                                             </ListItemText>
                                         </ListItem>
                                     </List>
@@ -237,11 +243,6 @@ const stylesComponent = {
     },
     listItemText2: {
         marginTop: '10px'
-    },
-    subtitule: {
-        margin: 'auto', 
-        display: 'table',
-        fontSize: '16px'
     },
 }
 

@@ -2,9 +2,9 @@ import http from "../http-common";
 import authHeader from './auth-header';
 
 class VotingDataService {
-    getVotingsByBarId = () => {
+    getVotingsByBarId = (barId) => {
     return new Promise((resolve, reject) => {
-        http.get('/bar/1/voting', { headers: authHeader() })
+        http.get('/bar/' + barId + '/voting', { headers: authHeader() })
         .then(res => {
             resolve(res.data)
         })
@@ -18,11 +18,13 @@ class VotingDataService {
 
 
     vote = async (votingId, optionId, token) =>{
-        http.post("/voting/" + votingId + "/option/" + optionId + "/vote", {}, {
+        return http.post("/voting/" + votingId + "/option/" + optionId + "/vote", {}, {
                 headers:
                 {
                     "Authorization": "Bearer "+ token
                 }
+            }).catch(() => {
+                return false
             })
         }
 
@@ -45,7 +47,7 @@ class VotingDataService {
     }
 
     createVoting = (barId, object) => {
-        return http.post("/bar/1/voting", object, { headers: authHeader() })
+        return http.post('/bar/' +barId +'/voting', object, { headers: authHeader() })
     }
 }
 

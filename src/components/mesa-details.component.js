@@ -190,7 +190,7 @@ export default class BarTableDetails extends Component {
       }, 
       free: {
         backgroundColor: '#fff',
-      },
+      }
     })
 
     const stylesComponent = {
@@ -200,6 +200,15 @@ export default class BarTableDetails extends Component {
           letterSpacing: 'normal',
           fontSize: '15px',
           fontWeight: '600'
+      },
+      tableResponsive: {
+        width:'85%'
+      },
+      columnNombre: {
+        width: '15%'
+      },
+      centerGrid: {
+        alignContent: 'center',
       }
     }
       
@@ -225,24 +234,27 @@ export default class BarTableDetails extends Component {
     }))(TableRow);
 
     const {mesaActual, menuActual, billActual, isAdmin,userName,openDialog,error} = this.state
-    return !error ?
-      <div>
+    return (
         <div>
-          <Grid container spacing={0} justify="center" >
-            <Grid item component={Card} xs>
+          <Grid container spacing={0} justify="center" xs={12} sm={12} md={12} xl={12}>
+            <Grid style={stylesComponent.centerGrid} item component={Card} xs={12} xl={6}>
               <CardContent>
                 <Typography variant="h5" className={useStyles.title} gutterBottom>
-                  <span data-testid="tableId">{mesaActual.name}</span>
+                  <span data-testid="tableId">{mesaActual.name}  </span>
+                  {mesaActual.free ? 
+                      <span data-testid="freeId">Libre</span> 
+                      :
+                      <span data-testid="notFreeId">Ocupada</span>
+                  }
+                </Typography>
+                <Typography variant="h5" className={useStyles.title} gutterBottom>
+                    ASIENTOS: {mesaActual.seats}
                 </Typography>
                 {mesaActual.free ? 
                 <img alt="Mesa Libre" src={mesaLibre} />
                 : 
                 <img alt="Mesa Ocupada" src={mesaOcupada} />
                 }
-              </CardContent>
-            </Grid>
-            <Grid item component={Card} xs>
-              <CardContent>
                 {isAdmin ?
                   <Typography variant="h5"className={useStyles.title} gutterBottom> 
                     Código
@@ -290,62 +302,45 @@ export default class BarTableDetails extends Component {
               </CardActions>
               }
             </Grid>
-
-            <Grid item component={Card} xs>
+            {!mesaActual.free ? 
+            <Grid item component={Card} xs={12} xl={6}>
               <CardContent>
-                <Typography variant="h5" className={useStyles.title} gutterBottom> 
-                  Información
-                </Typography> 
-                <Typography variant="h6" className={useStyles.pos}>
-                  {mesaActual.free ? 
-                      <p>ESTADO: <span data-testid="freeId">Libre</span></p> 
-                      :
-                      <p>ESTADO: <span data-testid="notFreeId">Ocupada</span></p> 
-                  } 
-                </Typography>
-                <Typography variant="h6" className={useStyles.title} gutterBottom> 
-                    ASIENTOS: {mesaActual.seats}
-                </Typography>  
+                <Table size="small" style={stylesComponent.tableResponsive}>
+                  <caption>CARTA</caption>
+                  <TableHead>
+                    <TableRow >
+                      <StyledTableCell style={stylesComponent.columnNombre} align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
+                      <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
+                      <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Añadir</Typography></StyledTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {menuActual.items && menuActual.items.map((row) => (
+                      <StyledTableRow key={row.name}>
+                        <StyledTableCell align="center" component="th" scope="row">
+                          {row.name}
+                        </StyledTableCell>
+                        <StyledTableCell align="center">{row.price} €</StyledTableCell>
+                        <StyledTableCell align="center">
+                          <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAñadir }} onClick = {() => this.addToOrder(row.id)}>
+                            Añadir
+                          </Button>
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    ))}
+                  </TableBody> 
+                </Table>
               </CardContent>
             </Grid>
+            :
+            <p></p>
+            }
           </Grid>
-        </div>
-        <div>
-        {!mesaActual.free ? 
-        <Grid container spacing={0} justify="center">
-          <Grid item component={Card} xs>
+             
+          <Grid container spacing={0} justify="center">
+          <Grid item component={Card} xs={12} xl={6}>
             <CardContent>
-              <Table size="small" aria-label="a dense table">
-                <caption>CARTA</caption>
-                <TableHead>
-                  <TableRow >
-
-                    <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
-                    <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
-                    <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Añadir</Typography></StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {menuActual.items && menuActual.items.map((row) => (
-                    <StyledTableRow key={row.name}>
-                      <StyledTableCell align="center" component="th" scope="row">
-                        {row.name}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">{row.price} €</StyledTableCell>
-                      <StyledTableCell align="center">
-                        <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAñadir }} onClick = {() => this.addToOrder(row.id)}>
-                          Añadir
-                        </Button>
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  ))}
-                </TableBody> 
-              </Table>
-            </CardContent>
-          </Grid>
-          <Grid item component={Card} xs>
-            <CardContent>
-              <Table size="small" aria-label="a dense table">
+              <Table size="small" aria-label="a dense table"  style={stylesComponent.tableResponsive}>
               <caption>PRODUCTOS PEDIDOS PERO NO ENTREGADOS</caption>
                 <TableHead>
                   <TableRow>
@@ -385,9 +380,9 @@ export default class BarTableDetails extends Component {
               </Button>
             </CardContent>
           </Grid>
-          <Grid item component={Card} xs>
+          <Grid item component={Card} xs={12} xl={6}>
             <CardContent>
-              <Table size="small" aria-label="a dense table">
+              <Table size="small" style={stylesComponent.tableResponsive}>
               <caption>PRODUCTOS PEDIDOS Y ENTREGADOS</caption>
               <TableHead>
                 <TableRow>
@@ -449,11 +444,7 @@ export default class BarTableDetails extends Component {
         :
           <p></p>
         }
-        </div>        
-      </div>
-      :
-      <div>
-      <Redirect to="/pageNotFound"></Redirect>
-      </div>
-      }
+        </div>
+        )        
+    }
   }

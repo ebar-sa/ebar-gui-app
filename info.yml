@@ -1,6 +1,6 @@
 project:
   name: 'eBar Front-End App'
-  owner: 'ebar-sa'
+  owner: 'afternoon'
   teamId: '15'
   identities:
     github:

@@ -8,8 +8,6 @@ import MockAdapter from 'axios-mock-adapter';
 import VotingDetailUser from '../pages/VotingDetail';
 import Context from '../context/UserContext';
 import http from '../http-common';
-import votingsService from '../services/votings.service';
-import { readyException } from 'jquery';
 
 const setAuth = jest.fn()
 const mockAxios = new MockAdapter(http)
@@ -71,7 +69,7 @@ const alreadyVotedVotingDummy = {
     title: "example voting",
     description: "testing description",
     openingHour: "26-03-2021 00:00:00",
-    closingHour: "26-03-2021 23:59:00",
+    closingHour: "01-07-2021 23:59:00",
     timer: null,
     votersUsernames : ['client1',],
     options: [
@@ -198,6 +196,58 @@ describe('Alert test suite', () => {
 
         expect(errorSnackBar).toBeInTheDocument()
     })
+
+    it('Correctly closing an alert', async () => {
+        let rendered = null
+
+        mockAxios.onGet().replyOnce(200, correctVotingDummy)
+            
+        rendered = render(
+            <Context.Provider value={{auth, setAuth}}>
+                <Router history={history} >
+                    <VotingDetailUser {...{match: {params: {votingId: 99}}}}/>
+                </Router>
+            </Context.Provider>)
+    
+        let promise = new Promise(r => setTimeout(r, 250));
+        await act(() => promise)
+    
+        let option1 = await rendered.findByText('si')
+        let option2 = await rendered.findByText('no')
+        let tokenInput = await rendered.findByTestId('table_token_field')
+        let votingDescription = await rendered.findByText('testing description')
+        let votingBtn = await rendered.findByText('Enviar votación')
+        let cannotVoteBtn = rendered.queryByText("No puedes votar ahora mismo")
+
+        expect(option1).toBeInTheDocument() 
+        expect(option2).toBeInTheDocument()
+        expect(tokenInput).toBeInTheDocument()
+        expect(votingBtn).toBeInTheDocument()
+        expect(votingDescription).toBeInTheDocument()
+        expect(cannotVoteBtn).not.toBeInTheDocument()
+    
+        await act(async ()=> {
+            await fireEvent.click(option1)
+            await fireEvent.click(votingBtn)
+        })
+        
+        let emptyTableTokenSnackBar = await rendered.findByText("El token no puede estar vacío")
+        let closeButton = await rendered.findByTitle("Close")
+
+        expect(emptyTableTokenSnackBar).toBeInTheDocument()
+        expect(closeButton).toBeInTheDocument()
+
+        await act(async ()=> {
+            await fireEvent.click(closeButton)
+        })
+
+        promise = new Promise(r => setTimeout(r, 250));
+        await act(() => promise)
+
+        let aux = await rendered.queryByText("El token no puede estar vacío")
+
+        expect(aux).not.toBeInTheDocument()
+    })
 })
 
 
@@ -253,18 +303,23 @@ describe('Behaviour tests suite', () => {
         let votingDescription = await rendered.findByText('testing description')
         let votingBtn = await rendered.findByText('Enviar votación')
         let cannotVoteBtn = rendered.queryByText("No puedes votar ahora mismo")
-    
+        let tokenInput = await rendered.findByTestId('table_token_field')
+
         expect(option1).toBeInTheDocument() 
         expect(option2).toBeInTheDocument()
         expect(votingBtn).toBeInTheDocument()
         expect(votingDescription).toBeInTheDocument()
         expect(cannotVoteBtn).not.toBeInTheDocument()
+        expect(tokenInput).toBeInTheDocument()
     
         await act(async ()=> {
             await fireEvent.click(option1)
+            await fireEvent.change(tokenInput.children[1].children[0], {target: {value: 'tokenInventado'}})
             await fireEvent.click(votingBtn)
         })
-        
+
+        expect(tokenInput.children[1].children[0].value).toBe('tokenInventado')
+
         let successSnackBar = await rendered.findByText("¡Ha votado correctamente!")
 
         expect(successSnackBar).toBeInTheDocument()
@@ -288,18 +343,21 @@ describe('Behaviour tests suite', () => {
     
         let option1 = await rendered.findByText('si')
         let option2 = await rendered.findByText('no')
+        let tokenInput = await rendered.findByTestId('table_token_field')
         let votingDescription = await rendered.findByText('testing description')
         let votingBtn = await rendered.findByText('Enviar votación')
         let cannotVoteBtn = rendered.queryByText("No puedes votar ahora mismo")
-    
+
         expect(option1).toBeInTheDocument() 
         expect(option2).toBeInTheDocument()
+        expect(tokenInput).toBeInTheDocument()
         expect(votingBtn).toBeInTheDocument()
         expect(votingDescription).toBeInTheDocument()
         expect(cannotVoteBtn).not.toBeInTheDocument()
     
         await act(async ()=> {
             await fireEvent.click(option1)
+            await fireEvent.change(tokenInput.children[1].children[0], {target: {value: 'tokenInventado'}})
             await fireEvent.click(votingBtn)
         })
         
@@ -307,5 +365,5 @@ describe('Behaviour tests suite', () => {
 
         expect(failureVotingSnackBar).toBeInTheDocument()
     })
-
+    
 })

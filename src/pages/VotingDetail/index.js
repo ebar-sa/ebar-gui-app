@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from "react-router"
 import VotingDataService from "../../services/votings.service";
-import { Icon, Typography, FormControl, RadioGroup, Button, FormControlLabel, Radio, Card, CardContent, Snackbar } from "@material-ui/core"
+import { Icon, Typography, FormControl, RadioGroup, Button, FormControlLabel, Radio, Card, CardContent, Snackbar, TextField } from "@material-ui/core"
 import MuiAlert from '@material-ui/lab/Alert';
 import useUser from '../../hooks/useUser'
 
@@ -11,8 +11,10 @@ function VotingDetailUser(props) {
   const [voteSuccess, setVoteSuccess] = useState(false)
   const [voteFailure, setVoteFailure] = useState(false)
   const [formError, setFormError] = useState(false)
+  const [tableTokenError, setTableTokenError] = useState(false)
   const [voting, setVoting] = useState({})
   const [canVote, setCanVote] = useState(false)
+  const [tableTokenValue, setTableTokenValue] = useState()
   const {auth} = useUser()
   const history = useHistory()
   const barId = props.match.params.idBar
@@ -27,14 +29,18 @@ function VotingDetailUser(props) {
       }
 
       setFormError(false);
+      setVoteFailure(false);
       setVoteSuccess(false);
+      setTableTokenError(false);
     };
 
     const handleSubmit = (event) => {
       if (radioValue === "0") {
         setFormError(true)
+      } else if (!tableTokenValue || tableTokenValue === "") {
+        setTableTokenError(true)
       } else {
-        VotingDataService.vote(voting.id, radioValue, auth.accessToken)
+        VotingDataService.vote(barId ,voting.id, radioValue, auth.accessToken, tableTokenValue)
           .catch((error) => {
             setVoteFailure(true)
           })
@@ -53,6 +59,11 @@ function VotingDetailUser(props) {
     const handleRadioChange = (event) => {
       event.persist()
       setRadioValue(event.target.value)
+    }
+
+    const handleTableTokenChange = (event) => {
+      event.persist()
+      setTableTokenValue(event.target.value)
     }
 
     const toDateFromString = (dateString) => {
@@ -140,6 +151,7 @@ function VotingDetailUser(props) {
                         </div>
                       </div>}
                     </RadioGroup>
+                    <TextField data-testid="table_token_field" label="Token de tu mesa" variant="outlined" error={tableTokenError} onChange={handleTableTokenChange} />
                   { canVote && auth && voting ?     
                   <Button
                     id="vote_btn"
@@ -168,6 +180,11 @@ function VotingDetailUser(props) {
           <Snackbar open={formError} autoHideDuration={6000} onClose={handleClose}>
             <Alert onClose={handleClose} severity="error">
               Selecciona una opción
+            </Alert>
+          </Snackbar>
+          <Snackbar open={tableTokenError} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="error">
+              El token no puede estar vacío
             </Alert>
           </Snackbar>
           <Snackbar open={voteSuccess} autoHideDuration={6000} onClose={handleClose}>

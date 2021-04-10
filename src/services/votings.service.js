@@ -17,8 +17,8 @@ class VotingDataService {
     }
 
 
-    vote = async (votingId, optionId, token) =>{
-        return http.post("/voting/" + votingId + "/option/" + optionId + "/vote", {}, {
+    vote = async (barId ,votingId, optionId, token, tableToken) =>{
+        return http.post("/bar/"+ barId +"/voting/" + votingId + "/option/" + optionId + "/vote", tableToken , {
                 headers:
                 {
                     "Authorization": "Bearer "+ token

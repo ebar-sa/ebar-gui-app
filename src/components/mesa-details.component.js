@@ -6,7 +6,7 @@ import { withStyles, makeStyles } from '@material-ui/core/styles'
 import MesaDataService from '../services/mesa.service';
 import mesaLibre from '../static/images/table/mesaLibre.png'
 import mesaOcupada from '../static/images/table/mesaOcupada.png'
-import AuthService from '../services/auth.service';
+import * as AuthService from '../services/auth';
 import BillDataService from '../services/bill.service';
 import { Redirect } from "react-router"
 
@@ -46,7 +46,7 @@ export default class BarTableDetails extends Component {
         token: "",
         error: false,
     }
-  };
+  }
   
   componentDidMount() {
     console.log(this.props.match.params.id); 

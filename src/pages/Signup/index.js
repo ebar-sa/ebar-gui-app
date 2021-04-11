@@ -55,10 +55,8 @@ export default function SignUp() {
     useEffect(() => {
         if (isLogged) {
             history.push('/')
-        }else if(isRegistered){
-            history.push('/login')
         }
-    }, [isLogged, history, isRegistered])
+    }, [isLogged, history])
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -79,6 +77,12 @@ export default function SignUp() {
                     <Alert severity="error" style={{width: '100%', marginTop: 30}}>
                         <AlertTitle>Error</AlertTitle>
                         {error}
+                    </Alert>
+                )}
+                {isRegistered && (
+                    <Alert severity="success" style={{width: '100%', marginTop: 30}}>
+                        <AlertTitle>Success</AlertTitle>
+                        You've been registered successfully. <a href="#/login">Click here</a> to log in.
                     </Alert>
                 )}
                 <form className={classes.form} onSubmit={handleSubmit}>
@@ -129,6 +133,7 @@ export default function SignUp() {
                                 label="Email Address"
                                 name="email"
                                 autoComplete="email"
+                                placeholder="example@mail.com"
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                         </Grid>
@@ -152,6 +157,7 @@ export default function SignUp() {
                                 label="DNI"
                                 name="dni"
                                 autoComplete="dni"
+                                placeholder="12345678A"
                                 onChange={(e) => setDni(e.target.value)}
                             />
                         </Grid>

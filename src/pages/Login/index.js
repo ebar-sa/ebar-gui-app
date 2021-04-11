@@ -3,8 +3,6 @@ import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import TextField from '@material-ui/core/TextField'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
 import Link from '@material-ui/core/Link'
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
@@ -67,7 +65,7 @@ export default function Login() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Log in
         </Typography>
         {error && (
           <Alert severity="error" style={{width: '100%', marginTop: 30}}>
@@ -84,7 +82,7 @@ export default function Login() {
             id="Username"
             label="Username"
             name="username"
-            autoComplete="email"
+            autoComplete="username"
             autoFocus
             onChange={(e) => setUsername(e.target.value)}
           />
@@ -100,10 +98,6 @@ export default function Login() {
             autoComplete="current-password"
             onChange={(e) => setPassword(e.target.value)}
           />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
           <Button
             type="submit"
             fullWidth
@@ -111,7 +105,7 @@ export default function Login() {
             color="primary"
             className={classes.submit}
           >
-            Sign In
+            Log In
           </Button>
           <Grid container>
             <Grid item xs>
@@ -120,7 +114,7 @@ export default function Login() {
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="#/signup" variant="body2">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>

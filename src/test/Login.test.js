@@ -30,7 +30,7 @@ describe('Render test suite', () => {
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
 
-        let signin = await rendered.findByText('Sign in')
+        let signin = await rendered.findByText('Log in')
 
         expect(signin).toBeInTheDocument()
     })

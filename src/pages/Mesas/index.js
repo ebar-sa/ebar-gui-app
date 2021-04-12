@@ -12,13 +12,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function Mesas() {
+export default function Mesas(props) {
   const classes = useStyles()
 
   const [tables, setTables] = useState([])
 
+  const barId = props.match.params.barId;
+
   useEffect(() => {
-    getTables().then((res) => setTables(res))
+    getTables(barId).then((res) => setTables(res))
   }, [])
 
   return (

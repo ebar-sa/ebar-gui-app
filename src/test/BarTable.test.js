@@ -37,7 +37,7 @@ describe('Render test suite', () => {
         let rendered = render(
             <Context.Provider value={{auth, setAuth}}>
                 <Router history={history} >
-                    <Mesas />
+                    <Mesas {...{ match: { params: { idBar: 1 } }, history: { location: { state: {} } } }}/>
                 </Router>
             </Context.Provider>)
 

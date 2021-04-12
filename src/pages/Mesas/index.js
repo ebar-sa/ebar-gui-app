@@ -21,7 +21,7 @@ export default function Mesas(props) {
 
   useEffect(() => {
     getTables(barId).then((res) => setTables(res))
-  }, [])
+  }, [barId])
 
   return (
     <div className={classes.root}>

@@ -20,9 +20,11 @@ import BarTableDetails from './components/mesa-details.component'
 import UserMenuDetails from './components/user-menu.component'
 import UserBillDetails from './components/user-bill.component'
 import MenuGestion from './components/admin/menu-admin-gestion.component'
-import Bar from "./pages/Bar";
-import PrivateRoute from "./components/private-route.js";
-import NotFoundPage from './hooks/pageError'
+import Bar from "./pages/Bar"
+import PrivateRoute from "./components/private-route.js"
+import NotFoundPage from './hooks/pageError';
+import BarTableCreate from './pages/BarTableCRUD/createTable'
+import BarTableUpdate from './pages/BarTableCRUD/updateTable'
 
 
 const drawerWidth = 240
@@ -97,7 +99,7 @@ export function App() {
         <Switch>
           <Route exact path={'/'} component={Home} />
           <PrivateRoute exact path={'/bares'} component={BarList} />
-          <Route exact path={'/mesas'} component={Mesas} />
+          <Route exact path={'/mesas/:id'} component={Mesas} />
           <Route exact path={'/login'} component={Login} />
           <Route exact path={'/profile'} component={Profile} />
           <PrivateRoute exact path={'/bares/:barId'} component={Bar} />
@@ -111,6 +113,8 @@ export function App() {
           <PrivateRoute exact path={'/bar/bill/:id'} component={UserBillDetails} />
           <PrivateRoute exact path={'/bar/menu/:id'} component={UserMenuDetails} />
           <PrivateRoute exact path={'/mesas/detallesMesa/:id'} component={BarTableDetails} />
+          <PrivateRoute exact path={'/mesas/:id/create'} component={BarTableCreate} />
+          <PrivateRoute exact path={'/mesas/:id/edit'} component={BarTableUpdate} />
           <PrivateRoute exact path={'/pageNotFound/'} component={NotFoundPage}/>
         </Switch>
       </main>

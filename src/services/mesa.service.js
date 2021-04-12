@@ -15,6 +15,15 @@ class BarTableDataService{
     ocupateBarTableByToken(id,token) {
         return http.get(`/tables/autoOccupateTable/${id}/${token}`,{headers: authHeader()});
     }
+    createBarTable(barId,table) {
+        return http.post(`/tables/createTable/${barId.id}`,table, {headers: authHeader()});
+    }
+    removeBarTable(id) {
+        return http.post(`/tables/deleteTable/${id}`, {headers: authHeader()});
+    }
+    updateBarTable(id) {
+        return http.post(`/tables/updateTable/${id}`,{header: authHeader()});
+    }
 }
 
 

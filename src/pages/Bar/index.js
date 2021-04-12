@@ -15,12 +15,14 @@ import Button from "@material-ui/core/Button";
 const useStyles = makeStyles((theme) => ({
     root: {
         alignSelf: "center",
-        margin: "10px"
+        margin: "10px",
+        flexGrow: 1
     },
     block: {
         padding: theme.spacing(1),
         textAlign: 'center',
-        margin: "auto"
+        margin: "auto",
+
     },
     bottomDivider: {
         borderBottom: "0.1em solid darkgray",
@@ -50,7 +52,6 @@ export default function Bar(props){
     const barId = props.match.params.barId;
 
     useEffect( () => {
-        const barId = props.match.params.barId;
         BarDataService.getBar(barId).then(res => {
             setBar(res.data);
         })
@@ -64,37 +65,39 @@ export default function Bar(props){
                 </Typography>
             </Paper>
 
-            <Grid container spacing={2}>
+            <Grid container spacing={2} alignItems="center" justify="center">
                 <Grid item xs={12} sm={6} align="center">
-                    {(bar && bar.images && bar.images.length > 0) ? <img alt="" src={"data:" + bar.images[0].type + ";base64," + bar.images[0].data} /> :
+                    {(bar && bar.images && bar.images.length > 0) ? <img alt="" src={"data:" + bar.images[0].fileType + ";base64," + bar.images[0].data} /> :
                         <img alt="" src={logo.default}/>}
                 </Grid>
 
-                <Grid item xs={12} sm={6} container justify={"center"}>
+                <Grid item xs={12} sm={6} align="center">
                     <Paper className={classes.block}>
-                        <Grid item container xs={12} justify={"center"} className={classes.bottomDivider}>
-                            <Grid item>
-                                {(bar.freeTables > 0) ?
-                                    <SvgIcon style={{ color: green[300] }} component={CheckBoxIcon} viewBox="0 0 24 18"/> :
-                                    <SvgIcon style={{ color: red[300] }} component={CloseIcon} viewBox="0 0 24 18"/>}
+                        <Grid container spacing={1} justify={"center"}>
+                            <Grid item xs={12} className={classes.bottomDivider}>
+                                <Grid container justify={"center"}>
+                                    <Grid item>
+                                        {(bar.freeTables > 0) ?
+                                            <SvgIcon style={{ color: green[300] }} component={CheckBoxIcon} viewBox="0 0 24 18"/> :
+                                            <SvgIcon style={{ color: red[300] }} component={CloseIcon} viewBox="0 0 24 18"/>}
+                                    </Grid>
+                                    <Grid item>
+                                        <Typography component="h6" variant="h6" align="center">
+                                            Mesas disponibles: {bar.freeTables}/{bar.tables}
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
                             </Grid>
-                            <Grid item>
-                                <Typography component="h6" variant="h6" align="center">
-                                    Mesas disponibles: {bar.freeTables}/{bar.tables}
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                        <Grid item>
-                            <Grid item className={classes.bottomDivider}>
+                            <Grid item xs={12} className={classes.bottomDivider}>
                                 <Typography variant={"subtitle1"} align="center">
                                     {bar.location}
                                 </Typography>
                             </Grid>
-                        </Grid>
-                        <Grid item>
-                            <Typography variant={"body1"} align="center">
-                                {bar.description}
-                            </Typography>
+                            <Grid item xs={12}>
+                                <Typography variant={"body1"} align="center">
+                                    {bar.description}
+                                </Typography>
+                            </Grid>
                         </Grid>
                     </Paper>
                 </Grid>

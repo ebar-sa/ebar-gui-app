@@ -9,6 +9,7 @@ import BarList from './pages/BarList'
 import CreateVotings from './pages/VotingCreate'
 import Votings from './pages/VotingList'
 import VotingDetailUser from './pages/VotingDetail'
+import BarCreate from "./pages/BarCreate";
 
 import Header from './components/Header'
 
@@ -100,6 +101,7 @@ export function App() {
           <Route exact path={'/mesas'} component={Mesas} />
           <Route exact path={'/login'} component={Login} />
           <Route exact path={'/profile'} component={Profile} />
+          <PrivateRoute exact path={'/bares/create'} component={BarCreate} />
           <PrivateRoute exact path={'/bares/:barId'} component={Bar} />
           <PrivateRoute exact path={'/bares/:idBar/menu'} component={MenuGestion} />
           <PrivateRoute exact path={"/bares/:idBar/votings"} component={Votings} />

@@ -13,6 +13,10 @@ class BarDataService {
     getBar(id) {
         return http.get("/bar/" + id, {headers: authHeader()})
     }
+
+    createBar(object) {
+        return http.post("/bar", object, {headers: authHeader()})
+    }
 }
 
 export default new BarDataService();

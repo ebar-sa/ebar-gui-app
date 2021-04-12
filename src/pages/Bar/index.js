@@ -55,7 +55,7 @@ export default function Bar(props){
         BarDataService.getBar(barId).then(res => {
             setBar(res.data);
         })
-    }, [props.match.params.barId])
+    }, [barId, props.match.params.barId])
 
     return (
         <div className={classes.root}>

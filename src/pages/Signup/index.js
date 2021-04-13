@@ -47,6 +47,7 @@ export default function SignUp() {
     const roles = ['ROLE_CLIENT']
     const emailPatt = new RegExp(/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i)
     const phonePatt = new RegExp("^[+]*[(]?[0-9]{1,4}[)]?[-s./0-9]*$")
+    const dniPatt = new RegExp("^[0-9]{8}[A-Z]$")
 
     const {isLogged, isRegistered, signup, error} = useUser()
 
@@ -97,6 +98,10 @@ export default function SignUp() {
         if (!formData.lastName) {
             valid = false
             objErrors["lastName"] = "El apellido no puede estar vacío"
+        }
+        if (formData.dni && !dniPatt.test(formData.dni)) {
+            valid = false
+            objErrors["dni"] = "El DNI introducido no es válido, debe tener 8 dígitos seguidos de una letra mayúscula"
         }
         if (!formData.phoneNumber || !phonePatt.test(formData.phoneNumber)) {
             valid = false
@@ -179,7 +184,7 @@ export default function SignUp() {
                                onChange={(e) => handleChange(e)}
                             />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} sm={6}>
                             <TextField required fullWidth
                                id="phoneNumber"
                                name="phoneNumber"
@@ -191,7 +196,7 @@ export default function SignUp() {
                                onChange={(e) => handleChange(e)}
                             />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} sm={6}>
                             <TextField fullWidth
                                 id="dni"
                                 name="dni"
@@ -199,6 +204,8 @@ export default function SignUp() {
                                 variant="outlined"
                                 autoComplete="dni"
                                 placeholder="12345678A"
+                                error={formErrors.dni !== null && formErrors.dni !== undefined && formErrors.dni !== ''}
+                                helperText={formErrors.dni}
                                 onChange={(e) => handleChange(e)}
                             />
                         </Grid>

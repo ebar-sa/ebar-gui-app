@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions'
@@ -12,6 +12,9 @@ import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import Footer from '../../components/Footer'
 import useUser from '../../hooks/useUser'
+import LocationSearch from '../../components/location-search-bar'
+import '../../styles/home.css'
+import Map from '../../components/map'
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -46,7 +49,8 @@ const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 export default function Home() {
   const classes = useStyles()
   const { isLogged } = useUser()
-
+  const [location, setLocation] = useState()
+  const [error, setError] = useState(false)
 
   return (
 
@@ -54,7 +58,7 @@ export default function Home() {
       <CssBaseline />
       <main>
         <div className={classes.heroContent}>
-          <Container maxWidth="sm">
+          <Container>
             <Typography
               component="h1"
               variant="h2"
@@ -73,14 +77,22 @@ export default function Home() {
               Tu bar a la palma de la mano. Carta digital como nunca la habías
               visto. Gestión del entretenimiento.
             </Typography>
-            {isLogged ? <Typography
-              variant="h5"
-              align="center"
-              color="textSecondary"
-              paragraph
-            >
-              Ya puedes navegar por nuestro servicio. ¡Disfruta de todas las posibilidades que te ofrecemos!
-          </Typography>
+            {isLogged ?
+              <div className='container'>
+                <div className='typo'>
+                  <Typography
+                    variant="h6"
+                    align="center"
+                    color="textSecondary"
+                    paragraph
+                  >
+                    ¿En que zona desea buscar restaurantes?
+                  </Typography>
+                </div>
+                  <LocationSearch setError={setError} setLocation={setLocation} />
+                  {error === true && <p className='error'>Error al obtener la dirección</p>}
+                  <Map setError={setError} error={error} setLocation={setLocation} location={location}/>
+              </div>
           :
           <div className={classes.heroButtons}>
             <Grid container spacing={2} justify="center">

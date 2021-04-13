@@ -8,20 +8,15 @@ import { createMemoryHistory } from 'history';
 import Context from '../context/UserContext';
 
 // Hide warning
-console.error = () => { }
+console.error = () => {
+    //necessary empty
+ }
 
 const setAuth = jest.fn()
 const mockAxios = new MockAdapter(http)
 const history = createMemoryHistory()
 history.push = jest.fn();
 
-const client = {
-    username: "test-user",
-    email: "test@user.com",
-    roles: ["ROLE_CLIENT"],
-    tokenType: "Bearer",
-    accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pMyIsImlhdCI6MTYxNzMyNjA3NywiZXhwIjoxNjE3NDEyNDc3fQ.Hcpf9naGfM1FiQ6CEdBMthcsa9m9rIHs7ae4zaiO7MCPKAT3HpK9Is5fAKbuu7MlF4bLuTN2qctRalxTz8elQg"
-}
 
 const admin = {
     username: "test-admin",
@@ -29,17 +24,6 @@ const admin = {
     roles: ["ROLE_OWNER"],
     tokenType: "Bearer",
     accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0LWFkbWluIiwiaWF0IjoxNjE3NDUwNzk0LCJleHAiOjE2MTc1MzcxOTR9.KhlzaCxWGb25NHgJ557N1L6ETwNdTOqrKJ1s4cnBG7L2rZFEWLnbhizLJ5LizHxUqGxqrps3NU-gx-l6FyozRg"
-}
-
-
-function renderCreateVotingUser(auth){
-    return render(
-        <Context.Provider value={{ auth, setAuth }}>
-            <Router {...{ match: { params: { idBar: 1 }}}} history={history} >
-                <CreateVotings />
-            </Router>
-        </Context.Provider>
-        )
 }
 
 function renderCreateVotingAdmin(auth) {
@@ -187,7 +171,7 @@ describe('Testing create voting', () => {
 
         let rendered = renderCreateVotingAdmin(admin)
 
-        let promise = new Promise(r => setTimeout(r, 250));
+        let promise = new Promise(r => setTimeout(r, 2500));
         await act(() => promise)
 
         let title = await rendered.getByRole('textbox', { name: /Título/i })

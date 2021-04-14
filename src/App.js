@@ -114,7 +114,7 @@ export function App() {
           <PrivateRoute exact path={'/bar/menu/:id'} component={UserMenuDetails} />
           <PrivateRoute exact path={'/mesas/detallesMesa/:id'} component={BarTableDetails} />
           <PrivateRoute exact path={'/mesas/:id/create'} component={BarTableCreate} />
-          <PrivateRoute exact path={'/mesas/:id/edit'} component={BarTableUpdate} />
+          <PrivateRoute exact path={'/mesas/bar/:idBar/mesa/:id/edit'} component={BarTableUpdate} />
           <PrivateRoute exact path={'/pageNotFound/'} component={NotFoundPage}/>
         </Switch>
       </main>

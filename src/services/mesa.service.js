@@ -18,11 +18,11 @@ class BarTableDataService{
     createBarTable(barId,table) {
         return http.post(`/tables/createTable/${barId.id}`,table, {headers: authHeader()});
     }
-    removeBarTable(id) {
-        return http.post(`/tables/deleteTable/${id}`, {headers: authHeader()});
+    removeBarTable(idBar,tableId) {
+        return http.post(`/tables/deleteTable/${idBar}/${tableId}`, { headers: authHeader()});
     }
-    updateBarTable(id) {
-        return http.post(`/tables/updateTable/${id}`,{header: authHeader()});
+    updateBarTable(id,table) {
+        return http.post(`/tables/updateTable/${id}`,table,{headers: authHeader()});
     }
 }
 

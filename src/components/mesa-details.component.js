@@ -51,7 +51,8 @@ export default class BarTableDetails extends Component {
         isPhoneScreen: false,
         showMenuPhone: true,
         showBillPhone: false,
-        sortOptions: [{ id: 'name', desc: true }]
+        sortOptions: [{ id: 'name', desc: true }],
+        openSubmitIncorrect: false
     }
   };
 
@@ -85,7 +86,7 @@ export default class BarTableDetails extends Component {
         })
     })
     .catch(e => {
-       this.setState({
+      this.setState({
          error: true
        })
     })

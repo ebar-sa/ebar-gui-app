@@ -37,7 +37,7 @@ export default function Mesas() {
       <Grid container spacing={3}>
         {tables.map((table) => (
           <Grid item xs={12} sm={6} md={6}  key={table.id}>
-            <Mesa {...table} isAdmin={isAdmin} />
+            <Mesa {...table} isAdmin={isAdmin} idBar={id} />
           </Grid>
         ))}
         {isAdmin ? 
@@ -51,5 +51,6 @@ export default function Mesas() {
           }
       </Grid>
     </div>
+    
   )
 }

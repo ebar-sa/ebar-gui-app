@@ -1,9 +1,11 @@
-import React from 'react'
+import React, {useState,useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
+import Alert from '@material-ui/lab/Alert';
 import Typography from '@material-ui/core/Typography'
-import { ButtonBase,Button, ButtonGroup,Grid } from '@material-ui/core'
+import { ButtonBase,Button, ButtonGroup,Grid, Snackbar } from '@material-ui/core'
+import MesaDataService from '../services/mesa.service'
 import { useHistory } from "react-router"
 
 const useStyles = makeStyles({
@@ -27,6 +29,9 @@ const useStyles = makeStyles({
   },
   buttonBorrar:{
     backgroundColor: '#fca491'
+  },
+  snak: {
+    marginBottom: '20px',
   }
 })
 
@@ -34,15 +39,25 @@ export function Mesa(props) {
   const classes = useStyles()
   const {id, name, free } = props
   const history = useHistory()
+  const [openRemoveCorrect, setOpenRemoveCorrect] = useState(false)
 
   const routeRedirect = () => {
     let path = `/mesas/detallesMesa/${id}`;
     history.push(path);
   } 
   const isAdmin = props.isAdmin; 
-
+  const idBar = props.idBar;
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+        return;
+    }
+    setOpenRemoveCorrect(false)
+  };
   const removeBarTable = () => {
-    console.log("Estoy intentando eliminar");
+    MesaDataService.removeBarTable(idBar,id).then(res => { 
+      history.go(0);
+      setOpenRemoveCorrect(true)
+    })
   }
   return (
     <div>
@@ -66,13 +81,18 @@ export function Mesa(props) {
     {isAdmin ? 
     <Grid item container xs={12}>
         <ButtonGroup fullWidth={true} aria-label="outlined primary button group" >
-            <Button className={classes.buttonEditar} href={`/#/mesas/${id}/edit`}>Editar Mesa</Button>
+            <Button className={classes.buttonEditar} href={`/#/mesas/bar/${idBar}/mesa/${id}/edit`}>Editar Mesa</Button>
             <Button className={classes.buttonBorrar} onClick={() => removeBarTable(id)}>Eliminar Mesa</Button>
         </ButtonGroup>
     </Grid>
     :
     <p></p>
     }
+    <Snackbar  open={openRemoveCorrect} autoHideDuration={6000} onClose={handleClose}>
+         <Alert onClose={handleClose} severity="error">
+            Has borrado correctamente la mesa
+         </Alert>
+     </Snackbar>
     </div>
   )
 }

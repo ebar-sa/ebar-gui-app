@@ -1,4 +1,5 @@
 import http from "../http-common";
+import authHeader from "./auth-header";
 
 export default class BarTableDataService{
 
@@ -21,10 +22,10 @@ export default class BarTableDataService{
     removeBarTable(id) {
         return http.post(`/tables/deleteTable/${id}`, {headers: authHeader()});
     }
-    updateBarTable(id) {
-        return http.post(`/tables/updateTable/${id}`,{header: authHeader()});
+    updateBarTable(id,table) {
+        return http.post(`/tables/updateTable/${id}`,table,{header: authHeader()});
     }
     getTableDetails(id) {
-        return http.get(`/table-details/${id}`);
+        return http.get(`/table-details/${id}`, {headers:authHeader()});
     }
 }

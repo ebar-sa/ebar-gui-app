@@ -7,6 +7,7 @@ import {TextField, Button, Snackbar, Container, Grid, Typography, FormControl, I
 import { useHistory } from 'react-router'
 import useUser from '../../hooks/useUser';
 import { useParams } from 'react-router-dom';
+import { names } from 'debug';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -18,9 +19,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function BarTableUpdate(props){
     const classes = useStyles();
-    const [state, setState] = useState('')
     const params = useParams();
     const id = params.id;
+    const idBar = params.idBar;
     const [barTable,setBarTable] = useState({});
     const [openSubmitIncorrect, setOpenSubmitIncorrect] = useState(false)
     const history = useHistory()
@@ -37,15 +38,15 @@ export default function BarTableUpdate(props){
     }, [admin, history,id])
     const handleSubmit = (evt) => {
         evt.preventDefault();
-            if(state.name === undefined || state.name === "" || state.seats === undefined ){
+            if(barTable.name === undefined || barTable.name === "" || barTable.seats === undefined ){
                 setOpenSubmitIncorrect(true)
             }else{
                 const object = {
-                    "name": state.name, "seats":parseInt(state.seats)
+                    "name": barTable.name, "seats":parseInt(barTable.seats)
                 }
-                BarTableService.createBarTable(id, object).then(response => {
+                BarTableService.updateBarTable(id, object).then(response => {
                     if(response.status ===201){
-                        props.history.push({ pathname: '/mesas/' + id, state:{ data: true }});
+                        props.history.push({ pathname: '/mesas/' + idBar, barTable:{ data: true }});
                     }else{
                         setOpenSubmitIncorrect(true)
                     }
@@ -56,7 +57,7 @@ export default function BarTableUpdate(props){
     }
 
     const handleChange = (event) => {
-        setState({ ...state, [event.target.name]: event.target.value });
+        setBarTable({...barTable, [event.target.name]: event.target.value })
     }
 
     const handleClose = (event, reason) => {
@@ -79,7 +80,7 @@ export default function BarTableUpdate(props){
                     <div>
                     <FormControl focused="true">
                         <InputLabel htmlFor="name">Nombre</InputLabel>
-                        <Input className='input-title' id="name" label="Nombre" name="name" onChange={(e) => handleChange(e)} value={barTable.name}/>
+                        <Input className='input-title' id="name" label="Nombre" name="name"  value={barTable.name} onChange={(e) => handleChange(e)}/>
                     </FormControl>
                     </div>
                     </Grid>

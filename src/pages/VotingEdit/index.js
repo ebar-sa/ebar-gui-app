@@ -201,11 +201,8 @@ function EditVoting(props) {
                 "votersUsernames": voting.votersUsernames
             }
 
-            debugger;
-
             votingsService.updateVoting(barId, voting.id, object)
                 .then( res => {
-                    debugger;
                     if (res.status === 200) {
                         props.history.push({pathname: '/bares/' + barId + '/votings', state: { data: true}})
                     } else {

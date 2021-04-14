@@ -25,7 +25,6 @@ import Bar from './pages/Bar'
 import PrivateRoute from './components/private-route.js'
 import NotFoundPage from './hooks/pageError'
 import Checkout from './pages/Checkout'
-import Pricing from './components/Pricing'
 import Subscribe from './pages/Subscribe'
 
 const drawerWidth = 240
@@ -147,7 +146,6 @@ export function App() {
             path={'/mesas/detallesMesa/:id'}
             component={BarTableDetails}
           />
-          <PrivateRoute exact path={'/payments/pricing'} component={Pricing} />
           <PrivateRoute
             exact
             path={'/payments/subscriptions'}

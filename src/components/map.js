@@ -6,6 +6,7 @@ import BarDataService from "../services/bar.service";
 import Geocode from "react-geocode";
 import '../styles/map.css'
 import { getDistance } from 'geolib';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 var options = {
     enableHighAccuracy: true,
@@ -13,7 +14,7 @@ var options = {
     maximumAge: 0
 };
 
-Geocode.setApiKey("AIzaSyANZc7ydpfQndh5qg-SWNHcBL9KwKh_jlA");
+Geocode.setApiKey(process.env.REACT_APP_API_KEY);
 Geocode.setLanguage("en");
 Geocode.setRegion("es");
 Geocode.setLocationType("ROOFTOP");
@@ -28,27 +29,31 @@ function Map(props) {
     const error = props.error
     const setError = props.setError
     const history = useHistory()
+    const [loading, setLoading] = useState(false)
 
     const setStartLoc = useCallback(() => {
-        return new Promise(function (resolve, reject) {
+        return new Promise(function (resolve, reject) {    
             if (navigator && navigator.geolocation) {
                 return navigator.geolocation.getCurrentPosition(
                     pos => {
                         setError(false)
                         return resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude });
                     },
-                    err => 
-                    options
-                );
+                    err => { 
+                        setLoading(false)
+                    }
+                ,options);
             }
             return resolve({ lat: 0, lng: 0 });
         });
     }, [setError])
 
     useEffect(() => {
+        setLoading(true)
         setStartLoc().then(startLoc => {
+            setLoading(false)
             setLocation(startLoc)
-        })
+        }).catch(error => console.log(error))
     }, [setLocation, setStartLoc]);
 
     useEffect(() => {
@@ -94,7 +99,12 @@ function Map(props) {
     return (
         <div>
             <div className="map">
-                {location && error===false &&
+                {loading ? <div>
+                    <CircularProgress />
+                    <p>Cargando mapa...</p>
+                    </div>
+                : <div></div>}
+                {location && error===false && 
                     <GoogleMap
                         mapContainerClassName='contain'
                         center={location}

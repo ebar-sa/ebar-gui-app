@@ -86,7 +86,7 @@ export default function Subscribe({ match }) {
         history.push('/payments/subscriptions')
       })
       .catch((err) => {
-        alert(err)
+        history.push('/pageNotFound')
       })
   }
 

@@ -151,16 +151,18 @@ describe('Render test suite', () => {
                 </Router>
             </Context.Provider>)
 
-        let promise = new Promise(r => setTimeout(r, 250));
+        let promise = new Promise(r => setTimeout(r, 1050));
         await act(() => promise)
         
         let voteBtn = rendered.queryByText("Enviar votación")
         let cannotVoteBtn = rendered.queryByText('No puedes votar ahora mismo')
-        let emptyPage = rendered.container.querySelector('#empty_page')
+        let cannotVoteAlert = rendered.queryByText('No puedes entrar en la votación ahora mismo')
+        let emptyPage = rendered.queryByTestId('empty_page')
 
         expect(cannotVoteBtn).not.toBeInTheDocument()
         expect(voteBtn).not.toBeInTheDocument()
         expect(emptyPage).toBeInTheDocument()
+        expect(cannotVoteAlert).toBeInTheDocument()
     })
 
 });

@@ -12,6 +12,8 @@ function VotingDetailUser(props) {
   const [voteFailure, setVoteFailure] = useState(false)
   const [formError, setFormError] = useState(false)
   const [tableTokenError, setTableTokenError] = useState(false)
+  const [votingHasExpired, setVotingHasExpired] = useState(false)
+  const [now, setNow] = useState(new Date())
   const [voting, setVoting] = useState({})
   const [canVote, setCanVote] = useState(false)
   const [tableTokenValue, setTableTokenValue] = useState()
@@ -72,15 +74,23 @@ function VotingDetailUser(props) {
        return new Date(parseInt(aux[5]), parseInt(aux[3])-1, aux[1], aux[7], aux[9], aux[11])
     }
 
-    const votingHasExpired = () => {
-      let res = false
+    useEffect(() => {
+      const interval = setInterval(() => {
 
-      if (voting.closingHourc && toDateFromString(voting.closingHour) < Date.now()) {
-          res = true
+        if(voting && voting !== {}) {
+          let res = false
+
+          if (voting.closingHour && toDateFromString(voting.closingHour) < now) {
+            res = true
+          }
+          setNow(new Date())
+          setVotingHasExpired(res)
+        }
+      }, 1000)
+      return () => {
+        clearInterval(interval)
       }
-    
-      return res
-    }
+    }, [voting, now])
 
     useEffect(() => {
       const votingId = props.match.params.votingId
@@ -88,7 +98,7 @@ function VotingDetailUser(props) {
       VotingDataService.getVoting(votingId, auth.accessToken).then(res => {
         setVoting(res)
 
-        let dateNow = Date.now()
+        let dateNow = new Date()
         let schDate = false
         let sohDate = false
 
@@ -110,7 +120,7 @@ function VotingDetailUser(props) {
 
     return (
         <div>
-        { auth && voting && voting.length !== 0 && !votingHasExpired() ? 
+        { auth && voting && voting.length !== 0 && !votingHasExpired ? 
           <div>
           <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
           <div>
@@ -198,10 +208,15 @@ function VotingDetailUser(props) {
             </Alert>
           </Snackbar>
         </div>
-        : <div id="empty_page">
+        : 
+        <div data-testid="empty_page">
+          <Snackbar open={true} autoHideDuration={6000}>
+            <Alert  severity="error">
+              No puedes entrar en la votación ahora mismo
+            </Alert>
+          </Snackbar>
         </div> }
       </div>
       );
-    }
-
+  }
 export default VotingDetailUser

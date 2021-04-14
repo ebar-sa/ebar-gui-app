@@ -49,6 +49,10 @@ class VotingDataService {
     createVoting = (barId, object) => {
         return http.post('/bar/' +barId +'/voting', object, { headers: authHeader() })
     }
+
+    updateVoting = (barId, votingId, object) => {
+        return http.put('/bar/'+barId+'/voting/'+votingId, object,  {headers: authHeader()})
+    }
 }
 
 export default new VotingDataService()

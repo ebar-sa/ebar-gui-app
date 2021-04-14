@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import VotingDataService from "../../services/votings.service";
 import { makeStyles } from '@material-ui/core/styles';
 import '../../styles/create-voting.css'
-
+import Footer from '../../components/Footer';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider ,KeyboardDateTimePicker } from "@material-ui/pickers";
-import {AddCircle, Delete}from "@material-ui/icons";
+import {AddCircle, Delete, Send, Cancel}from "@material-ui/icons";
 import Alert from '@material-ui/lab/Alert';
 import {TextField, Button, IconButton, Snackbar, Container, Grid, Typography} from '@material-ui/core';
 import { useHistory } from 'react-router'
@@ -13,6 +13,7 @@ import useUser from '../../hooks/useUser'
 
 const useStyles = makeStyles((theme) => ({
     root: {
+        flexGrow: 1,
         '& .MuiInputLabel-formControl': {
             top: '-5px',
         },
@@ -86,7 +87,6 @@ export default function CreateVotings(props){
     const handleChange = (event) => {
         setState({ ...state, [event.target.name]: event.target.value });
     }
-
     const handleValidation = () => {
         let formIsValid = true;
         let objectErrors = {}
@@ -98,6 +98,11 @@ export default function CreateVotings(props){
         if (!state.description) {
             formIsValid = false;
             objectErrors["description"] = "No puede estar vacío";
+        }
+
+        if(closingHour < openingHour){
+            formIsValid = false;
+            objectErrors["closing"] = "La fecha de fin no puede ser anterior a la de inicio";
         }
 
         add.forEach(index => {
@@ -118,6 +123,8 @@ export default function CreateVotings(props){
         setOpeningHour(date);
         if (date === undefined || isNaN(date)){
             setErrorOpen('Fecha no válida')
+        } else if (date !== '' && date != null && date > closingHour) {
+            setErrorOpen('La fecha de inicio no puede ser posterior a la de fin')
         } else if (date < now) {
             setErrorOpen('La fecha no puede estar en pasado')
         }
@@ -197,6 +204,7 @@ export default function CreateVotings(props){
     }
 
     return(
+        <div>
         <Container fixed>
             <div style={{ marginTop: '50px', marginBottom: '100px'}}>
             <Typography className='h5' variant="h5" gutterBottom>
@@ -204,17 +212,13 @@ export default function CreateVotings(props){
             </Typography>
             <div style={{marginTop: '60px'}}>
                 <form onSubmit={(e) => handleSubmit(e)} className={classes.root}>
-                    <Grid container justify="center" alignItems="center" >
-                    <div>
-                    <TextField className='input-title' id="title" label="Título" name="title" onChange={(e) => handleChange(e)}/>
-                    <p className="p-style">{errors["title"]}</p>
-                    </div>
+                    <Grid container justify="center" alignItems="center" direction="column">
+                        <TextField className='input-title' id="title" label="Título" name="title" onChange={(e) => handleChange(e)}/>
+                        <p className="p-style">{errors["title"]}</p>
                     </Grid>
-                    <Grid container justify="center" alignItems="center" >
-                    <div style={{marginTop: '20px'}}>
+                    <Grid direction="column" style={{marginTop:'50px'}} container justify="center" alignItems="center" >
                         <TextField className='input-title' id="description" label="Descripción" name="description" onChange={(e) => handleChange(e)} multiline rows={4} variant="outlined"/>
                         <p className="p-style">{errors["description"]}</p>
-                    </div>
                     </Grid>
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <Grid container justify="center" alignItems="center" >
@@ -234,6 +238,7 @@ export default function CreateVotings(props){
                         disablePast
                         format="dd-MM-yyyy HH:mm:ss"
                     />
+                    <p className="p-style">{errors["opening"]}</p>
                     </div >
                     </Grid>
                     <Grid container justify="center" alignItems="center"  >
@@ -253,6 +258,7 @@ export default function CreateVotings(props){
                         disablePast
                         format="dd-MM-yyyy HH:mm:ss"
                     />
+                    <p className="p-style">{errors["closing"]}</p>
                     </div>
                     </Grid>
                     </MuiPickersUtilsProvider>
@@ -287,13 +293,32 @@ export default function CreateVotings(props){
                             );
                         })}
                     </div>
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        style={{ ...stylesComponent.buttonCrear }}>
-                        Enviar
-                    </Button> 
+                    <div className='submit'>
+                        <Grid container
+                            direction="row"
+                            justify="center"
+                                alignItems="center" spacing={3}>
+                        <Grid item>
+                        <Button
+                                onClick={() => history.goBack()}
+                                variant="contained"
+                                style={{ ...stylesComponent.buttonDiscard }}
+                                startIcon={<Cancel />}>
+                                Descartar
+                        </Button>
+                        </Grid >
+                        <Grid item>
+                        <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                style={{ ...stylesComponent.buttonCreate }}
+                                startIcon={<Send />}>
+                                Crear
+                        </Button>
+                        </Grid>
+                    </Grid>
+                    </div>
                     <div>
                         <Snackbar open={openSubmitIncorrect} autoHideDuration={6000} onClose={handleClose}>
                             <Alert onClose={handleClose} severity="error">
@@ -313,22 +338,30 @@ export default function CreateVotings(props){
                         
                     </div>
                 </form>
-            </div>
+            </div>  
         </div>
         </Container>
+        <Footer />
+        </div>
     )
 }
 
 const stylesComponent = {
-    buttonCrear: {
+    buttonCreate: {
         backgroundColor: '#007bff',
         textTransform: 'none',
         letterSpacing: 'normal',
         fontSize: '15px',
         fontWeight: '600',
-        textAlign: 'center',
-        margin: 'auto',
-        display: 'block',
+        marginTop: '30px'
+    },
+    buttonDiscard: {
+        backgroundColor: '#d53249',
+        color: 'white',
+        textTransform: 'none',
+        letterSpacing: 'normal',
+        fontSize: '15px',
+        fontWeight: '600',
         marginTop: '30px'
     }
 }

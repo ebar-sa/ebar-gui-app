@@ -15,31 +15,12 @@ const mockAxios = new MockAdapter(http)
 const history = createMemoryHistory()
 history.push = jest.fn();
 
-const client = {
-    username: "test-user",
-    email: "test@user.com",
-    roles: ["ROLE_CLIENT"],
-    tokenType: "Bearer",
-    accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pMyIsImlhdCI6MTYxNzMyNjA3NywiZXhwIjoxNjE3NDEyNDc3fQ.Hcpf9naGfM1FiQ6CEdBMthcsa9m9rIHs7ae4zaiO7MCPKAT3HpK9Is5fAKbuu7MlF4bLuTN2qctRalxTz8elQg"
-}
-
 const admin = {
     username: "test-admin",
     email: "test@admin.com",
     roles: ["ROLE_OWNER"],
     tokenType: "Bearer",
     accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0LWFkbWluIiwiaWF0IjoxNjE3NDUwNzk0LCJleHAiOjE2MTc1MzcxOTR9.KhlzaCxWGb25NHgJ557N1L6ETwNdTOqrKJ1s4cnBG7L2rZFEWLnbhizLJ5LizHxUqGxqrps3NU-gx-l6FyozRg"
-}
-
-
-function renderCreateVotingUser(auth){
-    return render(
-        <Context.Provider value={{ auth, setAuth }}>
-            <Router {...{ match: { params: { idBar: 1 }}}} history={history} >
-                <CreateVotings />
-            </Router>
-        </Context.Provider>
-        )
 }
 
 function renderCreateVotingAdmin(auth) {
@@ -67,7 +48,7 @@ describe('Testing create voting', () => {
         let options = await rendered.findByText('Opciones')
         let add = await rendered.findByText('Añadir')
         let del = await rendered.findByText('Eliminar')
-        let send = await rendered.findByText('Enviar')
+        let send = await rendered.findByText('Crear')
 
         expect(header).toBeInTheDocument()
         expect(title).toBeInTheDocument()
@@ -124,9 +105,6 @@ describe('Testing create voting', () => {
         let error2Close = await rendered.findByText('La fecha de fin no puede ser anterior a la de inicio')
         expect(error2Close).toBeInTheDocument()
 
-        fireEvent.change(opening, { target: { value: '04-12-2021 11:57:34' } })
-        expect(errorOpen).not.toBeInTheDocument()
-
     })
 
     it('Options inputs correct', async () => {
@@ -172,7 +150,7 @@ describe('Testing create voting', () => {
         let option1 = await rendered.container.querySelector('#option1');
         fireEvent.change(option1, { target: { value: 'Descripción de la opción' } })
 
-        let send = await rendered.getByRole('button', { name: /Enviar/i })        
+        let send = await rendered.getByRole('button', { name: /Crear/i })        
         
         await act(async () => {
             fireEvent.click(send)
@@ -223,7 +201,7 @@ describe('Testing create voting', () => {
         let option1 = await rendered.container.querySelector('#option1');
         fireEvent.change(option1, { target: { value: '' } })
 
-        let send = await rendered.getByRole('button', { name: /Enviar/i })
+        let send = await rendered.getByRole('button', { name: /Crear/i })
 
         await act(async () => {
             fireEvent.click(send)
@@ -256,7 +234,22 @@ describe('Testing create voting', () => {
 
         let errorAdd = await rendered.queryByText('No puedes crear o eliminar más opciones')
         expect(errorAdd).toBeInTheDocument()
-
-
     })
+
+    it('Correct discard', async () => {
+        mockAxios.onPost().replyOnce(201)
+
+        let rendered = renderCreateVotingAdmin(admin)
+
+        let promise = new Promise(r => setTimeout(r, 250));
+        await act(() => promise)
+
+        let discard = await rendered.getByRole('button', { name: /Descartar/i })
+        fireEvent.click(discard);
+
+        await act(async () => {
+            fireEvent.click(discard)
+        })
+        expect(discard).toBeInTheDocument()
+        })
 })

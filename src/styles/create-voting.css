@@ -1,5 +1,6 @@
 .input-title{
     width: 300px;
+    position: relative;
 }
 
 .input-margin{
@@ -15,8 +16,13 @@
     margin-top: 20px;
     color: rgb(204, 6, 6);
     text-align: center;
+    position: relative;
 }
 
 .buttons-margin{
     margin-top: 20px;
+}
+
+.submit {
+    margin-top: 30px;
 }

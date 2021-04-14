@@ -9,6 +9,7 @@ import BarList from './pages/BarList'
 import CreateVotings from './pages/VotingCreate'
 import Votings from './pages/VotingList'
 import VotingDetailUser from './pages/VotingDetail'
+import Subscriptions from './pages/Subscriptions'
 
 import Header from './components/Header'
 
@@ -20,10 +21,12 @@ import BarTableDetails from './components/mesa-details.component'
 import UserMenuDetails from './components/user-menu.component'
 import UserBillDetails from './components/user-bill.component'
 import MenuGestion from './components/admin/menu-admin-gestion.component'
-import Bar from "./pages/Bar";
-import PrivateRoute from "./components/private-route.js";
+import Bar from './pages/Bar'
+import PrivateRoute from './components/private-route.js'
 import NotFoundPage from './hooks/pageError'
-
+import Checkout from './pages/Checkout'
+import Pricing from './components/Pricing'
+import Subscribe from './pages/Subscribe'
 
 const drawerWidth = 240
 
@@ -31,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     flex: '1',
-    overflowY: 'auto'
+    overflowY: 'auto',
   },
   appBar: {
     transition: theme.transitions.create(['margin', 'width'], {
@@ -77,8 +80,8 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   colorBar: {
-    backgroundColor: 'white'
-  }
+    backgroundColor: 'white',
+  },
 }))
 
 export function App() {
@@ -101,17 +104,75 @@ export function App() {
           <Route exact path={'/login'} component={Login} />
           <Route exact path={'/profile'} component={Profile} />
           <PrivateRoute exact path={'/bares/:barId'} component={Bar} />
-          <PrivateRoute exact path={'/bares/:idBar/menu'} component={MenuGestion} />
-          <PrivateRoute exact path={"/bares/:idBar/votings"} component={Votings} />
-          <PrivateRoute exact path={'/bares/:idBar/votings/voting/create'} component={CreateVotings} />
-          <PrivateRoute path={'/bares/:idBar/votings/voting/:votingId'} component={VotingDetailUser} />
-          <PrivateRoute exact path={"/votings"} component={Votings} />
-          <PrivateRoute path={'/votings/voting/create'} component={CreateVotings} />
-          <PrivateRoute path={'/votings/voting/:votingId'} component={VotingDetailUser} />
-          <PrivateRoute exact path={'/bar/bill/:id'} component={UserBillDetails} />
-          <PrivateRoute exact path={'/bar/menu/:id'} component={UserMenuDetails} />
-          <PrivateRoute exact path={'/mesas/detallesMesa/:id'} component={BarTableDetails} />
-          <PrivateRoute exact path={'/pageNotFound/'} component={NotFoundPage}/>
+          <PrivateRoute
+            exact
+            path={'/bares/:idBar/menu'}
+            component={MenuGestion}
+          />
+          <PrivateRoute
+            exact
+            path={'/bares/:idBar/votings'}
+            component={Votings}
+          />
+          <PrivateRoute
+            exact
+            path={'/bares/:idBar/votings/voting/create'}
+            component={CreateVotings}
+          />
+          <PrivateRoute
+            path={'/bares/:idBar/votings/voting/:votingId'}
+            component={VotingDetailUser}
+          />
+          <PrivateRoute exact path={'/votings'} component={Votings} />
+          <PrivateRoute
+            path={'/votings/voting/create'}
+            component={CreateVotings}
+          />
+          <PrivateRoute
+            path={'/votings/voting/:votingId'}
+            component={VotingDetailUser}
+          />
+          <PrivateRoute
+            exact
+            path={'/bar/bill/:id'}
+            component={UserBillDetails}
+          />
+          <PrivateRoute
+            exact
+            path={'/bar/menu/:id'}
+            component={UserMenuDetails}
+          />
+          <PrivateRoute
+            exact
+            path={'/mesas/detallesMesa/:id'}
+            component={BarTableDetails}
+          />
+          <PrivateRoute exact path={'/payments/pricing'} component={Pricing} />
+          <PrivateRoute
+            exact
+            path={'/payments/subscriptions'}
+            component={Subscriptions}
+          />
+          <PrivateRoute
+            exact
+            path={'/payments/add-card'}
+            component={Checkout}
+          />
+          <PrivateRoute
+            exact
+            path={'/payments/subscribe/:id'}
+            component={Subscribe}
+          />
+          <PrivateRoute
+            exact
+            path={'/payments/cancel/:id'}
+            component={Checkout}
+          />
+          <PrivateRoute
+            exact
+            path={'/pageNotFound/'}
+            component={NotFoundPage}
+          />
         </Switch>
       </main>
       <div className={classes.colorBar}>

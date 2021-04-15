@@ -57,8 +57,8 @@ function Map(props) {
             setBars(res.data);
         })
             .catch(e => {
-                history.push("/pageNotFound")
                 console.log("El error es ", e);
+                history.push("/pageNotFound")
             });
     }, [history])
 

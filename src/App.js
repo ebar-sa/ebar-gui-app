@@ -10,6 +10,7 @@ import BarList from './pages/BarList'
 import CreateVotings from './pages/VotingCreate'
 import Votings from './pages/VotingList'
 import VotingDetailUser from './pages/VotingDetail'
+import EditVoting from './pages/VotingEdit'
 
 import Header from './components/Header'
 
@@ -106,10 +107,9 @@ export function App() {
           <PrivateRoute exact path={'/bares/:idBar/menu'} component={MenuGestion} />
           <PrivateRoute exact path={"/bares/:idBar/votings"} component={Votings} />
           <PrivateRoute exact path={'/bares/:idBar/votings/voting/create'} component={CreateVotings} />
+          <PrivateRoute exact path={'/bares/:idBar/votings/voting/:votingId/edit'} component={EditVoting} />
           <PrivateRoute path={'/bares/:idBar/votings/voting/:votingId'} component={VotingDetailUser} />
           <PrivateRoute exact path={"/votings"} component={Votings} />
-          <PrivateRoute path={'/votings/voting/create'} component={CreateVotings} />
-          <PrivateRoute path={'/votings/voting/:votingId'} component={VotingDetailUser} />
           <PrivateRoute exact path={'/bar/bill/:id'} component={UserBillDetails} />
           <PrivateRoute exact path={'/bar/menu/:id'} component={UserMenuDetails} />
           <PrivateRoute exact path={'/mesas/detallesMesa/:id'} component={BarTableDetails} />

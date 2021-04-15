@@ -14,10 +14,6 @@ var options = {
     maximumAge: 0
 };
 
-Geocode.setApiKey(process.env.REACT_APP_API_KEY);
-Geocode.setLanguage("en");
-Geocode.setRegion("es");
-Geocode.setLocationType("ROOFTOP");
 
 function Map(props) {
 
@@ -70,6 +66,11 @@ function Map(props) {
     const [arr, setArr] = useState([])
 
     useEffect(() => {
+        Geocode.setApiKey(process.env.REACT_APP_API_KEY);
+        Geocode.setLanguage("en");
+        Geocode.setRegion("es");
+        Geocode.setLocationType("ROOFTOP");
+
         Promise.all(bars)
             .then((resp) => {
                 resp.forEach((bar) => {

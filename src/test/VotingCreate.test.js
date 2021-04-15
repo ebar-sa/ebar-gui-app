@@ -8,7 +8,9 @@ import { createMemoryHistory } from 'history';
 import Context from '../context/UserContext';
 
 // Hide warning
-console.error = () => { }
+console.error = () => {
+    //necessary empty
+ }
 
 const setAuth = jest.fn()
 const mockAxios = new MockAdapter(http)
@@ -158,7 +160,7 @@ describe('Testing create voting', () => {
         let errorSubmit = await rendered.queryByText('Tienes que rellenar el formulario correctamente')
         expect(errorSubmit).not.toBeInTheDocument()
 
-    })
+    }, [7000])
 
     it('Incorrect submit', async () => {
         mockAxios.onPost().replyOnce(201)
@@ -213,7 +215,7 @@ describe('Testing create voting', () => {
 
         let validatorText = await rendered.queryAllByText('No puede estar vacío')
         expect(validatorText).toHaveLength(3)
-    })
+    }, [7000])
 
     it('Options buttons incorrect', async () => {
         let rendered = renderCreateVotingAdmin(admin)

@@ -9,7 +9,9 @@ import Context from '../context/UserContext';
 import userEvent from '@testing-library/user-event'
 
 // Hide warning
-console.error = () => { }
+console.error = () => {
+    //empty function necessary
+ }
 
 const votings = [
     {

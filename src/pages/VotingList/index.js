@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { List, ListItem, ListItemText, Collapse, Button, Snackbar, Typography } from '@material-ui/core';
-import { ExpandLess, ExpandMore } from '@material-ui/icons';
+import { ExpandLess, ExpandMore, Add, ArrowRightSharp } from '@material-ui/icons';
 import VotingDataService from "../../services/votings.service";
 import { Link } from "react-router-dom";
-import {Add, ArrowRightSharp} from '@material-ui/icons';
 import Alert from '@material-ui/lab/Alert';
 import useUser from '../../hooks/useUser'
 import '../../styles/votings.css'
@@ -12,7 +11,7 @@ import Footer from '../../components/Footer';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 function Votings(props) {
-
+    
     const [votings, setVotings] = useState([])
     const [expanded, setExpanded] = useState({});
     const [time, setTime] = useState(new Date());
@@ -175,6 +174,115 @@ function Votings(props) {
         return <div className='center'>No existen próximas votaciones</div>
     }
 
+
+    const adminOrUser = () => {
+            if(admin){
+                return <div className="header">
+                    <Link to={'/bares/' + barId + '/votings/voting/create'}>
+                        <Button variant="contained" color="primary" style={{ ...stylesComponent.buttonCrear }} startIcon={<Add />}>
+                            Crear votación
+                                    </Button>
+                    </Link>
+                </div>
+            }
+            return <Typography className='h5' variant="h6" gutterBottom>
+                        A continuación, podrá encontrar la lista de votaciones disponibles en las que puede participar, junto con las finalizadas
+                    </Typography>
+        }
+
+
+    const showPastVotings = () => {
+        if(pastVotings.length > 0){
+                return pastVotings.map(x => {
+                    const votes = x.options.map(a => a.votes);
+                    return <div key={x.id}>
+                        <ListItem button onClick={() => handleClick(x.id)} style={{ ...stylesComponent.listitem }}>
+                            <ListItemText disableTypography style={{ ...stylesComponent.listItemText1 }} primary={x.title} />
+                            {!expanded[x.id] ? <ExpandLess /> : <ExpandMore />}
+                        </ListItem>
+                        <Collapse in={expanded[x.id]} timeout="auto" unmountOnExit>
+                            <List component="div" disablePadding style={{ ...stylesComponent.listdetail }}>
+                                <ListItem>
+                                    <ListItemText disableTypography style={{ ...stylesComponent.listItemText2 }}>
+                                        <p className='p'>{x.description}</p>
+                                        {x.options.length > 0 &&
+                                            <div style={{ width: '70%', margin: 'auto', textAlign: 'center' }}>
+                                                <p className='options'>Resultados</p>
+                                                <div style={{ margin: 'auto', textAlign: 'center', height: `${x.options.length * 50}px`, width: '100%' }}>
+                                                    <ResponsiveContainer width='99%' >
+                                                        {getChart(x, votes)}
+                                                    </ResponsiveContainer>
+                                                </div>
+                                            </div>}
+                                    </ListItemText>
+                                </ListItem>
+                            </List>
+                        </Collapse>
+                    </div>
+                })
+        }
+        return <div className='center'>No existen votaciones finalizadas</div>
+    }
+
+    const getChart = (x, votes) => {
+        return <BarChart
+            data={x.options}
+            layout="vertical"
+            barCategoryGap={1}
+            margin={{ top: 0, right: 15, left: 5, bottom: 20 }}
+        >
+            <XAxis type="number" hide />
+            <YAxis tickLine={false} axisLine={false} width={90} type="category" dx={3} tick={{ fontSize: 12, display: 'inline-block', fontWeight: '600' }} dataKey="description" />
+            <Tooltip />
+            <Bar radius={[0, 5, 5, 0]} dataKey="votes" isAnimationActive={false}>
+                <LabelList dataKey="votes" position="right" />
+                {x.options.map((entry, index) => {
+                    if (votes !== null && entry.votes === Math.max(...votes)) {
+                        return <Cell key={`cell-${index}`} fill='#64e127' />
+                    }
+                    return <Cell key={`cell-${index}`} fill="#8884d8" />
+                })}
+            </Bar>
+        </BarChart>
+    }
+
+    const showCurrentVotings = () => {
+        if(currentVotings.length > 0){
+                return currentVotings.map(x =>
+                <div key={x.id}>
+                    <ListItem button onClick={() => handleClick(x.id)} style={{ ...stylesComponent.listitem }}>
+                        <ListItemText disableTypography style={{ ...stylesComponent.listItemText1 }} primary={x.title} />
+                        {buttonRoles(x)}
+                        {!expanded[x.id] ? <ExpandLess /> : <ExpandMore />}
+                    </ListItem>
+                    <Collapse in={expanded[x.id]} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding style={{ ...stylesComponent.listdetail }}>
+                            <ListItem>
+                                <ListItemText disableTypography style={{ ...stylesComponent.listItemText2 }}>
+                                    <p className='p'>{x.description}</p>
+                                    <p className='p'>Fecha fin:
+                                                                {x.closingHour === null || x.closingHour === '' ? ' Indefinida'
+                                            : formatDate(x.closingHour)}
+                                    </p>
+                                    {x.options.length > 0 && admin &&
+                                        <div style={{ width: '70%', margin: 'auto', textAlign: 'center' }}>
+                                            <p className='options'>Votos</p>
+                                            <div style={{ margin: 'auto', textAlign: 'center', height: `${x.options.length * 50}px`, width: '100%' }}>
+                                                <ResponsiveContainer >
+                                                    {getChart(x, null)}
+                                                </ResponsiveContainer>
+                                            </div>
+                                        </div>}
+                                </ListItemText>
+                            </ListItem>
+                        </List>
+                    </Collapse>
+                </div>
+            )}
+        return <div className='center'>No existen votaciones en curso</div>
+    }
+
+
     return (
         
             <div>
@@ -192,121 +300,21 @@ function Votings(props) {
                             
                         </div>
                         <div>
-                            {admin ?
-                                <div className="header">
-                                    <Link to={'/bares/' + barId + '/votings/voting/create'}>
-                                        <Button variant="contained" color="primary" style={{ ...stylesComponent.buttonCrear }} startIcon={<Add />}>
-                                            Crear votación
-                                    </Button>
-                                    </Link>
-                                </div> :
-                                <Typography className='h5' variant="h6" gutterBottom>
-                                    A continuación, podrá encontrar la lista de votaciones disponibles en las que puede participar, junto con las finalizadas
-                                </Typography>}
+                            {adminOrUser()}
                         </div>
                         <div className='div-list'>
                             <Typography className='h5' variant="h6" gutterBottom>
                                 Votaciones finalizadas
                             </Typography>
                             <List component="nav">
-                                {pastVotings.length > 0 ? pastVotings.map(x => {
-                                    const votes = x.options.map(a => a.votes);
-                                    return <div key={x.id}>
-                                        <ListItem button onClick={() => handleClick(x.id)} style={{ ...stylesComponent.listitem }}>
-                                            <ListItemText disableTypography style={{ ...stylesComponent.listItemText1 }} primary={x.title} />
-                                            {!expanded[x.id] ? <ExpandLess /> : <ExpandMore />}
-                                        </ListItem>
-                                        <Collapse in={expanded[x.id]} timeout="auto" unmountOnExit>
-                                            <List component="div" disablePadding style={{ ...stylesComponent.listdetail }}>
-                                                <ListItem>
-                                                    <ListItemText disableTypography style={{ ...stylesComponent.listItemText2 }}>
-                                                        <p className='p'>{x.description}</p>
-                                                        {x.options.length > 0 &&
-                                                            <div style={{ width: '70%', margin: 'auto', textAlign: 'center' }}>
-                                                                <p className='options'>Resultados</p>
-                                                                <div style={{ margin: 'auto', textAlign: 'center', height: `${x.options.length * 50}px`, width: '100%' }}>
-                                                                    <ResponsiveContainer width='99%' >
-                                                                        <BarChart
-                                                                            data={x.options}
-                                                                            layout="vertical"
-                                                                            barCategoryGap={1}
-                                                                            margin={{ top: 0, right: 15, left: 5, bottom: 20 }}
-                                                                        >
-                                                                            <XAxis type="number" hide />
-                                                                            <YAxis tickLine={false} axisLine={false} width={90} type="category" dx={3} tick={{ fontSize: 12, display: 'inline-block', fontWeight: '600' }} dataKey="description" />
-                                                                            <Tooltip />
-                                                                            <Bar radius={[0, 5, 5, 0]} dataKey="votes" isAnimationActive={false}>
-                                                                                <LabelList dataKey="votes" position="right" />
-                                                                                {x.options.map((entry, index) => {
-                                                                                    if (entry.votes === Math.max(...votes)) {
-                                                                                        return <Cell key={`cell-${index}`} fill='#64e127' />
-                                                                                    }
-                                                                                    return <Cell key={`cell-${index}`} fill="#8884d8" />
-                                                                                })}
-                                                                            </Bar>
-                                                                        </BarChart>
-                                                                    </ResponsiveContainer>
-                                                                </div>
-                                                            </div>}
-                                                    </ListItemText>
-                                                </ListItem>
-                                            </List>
-                                        </Collapse>
-                                    </div>
-                                })
-                                    : <div className='center'>No existen votaciones finalizadas</div>}
+                                {showPastVotings()}
                             </List>
                             <div className='current'>
                                 <Typography className='h5' variant="h6" gutterBottom>
                                     Votaciones en curso
                                 </Typography>
                                 <List component="nav">
-                                    {currentVotings.length > 0 ? currentVotings.map(x =>
-                                        <div key={x.id}>
-                                            <ListItem button onClick={() => handleClick(x.id)} style={{ ...stylesComponent.listitem }}>
-                                                <ListItemText disableTypography style={{ ...stylesComponent.listItemText1 }} primary={x.title} />
-                                                {buttonRoles(x)}
-                                                {!expanded[x.id] ? <ExpandLess /> : <ExpandMore />}
-                                            </ListItem>
-                                            <Collapse in={expanded[x.id]} timeout="auto" unmountOnExit>
-                                                <List component="div" disablePadding style={{ ...stylesComponent.listdetail }}>
-                                                    <ListItem>
-                                                        <ListItemText disableTypography style={{ ...stylesComponent.listItemText2 }}>
-                                                            <p className='p'>{x.description}</p>
-                                                            <p className='p'>Fecha fin:
-                                                            {x.closingHour === null || x.closingHour === '' ? ' Indefinida'
-                                                                    : formatDate(x.closingHour)}
-                                                            </p>
-                                                            {x.options.length > 0 && admin &&
-                                                                <div style={{ width: '70%', margin: 'auto', textAlign: 'center' }}>
-                                                                    <p className='options'>Votos</p>
-                                                                    <div style={{ margin: 'auto', textAlign: 'center', height: `${x.options.length * 50}px`, width: '100%' }}>
-                                                                        <ResponsiveContainer >
-                                                                            <BarChart
-                                                                                data={x.options}
-                                                                                layout="vertical"
-                                                                                barCategoryGap={1}
-                                                                                margin={{ top: 0, right: 15, left: 5, bottom: 20 }}
-                                                                            >
-                                                                                <XAxis type="number" hide />
-                                                                                <YAxis tickLine={false} axisLine={false} width={90} type="category" dx={3} tick={{ fontSize: 12, display: 'inline-block', fontWeight: '600' }} dataKey="description" />
-                                                                                <Tooltip />
-                                                                                <Bar radius={[0, 5, 5, 0]} dataKey="votes" isAnimationActive={false}>
-                                                                                    <LabelList dataKey="votes" position="right" />
-                                                                                    {x.options.map((entry, index) => {
-                                                                                        return <Cell key={`cell-${index}`} fill="#8884d8" />
-                                                                                    })}
-                                                                                </Bar>
-                                                                            </BarChart>
-                                                                        </ResponsiveContainer>
-                                                                    </div>
-                                                                </div>}
-                                                        </ListItemText>
-                                                    </ListItem>
-                                                </List>
-                                            </Collapse>
-                                        </div>
-                                    ) : <div className='center'>No existen votaciones en curso</div>}
+                                    {showCurrentVotings()}
                                 </List>
                             </div>
                             {admin &&

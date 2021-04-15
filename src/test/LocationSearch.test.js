@@ -3,7 +3,7 @@ import { Router } from 'react-router-dom';
 import { render, fireEvent, wait } from "@testing-library/react";
 import { createMemoryHistory } from 'history';
 import { configure } from 'enzyme';
-import LocationSearch from '../components/location-search-bar'
+import LocationSearch from '../components/LocationSearch'
 import Context from '../context/UserContext';
 import Adapter from 'enzyme-adapter-react-16';
 

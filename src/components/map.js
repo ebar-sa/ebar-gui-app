@@ -53,7 +53,7 @@ function Map(props) {
         setStartLoc().then(startLoc => {
             setLoading(false)
             setLocation(startLoc)
-        }).catch(error => console.log(error))
+        }).catch(err => console.log(err))
     }, [setLocation, setStartLoc]);
 
     useEffect(() => {

@@ -136,7 +136,7 @@ describe('Testing create voting', () => {
 
         let rendered = renderCreateVotingAdmin(admin)
 
-        let promise = new Promise(r => setTimeout(r, 250));
+        let promise = new Promise(r => setTimeout(r, 500));
         await act(() => promise)
 
         let title = await rendered.getByRole('textbox', { name: /Título/i })
@@ -171,7 +171,7 @@ describe('Testing create voting', () => {
 
         let rendered = renderCreateVotingAdmin(admin)
 
-        let promise = new Promise(r => setTimeout(r, 2500));
+        let promise = new Promise(r => setTimeout(r, 500));
         await act(() => promise)
 
         let title = await rendered.getByRole('textbox', { name: /Título/i })

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import Home from '../pages/Home';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
@@ -98,13 +98,13 @@ describe('Render test home', () => {
     };
 
     const Map = () => {
-        return (<div>Hello World</div>);
+        return (<div></div>);
     };
     const LocationSearch = () => {
-        return (<div>Hello World</div>);
+        return (<div></div>);
     };
     jest.mock('../components/map', () => Map);
-    jest.mock('../components/location-search-bar', () => LocationSearch);
+    jest.mock('../components/LocationSearch', () => LocationSearch);
 
     it('Location search', async () => {
 
@@ -114,6 +114,7 @@ describe('Render test home', () => {
                 <Home />
             </Router>
         </Context.Provider>);
+
         let header = await rendered.findByText('¿En que zona desea buscar restaurantes?')
         expect(header).toBeInTheDocument()
 

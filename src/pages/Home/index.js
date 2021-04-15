@@ -12,7 +12,7 @@ import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import Footer from '../../components/Footer'
 import useUser from '../../hooks/useUser'
-import LocationSearch from '../../components/location-search-bar'
+import LocationSearch from '../../components/LocationSearch'
 import '../../styles/home.css'
 import Map from '../../components/map'
 

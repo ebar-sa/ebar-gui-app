@@ -109,7 +109,6 @@ export function App() {
           <PrivateRoute exact path={'/bares/:idBar/votings/voting/create'} component={CreateVotings} />
           <PrivateRoute exact path={'/bares/:idBar/votings/voting/:votingId/edit'} component={EditVoting} />
           <PrivateRoute path={'/bares/:idBar/votings/voting/:votingId'} component={VotingDetailUser} />
-          <PrivateRoute exact path={"/votings"} component={Votings} />
           <PrivateRoute exact path={'/bar/bill/:id'} component={UserBillDetails} />
           <PrivateRoute exact path={'/bar/menu/:id'} component={UserMenuDetails} />
           <PrivateRoute exact path={'/mesas/detallesMesa/:id'} component={BarTableDetails} />

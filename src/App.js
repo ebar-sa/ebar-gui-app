@@ -4,11 +4,13 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import Home from './pages/Home'
 import Login from './pages/Login'
+import Signup from './pages/Signup'
 import Profile from './pages/Profile'
 import BarList from './pages/BarList'
 import CreateVotings from './pages/VotingCreate'
 import Votings from './pages/VotingList'
 import VotingDetailUser from './pages/VotingDetail'
+import EditVoting from './pages/VotingEdit'
 
 import Header from './components/Header'
 
@@ -99,11 +101,13 @@ export function App() {
           <PrivateRoute exact path={'/bares'} component={BarList} />
           <Route exact path={'/mesas'} component={Mesas} />
           <Route exact path={'/login'} component={Login} />
+          <Route exact path={'/signup'} component={Signup} />
           <Route exact path={'/profile'} component={Profile} />
           <PrivateRoute exact path={'/bares/:barId'} component={Bar} />
           <PrivateRoute exact path={'/bares/:idBar/menu'} component={MenuGestion} />
           <PrivateRoute exact path={"/bares/:idBar/votings"} component={Votings} />
           <PrivateRoute exact path={'/bares/:idBar/votings/voting/create'} component={CreateVotings} />
+          <PrivateRoute exact path={'/bares/:idBar/votings/voting/:votingId/edit'} component={EditVoting} />
           <PrivateRoute path={'/bares/:idBar/votings/voting/:votingId'} component={VotingDetailUser} />
           <PrivateRoute exact path={'/bar/bill/:id'} component={UserBillDetails} />
           <PrivateRoute exact path={'/bar/menu/:id'} component={UserMenuDetails} />

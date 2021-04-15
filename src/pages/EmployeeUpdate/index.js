@@ -1,17 +1,17 @@
-import React, {useState} from 'react';
-import Avatar from '@material-ui/core/Avatar';
+import React, {useState, useEffect} from 'react';
+import { useHistory } from "react-router"
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import useEmployee from '../../hooks/useEmployee'
 import Copyright from '../../components/Copyright'
 import {Alert, AlertTitle} from '@material-ui/lab'
+import EmployeeDataService from "../../services/employee.service";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -34,37 +34,45 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function CreateEmployee(props) {
+export default function UpdateEmployee(props) {
     const classes = useStyles();
+    const history = useHistory();
 
     const [formData, setFormData] = useState({})
     const [formErrors, setFormErrors] = useState({})
+    const [employee, setEmployee] = useState({})
+
+    const [state, setState] = useState({})
 
     const roles = ['ROLE_EMPLOYEE'];
-    const idBar = props.match.params.idBar
+    const idBar = props.match.params.idBarActual
+    const user = props.match.params.userActual
     const emailPatt = new RegExp(/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i)
     const phonePatt = new RegExp("^[+]*[(]?[0-9]{1,4}[)]?[-s./0-9]*$")
  
 
-    const {createemployee, error} = useEmployee()
+    const {updateemployee, error} = useEmployee()
 
 
     const handleChange = (e) => {
-        setFormData({...formData, [e.target.name]: e.target.value})
+        console.log(e.target.name)
+        console.log(e.target.value)
+        setState({...state, [e.target.name]: e.target.value})
         setFormErrors({})
     }
-
+    
+console.log(employee)
     const handleSubmit = (e) => {
         e.preventDefault()
         if(handleValidation()){
-            let username = formData.username
-            let email = formData.email
-            let password = formData.password
-            let firstName = formData.firstName
-            let lastName = formData.lastName
-            let dni = formData.dni
-            let phoneNumber = formData.phoneNumber
-        createemployee(idBar, {username, email, roles, password, firstName, lastName, dni, phoneNumber})
+            let username = state.username
+            let email = state.email
+            let password = state.password
+            let firstName = state.firstName
+            let lastName = state.lastName
+            let dni = state.dni
+            let phoneNumber = state.phoneNumber
+        updateemployee(idBar, user, {username, email, roles, password, firstName, lastName, dni, phoneNumber})
         props.history.push(`/bar/${idBar}/employees`);
         }
     }
@@ -72,27 +80,19 @@ export default function CreateEmployee(props) {
     function handleValidation() {
         let valid = true
         let objErrors = {}
-        if (!formData.username || formData.username.length < 3 || formData.username.length > 20) {
-            valid = false
-            objErrors["username"] = "El nombre de usuario debe tener más de 3 caracteres y menos de 20"
-        }
-        if (!formData.email || !emailPatt.test(formData.email) || formData.email.length > 50) {
+        if (!state.email || !emailPatt.test(state.email) || state.email.length > 50) {
             valid = false
             objErrors["email"] = "Se debe introducir un correo electrónico válido y no mayor de 50 caracteres"
         }
-        if (!formData.password || formData.password.length < 6 || formData.password.length > 40) {
-            valid = false
-            objErrors["password"] = "La contraseña debe tener más de 6 caracteres y menos de 40"
-        }
-        if (!formData.firstName) {
+        if (!employee.firstName) {
             valid = false
             objErrors["firstName"] = "El nombre no puede estar vacío"
         }
-        if (!formData.lastName) {
+        if (!employee.lastName) {
             valid = false
             objErrors["lastName"] = "El apellido no puede estar vacío"
         }
-        if (!formData.phoneNumber || !phonePatt.test(formData.phoneNumber)) {
+        if (!employee.phoneNumber || !phonePatt.test(employee.phoneNumber)) {
             valid = false
             objErrors["phoneNumber"] = "Se debe introducir un número de teléfono válido"
         }
@@ -100,15 +100,42 @@ export default function CreateEmployee(props) {
         return valid
     }
 
+    useEffect(() => {
+        EmployeeDataService.getEmployeeByUsername(idBar, user).then(res => {
+            console.log("adios",res.data)
+            console.log("hola",user)
+            if (res && res.data.username === (user)){
+            let initialState = {
+                username: res.data.username,
+                firstName: res.data.firstName,
+                lastName : res.data.lastName,
+                email : res.data.email,
+                phoneNumber : res.data.phoneNumber,
+                password : res.data.password,
+            }
+            setEmployee(res.data)
+            
+            setState(
+                initialState
+            )} else {
+                history.push('/pageNotFound/')
+            }
+          
+        }).catch(err => {
+          console.log("Error", err)
+        })
+      },[idBar, user, history])
+
+      
+      console.log("email", state.email)
     return (
+        <div>
+        {Object.keys(state).length !== 0 &&
         <Container component="main" maxWidth="xs">
             <CssBaseline/>
             <div className={classes.paper}>
-                <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon/>
-                </Avatar>
                 <Typography component="h1" variant="h5">
-                    Create Employee
+                    Update Employee
                 </Typography>
                 {error && (
                     <Alert severity="error" style={{width: '100%', marginTop: 30}}>
@@ -120,20 +147,18 @@ export default function CreateEmployee(props) {
                 <form className={classes.form} onSubmit={handleSubmit}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <TextField fullWidth required autoFocus
-                                id={"username"}
+                            <TextField disabled fullWidth  autoFocus
+                                id="username"
+                                value= {state.username}
                                 name={"username"}
                                 label={"Username"}
-                                autoComplete={"username"}
                                 variant={"outlined"}
-                                error={formErrors.username !== null && formErrors.username !== undefined && formErrors.username !== ''}
-                                helperText={formErrors.username}
-                                onChange={(e) => handleChange(e)}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <TextField required fullWidth
+                            <TextField  fullWidth
                                 id="firstName"
+                                defaultValue = {state.firstName}
                                 name="firstName"
                                 label="First Name"
                                 autoComplete="fname"
@@ -144,23 +169,23 @@ export default function CreateEmployee(props) {
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <TextField required fullWidth
+                            <TextField  fullWidth
                                 id="lastName"
+                                defaultValue = {state.lastName}
                                 name="lastName"
                                 label="Last Name"
                                 variant="outlined"
-                                autoComplete="lname"
                                 error={formErrors.lastName !== null && formErrors.lastName !== undefined && formErrors.lastName !== ''}
                                 helperText={formErrors.lastName}
                                 onChange={(e) => handleChange(e)}
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField required fullWidth
+                            <TextField fullWidth
                                id="email"
+                               value = {state.email}
                                name="email"
                                label="Email Address"
-                               autoComplete="email"
                                variant="outlined"
                                placeholder="example@mail.com"
                                error={formErrors.email !== null && formErrors.email !== undefined && formErrors.email !== ''}
@@ -169,12 +194,12 @@ export default function CreateEmployee(props) {
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField required fullWidth
+                            <TextField  fullWidth
                                id="phoneNumber"
+                               defaultValue = {state.phoneNumber}
                                name="phoneNumber"
                                label="Phone Number"
                                variant="outlined"
-                               autoComplete="phone"
                                error={formErrors.phoneNumber !== null && formErrors.phoneNumber !== undefined && formErrors.phoneNumber !== ''}
                                helperText={formErrors.phoneNumber}
                                onChange={(e) => handleChange(e)}
@@ -183,24 +208,21 @@ export default function CreateEmployee(props) {
                         <Grid item xs={12}>
                             <TextField fullWidth
                                 id="dni"
+                                defaultValue = {state.dni}
                                 name="dni"
                                 label="DNI"
                                 variant="outlined"
-                                autoComplete="dni"
-                                placeholder="12345678A"
                                 onChange={(e) => handleChange(e)}
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField required fullWidth
+                            <TextField   fullWidth
                                 id="password"
+                                defaultValue = {state.password}
                                 name="password"
                                 label="Password"
                                 variant="outlined"
                                 type="password"
-                                autoComplete="current-password"
-                                error={formErrors.password !== null && formErrors.password !== undefined && formErrors.password !== ''}
-                                helperText={formErrors.password}
                                 onChange={(e) => handleChange(e)}
                             />
                         </Grid>
@@ -212,7 +234,7 @@ export default function CreateEmployee(props) {
                         color="primary"
                         className={classes.submit}
                     >
-                        Create
+                        Update
                     </Button>
                     <Button fullWidth variant="contained" color="primary" className={classes.submit} href={`#/bar/${idBar}/employees`}>Volver</Button>
                 </form>
@@ -221,5 +243,8 @@ export default function CreateEmployee(props) {
                 <Copyright/>
             </Box>
         </Container>
+
+    }
+    </div>
     );
 }

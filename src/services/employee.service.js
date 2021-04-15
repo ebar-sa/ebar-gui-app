@@ -6,8 +6,12 @@ class EmployeeDataService {
         return http.get(`/bar/${idBar}/employees`, {headers: authHeader()});
     }
 
-    getEmployeeByUsername(idBar, username){
-        return http.get(`/bar/${idBar}/employees/${username}`, {headers: authHeader()});
+    getEmployeeByUsername(idBar, user){
+        return http.get(`/bar/${idBar}/employees/${user}`, {headers: authHeader()});
+    }
+
+    deleteEmployee(idBar, user){
+        return http.delete(`/bar/${idBar}/employees/delete/${user}`, {headers: authHeader()});
     }
 }
 

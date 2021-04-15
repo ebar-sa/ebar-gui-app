@@ -35,9 +35,9 @@ export default class EmployeeList extends Component {
     })
   }
 
-  routeRedirectEmployee(username){
+  routeRedirectEmployee(user){
     const idBar = this.state.idBarActual;
-    this.props.history.push(`/bar/${idBar}/employees/${username}`);
+    this.props.history.push(`/bar/${idBar}/employees/${user}`);
   }
 
     render() {
@@ -73,13 +73,15 @@ export default class EmployeeList extends Component {
             backgroundColor: '#fff',
           },
           root: {
+            flexGrow: 1,
+            overflow: 'hidden',
             padding: '5rem',
           },
         })
 
         const stylesComponent = {
           buttonAñadir: {
-              backgroundColor: '#007bff',
+              color: "primary",
               textTransform: 'none',
               letterSpacing: 'normal',
               fontSize: '20px',
@@ -91,11 +93,11 @@ export default class EmployeeList extends Component {
 
         return (
             
-        <div>
+        <div className={useStyles.root}>
         <h1>Empleados</h1>
-        <Grid justify="center" >
+        
             {employees.map((employee) => (
-            <Grid key={employee.username}>
+            <Grid container wrap="nowrap" spacing={0} key={employee.username}>
             <Card>  
                 <ButtonBase
                     onClick= {() => this.routeRedirectEmployee(employee.username)}>
@@ -111,11 +113,13 @@ export default class EmployeeList extends Component {
             </Card>
             </Grid>
             ))}
-        </Grid>
+        
         <div style={{"textAlign":"center"}}>
+
+
           <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAñadir }} href={`#/bar/${idBarActual}/employees/create`}>Crear Employee</Button>
-        </div>
-        <div style={{"textAlign":"center"}}>
+        
+        
           <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAñadir }} href={`/`}>Volver</Button>
         </div>
         </div>

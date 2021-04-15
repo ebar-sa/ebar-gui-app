@@ -22,7 +22,8 @@ import BarTableDetails from './components/mesa-details.component'
 import UserMenuDetails from './components/user-menu.component'
 import UserBillDetails from './components/user-bill.component'
 import MenuGestion from './components/admin/menu-admin-gestion.component'
-import CreateEmployee from './pages/Employee'
+import CreateEmployee from './pages/EmployeeCreate'
+import UpdateEmployee from './pages/EmployeeUpdate'
 import Bar from "./pages/Bar";
 import PrivateRoute from "./components/private-route.js";
 import NotFoundPage from './hooks/pageError'
@@ -118,7 +119,8 @@ export function App() {
           <PrivateRoute exact path={'/mesas/detallesMesa/:id'} component={BarTableDetails} />
           <PrivateRoute exact path={'/bar/:idBar/employees'} component={EmployeeList} />
           <PrivateRoute exact path={'/bar/:idBar/employees/create'} component={CreateEmployee} />
-          <PrivateRoute exact path={'/bar/:idBar/employees/:username'} component={EmployeeDetails} />
+          <PrivateRoute exact path={'/bar/:idBarActual/employees/update/:userActual'} component={UpdateEmployee} />
+          <PrivateRoute exact path={'/bar/:idBar/employees/:user'} component={EmployeeDetails} />
           <PrivateRoute exact path={'/pageNotFound/'} component={NotFoundPage}/>
         </Switch>
       </main>

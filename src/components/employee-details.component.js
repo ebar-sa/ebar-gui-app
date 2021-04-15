@@ -22,26 +22,39 @@ export default class EmployeeDetails extends Component {
             password: "",
             roles: []
           },
+          userActual: null
     };
     
   };
   
   componentDidMount() {
-    console.log(this.props.match.params.idBar, this.props.match.params.username); 
-    this.getEmplByUsername(this.props.match.params.idBar, this.props.match.params.username);
+    console.log(this.props.match.params.idBar, this.props.match.params.user); 
+    this.getEmplByUsername(this.props.match.params.idBar, this.props.match.params.user);
   } 
 
-  getEmplByUsername(idBar, username){
-    EmployeeDataService.getEmployeeByUsername(idBar, username).then(res => { 
+  getEmplByUsername(idBar, user){
+    EmployeeDataService.getEmployeeByUsername(idBar, user).then(res => { 
       this.setState({
         employeeActual : res.data,
-        idBarActual : idBar
+        idBarActual : idBar,
+        userActual : user
         
       })
       console.log(res.data);
     })
     .catch(e => {
     console.log(e);
+    })
+  }
+
+  deleteEmployee(idBar, user) {
+    EmployeeDataService.deleteEmployee(idBar, user).then(res => { 
+      this.setState({  
+        
+      })
+      this.props.history.push(`/bar/${idBar}/employees`);
+    }).catch(e =>{
+      console.log(e);
     })
   }
 
@@ -103,7 +116,7 @@ export default class EmployeeDetails extends Component {
 
         const stylesComponent = {
           buttonAñadir: {
-              backgroundColor: '#007bff',
+              color:"primary",
               textTransform: 'none',
               letterSpacing: 'normal',
               fontSize: '20px',
@@ -111,7 +124,7 @@ export default class EmployeeDetails extends Component {
           }
         }
 
-        const {employeeActual, idBarActual} = this.state
+        const {employeeActual, idBarActual, userActual} = this.state
         
 
         return (
@@ -170,7 +183,19 @@ export default class EmployeeDetails extends Component {
               </Table>
             </CardContent>
         </Grid>
-        <div style={{"textAlign":"center"}}>
+        
+          <div align= "center">
+          <Button  align= "center "variant="contained" size='big' color="primary" style={{ ...stylesComponent.buttonAñadir }} href={`#/bar/${idBarActual}/employees/update/${userActual}`}>Editar</Button>
+          
+          
+          <Button
+                        onClick = {() => this.deleteEmployee(idBarActual, userActual)}
+                        align= "center" variant="contained" size='big' color="primary" style={{ ...stylesComponent.buttonAñadir }}
+                    >
+                        Borrar
+                    </Button>
+          
+          
           <Button align= "center "variant="contained" size='big' color="primary" style={{ ...stylesComponent.buttonAñadir }} href={`#/bar/${idBarActual}/employees`}>Volver</Button>
           </div>
         </div>

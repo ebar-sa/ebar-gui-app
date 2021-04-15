@@ -8,7 +8,6 @@ import {AddCircle, Delete}from "@material-ui/icons";
 import useUser from '../../hooks/useUser'
 import VotingDataService from "../../services/votings.service";
 import DateFnsUtils from '@date-io/date-fns';
-import votingsService from '../../services/votings.service';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -183,8 +182,6 @@ function EditVoting(props) {
         evt.preventDefault()
 
         if (handleFormValidation()) {
-            //TODO: Montar el objeto y realizar el POST
-
             const object = {
                 "title": state.title,
                 "description": state.description,
@@ -201,7 +198,7 @@ function EditVoting(props) {
                 "votersUsernames": voting.votersUsernames
             }
 
-            votingsService.updateVoting(barId, voting.id, object)
+            VotingDataService.updateVoting(barId, voting.id, object)
                 .then( res => {
                     if (res.status === 200) {
                         props.history.push({pathname: '/bares/' + barId + '/votings', state: { data: true}})
@@ -224,7 +221,7 @@ function EditVoting(props) {
 
         setState({...state, openingHour: date})
         
-        if (date === undefined || isNaN(date)){
+        if (date === undefined || isNaN(date) || !date){
             setErrorOpen('Fecha no válida')
         } else if (date < formatDateToString(now)) {
             setErrorOpen('La fecha no puede estar en pasado')
@@ -258,8 +255,8 @@ function EditVoting(props) {
 
         setState({...state, closingHour: date});
 
-        if (isNaN(date)){
-            setErrorClose('La fecha no es válida')
+        if (isNaN(date) || date === '' || date === undefined || !date){
+            setErrorClose('Fecha no válida')
         }else if (date!=='' && date!=null && date < state.openingHour) {
             setErrorClose('La fecha de fin no puede ser anterior a la de inicio')
         } else if (date !== '' && date != null && date < now){
@@ -283,14 +280,14 @@ function EditVoting(props) {
                     <form onSubmit={(evt) => handleFormSubmit(evt)} className={classes.root}>
                         <Grid container justify="center" alignItems="center" >
                             <div>
-                                <TextField className='input-title' value={state.title} id="title" label="Título" name="title" onChange={(e) => handleChange(e)}/>
+                                <TextField data-testid="titleField" className='input-title' value={state.title} id="title" label="Título" name="title" onChange={(e) => handleChange(e)}/>
                                 <p className="p-style">{errors["title"]}</p>
                             </div>
                         </Grid>
 
                         <Grid container justify="center" alignItems="center" >
                             <div style={{marginTop: '20px'}}>
-                                <TextField className='input-title' value={state.description} id="description" label="Descripción" name="description" onChange={(e) => handleChange(e)} multiline rows={4} variant="outlined"/>
+                                <TextField data-testid="descriptionField" className='input-description' value={state.description} id="description" label="Descripción" name="description" onChange={(e) => handleChange(e)} multiline rows={4} variant="outlined"/>
                                 <p className="p-style">{errors["description"]}</p>
                             </div>
                         </Grid>
@@ -299,6 +296,7 @@ function EditVoting(props) {
                             <Grid container justify="center" alignItems="center" >
                                 <div className='input-margin'>
                                     <KeyboardDateTimePicker
+                                        data-testid="openingField"
                                         id="opening"
                                         ampm={false}
                                         label="Fecha de inicio"
@@ -318,6 +316,7 @@ function EditVoting(props) {
                             <Grid container justify="center" alignItems="center"  >
                                 <div className='input-margin'>
                                     <KeyboardDateTimePicker
+                                        data-testid="closingField"
                                         id="closing"
                                         ampm={false}
                                         label="Fecha de fin"
@@ -353,6 +352,7 @@ function EditVoting(props) {
                                 return (
                                     <div key={index}>
                                         <TextField
+                                            data-testid={"option"+index}
                                             className='input-title'
                                             id={"option"+index}
                                             label="Descripción"
@@ -366,15 +366,24 @@ function EditVoting(props) {
                             })}
                         </div>
                         
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            style={{ ...stylesComponent.buttonCrear }}>
-                                Editar votación
-                        </Button> 
+                        <div >
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                style={{ ...stylesComponent.buttonCrear }}>
+                                    Editar votación
+                            </Button> 
 
-
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => history.goBack()}
+                                style={{ ...stylesComponent.buttonCrear }}>
+                                    Volver
+                            </Button> 
+                        </div>
+                        
                         <Snackbar open={showMaxOptionsAlert} autoHideDuration={6000} onClose={handleClose}>
                             <Alert onClose={handleClose} severity="warning">
                                 No puedes crear o eliminar más opciones
@@ -392,12 +401,21 @@ function EditVoting(props) {
         </Container>
         :
         <div>
-            {/* Cambiar el snackbar por algo en el centro de la pantalla*/}
-            <Snackbar open={showPublishedVotingAlert} autoHideDuration={6000} onClose={handleClose}>
-                <Alert onClose={handleClose} severity="warning">
-                    No puedes editar votaciones ya comenzadas
-                </Alert>
-            </Snackbar>
+
+            {showPublishedVotingAlert ? 
+            <Alert icon={false} severity="warning">
+                No puedes editar votaciones ya comenzadas
+            </Alert>
+            :
+            <div></div>}
+
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={() => history.goBack()}
+                style={{ ...stylesComponent.buttonCrear }}>
+                    Volver
+            </Button> 
         </div>
         }  
     </div>

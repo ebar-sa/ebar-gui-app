@@ -86,18 +86,22 @@ const alreadyVotedVotingDummy = {
     ]
 }
 
+function renderComponent() {
+    return render(
+        <Context.Provider value={{auth, setAuth}}>
+            <Router history={history} >
+                <VotingDetailUser {...{match: {params: {votingId: 99}}}}/>
+            </Router>
+        </Context.Provider>)
+}
+
 describe('Render test suite', () => {
     it('Render with a correct voting', async () => {
         let rendered = null
 
         mockAxios.onGet().replyOnce(200, correctVotingDummy)
 
-        rendered = render(
-            <Context.Provider value={{auth, setAuth}}>
-                <Router history={history} >
-                    <VotingDetailUser {...{match: {params: {votingId: 99}}}}/>
-                </Router>
-            </Context.Provider>)
+        rendered = renderComponent()
 
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
@@ -122,12 +126,7 @@ describe('Render test suite', () => {
 
         mockAxios.onGet().replyOnce(200, closedVotingDummy)
 
-        rendered = render(
-            <Context.Provider value={{auth, setAuth}}>
-                <Router history={history} >
-                    <VotingDetailUser {...{match: {params: {votingId: 99}}}}/>
-                </Router>
-            </Context.Provider>)
+        rendered = renderComponent()
 
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
@@ -144,12 +143,7 @@ describe('Render test suite', () => {
 
         mockAxios.onGet().replyOnce(404)
 
-        rendered = render(
-            <Context.Provider value={{auth, setAuth}}>
-                <Router history={history} >
-                    <VotingDetailUser {...{match: {params: {votingId: 99}}}}/>
-                </Router>
-            </Context.Provider>)
+        rendered = renderComponent()
 
         let promise = new Promise(r => setTimeout(r, 1050));
         await act(() => promise)
@@ -173,12 +167,7 @@ describe('Alert test suite', () => {
 
         mockAxios.onGet().replyOnce(200, correctVotingDummy)
 
-        rendered = render(
-            <Context.Provider value={{auth, setAuth}}>
-                <Router history={history} >
-                    <VotingDetailUser {...{match: {params: {votingId: 99}}}}/>
-                </Router>
-            </Context.Provider>)
+        rendered = renderComponent()
 
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
@@ -204,12 +193,7 @@ describe('Alert test suite', () => {
 
         mockAxios.onGet().replyOnce(200, correctVotingDummy)
             
-        rendered = render(
-            <Context.Provider value={{auth, setAuth}}>
-                <Router history={history} >
-                    <VotingDetailUser {...{match: {params: {votingId: 99}}}}/>
-                </Router>
-            </Context.Provider>)
+        rendered = renderComponent()
     
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
@@ -259,12 +243,7 @@ describe('Behaviour tests suite', () => {
     
         mockAxios.onGet().replyOnce(200, correctVotingDummy)
     
-        rendered = render(
-            <Context.Provider value={{auth, setAuth}}>
-                <Router history={history} >
-                    <VotingDetailUser {...{match: {params: {votingId: 99}}}}/>
-                </Router>
-            </Context.Provider>)
+        rendered = renderComponent()
     
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
@@ -290,12 +269,7 @@ describe('Behaviour tests suite', () => {
         mockAxios.onGet().replyOnce(200, correctVotingDummy)
         mockAxios.onPost().replyOnce(200)
     
-        rendered = render(
-            <Context.Provider value={{auth, setAuth}}>
-                <Router history={history} >
-                    <VotingDetailUser {...{match: {params: {votingId: 99}}}}/>
-                </Router>
-            </Context.Provider>)
+        rendered = renderComponent()
     
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
@@ -333,13 +307,8 @@ describe('Behaviour tests suite', () => {
         mockAxios.onGet().replyOnce(200, correctVotingDummy)
         mockAxios.onPost().replyOnce(400, {})
     
-        rendered = render(
-            <Context.Provider value={{auth, setAuth}}>
-                <Router history={history} >
-                    <VotingDetailUser {...{match: {params: {votingId: 99}}}}/>
-                </Router>
-            </Context.Provider>)
-    
+        rendered = renderComponent()
+
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
     
@@ -356,7 +325,7 @@ describe('Behaviour tests suite', () => {
         expect(votingBtn).toBeInTheDocument()
         expect(votingDescription).toBeInTheDocument()
         expect(cannotVoteBtn).not.toBeInTheDocument()
-    
+
         await act(async ()=> {
             await fireEvent.click(option1)
             await fireEvent.change(tokenInput.children[1].children[0], {target: {value: 'tokenInventado'}})

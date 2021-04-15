@@ -10,7 +10,7 @@ import Drawer from '@material-ui/core/Drawer'
 
 const useStyles = makeStyles({
     root: {
-        width: 500,
+        width: '100%',
         textAlign: 'center',
         margin: 'auto',
     },

@@ -136,7 +136,7 @@ describe('Testing create voting', () => {
 
         let rendered = renderCreateVotingAdmin(admin)
 
-        let promise = new Promise(r => setTimeout(r, 500));
+        let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
 
         let title = await rendered.getByRole('textbox', { name: /Título/i })
@@ -164,14 +164,14 @@ describe('Testing create voting', () => {
         let errorSubmit = await rendered.queryByText('Tienes que rellenar el formulario correctamente')
         expect(errorSubmit).not.toBeInTheDocument()
 
-    })
+    }, [7000])
 
     it('Incorrect submit', async () => {
         mockAxios.onPost().replyOnce(201)
 
         let rendered = renderCreateVotingAdmin(admin)
 
-        let promise = new Promise(r => setTimeout(r, 500));
+        let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
 
         let title = await rendered.getByRole('textbox', { name: /Título/i })
@@ -219,7 +219,7 @@ describe('Testing create voting', () => {
 
         let validatorText = await rendered.queryAllByText('No puede estar vacío')
         expect(validatorText).toHaveLength(3)
-    })
+    }, [7000])
 
     it('Options buttons incorrect', async () => {
         let rendered = renderCreateVotingAdmin(admin)

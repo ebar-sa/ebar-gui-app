@@ -67,8 +67,6 @@ describe("BarUpdate test suite", () => {
         let description = await rendered.findByDisplayValue("El templo de la hamburguesa.")
         let contact = await rendered.findByDisplayValue("burgerfoodsevilla@gmail.com")
         let location = await rendered.findByDisplayValue("Avenida de Finlandia, 24, Sevilla")
-        let openingTime = await rendered.findByDisplayValue("13:00")
-        let closingTime = await rendered.findByDisplayValue("22:30")
         let upload = await rendered.findByText("Subir imágenes")
         let submit = await rendered.findByText("Enviar")
 
@@ -80,8 +78,6 @@ describe("BarUpdate test suite", () => {
         expect(contact.value).toBe("burgerfoodsevilla@gmail.com")
         expect(location).toBeInTheDocument()
         expect(location.value).toBe("Avenida de Finlandia, 24, Sevilla")
-        expect(openingTime).toBeInTheDocument()
-        expect(closingTime).toBeInTheDocument()
         expect(upload).toBeInTheDocument()
         expect(submit).toBeInTheDocument()
     })

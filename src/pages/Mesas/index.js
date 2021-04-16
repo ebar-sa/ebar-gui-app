@@ -20,9 +20,10 @@ export default function Mesas() {
   const params = useParams();
   const id = params.id;
   var isAdmin = false;
+  const barId = props.match.params.barId;
   useEffect(() => {
-    getTables().then((res) => setTables(res))
-  }, [])
+    getTables(barId).then((res) => setTables(res))
+  }, [barId])
   user.roles.forEach((rol) => {
     if(rol === 'ROLE_OWNER' || rol ==='ROLE_EMPLOYEE'){
       isAdmin = true;

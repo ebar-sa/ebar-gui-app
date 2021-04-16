@@ -209,7 +209,7 @@ describe('Testing Voting list', () => {
         expect(title3).toBeInTheDocument()
         expect(title4).toBeInTheDocument()
         expect(textButtonCreate).toBeInTheDocument()
-        expect(edit).toHaveLength(3)
+        expect(edit).toHaveLength(1)
 
     })
 
@@ -256,12 +256,7 @@ describe('Testing Voting list', () => {
 
         userEvent.click(screen.getByText('Última canción'))
         let results = await rendered.queryByText('Resultados')
-        // let option1 = await rendered.queryByText('Fiesta pagana')
-        // let option2 = await rendered.queryByText('El farsante')
-
         expect(results).not.toBeInTheDocument()
-        // expect(option1).not.toBeInTheDocument()
-        // expect(option2).not.toBeInTheDocument()
 
     })
 
@@ -277,15 +272,8 @@ describe('Testing Voting list', () => {
         userEvent.click(screen.getByText('Próxima canción'))
         let description = await rendered.findByText('Próxima canción pinchada')
         let results = await rendered.findByText('Resultados')
-        // let option1 = await rendered.findByText('Gasolina')
-        // let option2 = await rendered.findByText('Pobre diabla')
-        // let option3 = await rendered.findByText('Despacito')
-
         expect(description).toBeInTheDocument()
         expect(results).toBeInTheDocument()
-        // expect(option1).toBeInTheDocument()
-        // expect(option2).toBeInTheDocument()
-        // expect(option3).toBeInTheDocument()
 
     })
 

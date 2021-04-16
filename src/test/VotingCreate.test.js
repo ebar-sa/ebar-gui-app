@@ -38,6 +38,10 @@ function renderCreateVotingAdmin(auth) {
 
 describe('Testing create voting', () => {
 
+    beforeEach(() => {
+        jest.setTimeout(11000);
+    });
+
     it('Render form with correct text admin', async () => {
         let rendered = renderCreateVotingAdmin(admin)
         
@@ -160,14 +164,14 @@ describe('Testing create voting', () => {
         let errorSubmit = await rendered.queryByText('Tienes que rellenar el formulario correctamente')
         expect(errorSubmit).not.toBeInTheDocument()
 
-    }, [7000])
+    }, [12000])
 
     it('Incorrect submit', async () => {
         mockAxios.onPost().replyOnce(201)
 
         let rendered = renderCreateVotingAdmin(admin)
 
-        let promise = new Promise(r => setTimeout(r, 250));
+        let promise = new Promise(r => setTimeout(r, 5000));
         await act(() => promise)
 
         let title = await rendered.getByRole('textbox', { name: /Título/i })
@@ -215,7 +219,7 @@ describe('Testing create voting', () => {
 
         let validatorText = await rendered.queryAllByText('No puede estar vacío')
         expect(validatorText).toHaveLength(3)
-    }, [7000])
+    }, [12000])
 
     it('Options buttons incorrect', async () => {
         let rendered = renderCreateVotingAdmin(admin)

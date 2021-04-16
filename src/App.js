@@ -10,6 +10,7 @@ import BarList from './pages/BarList'
 import CreateVotings from './pages/VotingCreate'
 import Votings from './pages/VotingList'
 import VotingDetailUser from './pages/VotingDetail'
+import Subscriptions from './pages/Subscriptions'
 import EditVoting from './pages/VotingEdit'
 
 import Header from './components/Header'
@@ -22,10 +23,11 @@ import BarTableDetails from './components/mesa-details.component'
 import UserMenuDetails from './components/user-menu.component'
 import UserBillDetails from './components/user-bill.component'
 import MenuGestion from './components/admin/menu-admin-gestion.component'
-import Bar from "./pages/Bar";
-import PrivateRoute from "./components/private-route.js";
+import Bar from './pages/Bar'
+import PrivateRoute from './components/private-route.js'
 import NotFoundPage from './hooks/pageError'
-
+import Checkout from './pages/Checkout'
+import Subscribe from './pages/Subscribe'
 
 const drawerWidth = 240
 
@@ -33,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     flex: '1',
-    overflowY: 'auto'
+    overflowY: 'auto',
   },
   appBar: {
     transition: theme.transitions.create(['margin', 'width'], {
@@ -79,8 +81,8 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   colorBar: {
-    backgroundColor: 'white'
-  }
+    backgroundColor: 'white',
+  },
 }))
 
 export function App() {
@@ -113,6 +115,26 @@ export function App() {
           <PrivateRoute exact path={'/bar/menu/:id'} component={UserMenuDetails} />
           <PrivateRoute exact path={'/mesas/detallesMesa/:id'} component={BarTableDetails} />
           <PrivateRoute exact path={'/pageNotFound/'} component={NotFoundPage}/>
+          <PrivateRoute
+            exact
+            path={'/payments/subscriptions'}
+            component={Subscriptions}
+          />
+          <PrivateRoute
+            exact
+            path={'/payments/add-card'}
+            component={Checkout}
+          />
+          <PrivateRoute
+            exact
+            path={'/payments/subscribe/:id'}
+            component={Subscribe}
+          />
+          <PrivateRoute
+            exact
+            path={'/payments/cancel/:id'}
+            component={Checkout}
+          />
         </Switch>
       </main>
       <div className={classes.colorBar}>

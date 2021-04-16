@@ -13,12 +13,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function Mesas() {
+export default function Mesas(props) {
   const user = AuthService.getCurrentUser();
   const classes = useStyles()
   const [tables, setTables] = useState([])
   const params = useParams();
-  const id = params.id;
+  const id = params.barId;
   var isAdmin = false;
   const barId = props.match.params.barId;
   useEffect(() => {

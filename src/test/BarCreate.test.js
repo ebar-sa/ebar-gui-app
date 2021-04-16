@@ -58,7 +58,7 @@ describe("BarCreate test suite", () => {
 
     })
 
-    it("", async () => {
+    it("Fill the form with valid values", async () => {
 
         let rendered = render(
             <Context.Provider value={{auth, setAuth}}>
@@ -94,7 +94,7 @@ describe("BarCreate test suite", () => {
 
     })
 
-    it("", async () => {
+    it("Fill the form with incorrect values", async () => {
 
         let rendered = render(
             <Context.Provider value={{auth, setAuth}}>

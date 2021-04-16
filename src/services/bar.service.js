@@ -17,6 +17,14 @@ class BarDataService {
     createBar(object) {
         return http.post("/bar", object, {headers: authHeader()})
     }
+
+    updateBar(object, barId) {
+        return http.put("/bar/" + barId, object, {headers: authHeader()})
+    }
+
+    deleteImage(barId, imgId) {
+        return http.delete("/bar/" + barId + "/image/" + imgId, {headers: authHeader()})
+    }
 }
 
 export default new BarDataService();

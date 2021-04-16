@@ -11,7 +11,7 @@ export function subscribe(id) {
 
 export function cancel(id) {
   return http
-    .post(`/payments/cancel/${id}`, {}, { headers: authHeader() })
+    .delete(`/payments/cancel/${id}`, {}, { headers: authHeader() })
     .then((response) => {
       return response.data
     })
@@ -51,7 +51,7 @@ export function setDefaultCard(data) {
 
 export function removeCard(data) {
   return http
-    .post('/payments/cards/remove', data, { headers: authHeader() })
+    .delete('/payments/cards/remove', data, { headers: authHeader() })
     .then((response) => {
       return response.data
     })

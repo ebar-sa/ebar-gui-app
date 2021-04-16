@@ -101,7 +101,7 @@ export function App() {
         <Switch>
           <Route exact path={'/'} component={Home} />
           <PrivateRoute exact path={'/bares'} component={BarList} />
-          <Route exact path={'/mesas'} component={Mesas} />
+          <Route exact path={'/mesas/:barId'} component={Mesas} />
           <Route exact path={'/login'} component={Login} />
           <Route exact path={'/signup'} component={Signup} />
           <Route exact path={'/profile'} component={Profile} />

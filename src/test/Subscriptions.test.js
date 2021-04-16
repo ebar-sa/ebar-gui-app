@@ -77,7 +77,7 @@ describe('Render subscriptions', () => {
   it('Remove card', async () => {
     mockAxios.onGet().replyOnce(200, cards)
     mockAxios.onGet().replyOnce(200, subscriptions)
-    mockAxios.onPost().replyOnce(200, {})
+    mockAxios.onDelete().replyOnce(200, {})
 
     let rendered = render(
       <Context.Provider value={{ auth, setAuth }}>

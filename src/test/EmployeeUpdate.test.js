@@ -5,7 +5,7 @@ import http from "../http-common";
 import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import Context from '../context/UserContext';
-import UpdateEmployee from '../pages/EmployeeCreate';
+import EmployeeUpdate from '../pages/EmployeeUpdate';
 
 const setAuth = jest.fn()
 const mockAxios = new MockAdapter(http)
@@ -44,11 +44,10 @@ const correctEmployeeDummy = {
 }
 
 function renderComponent() {
-    mockAxios.onGet().replyOnce(200, correctEmployeeDummy)
     return render(
         <Context.Provider value={{auth, setAuth}}>
             <Router history={history} >
-                <UpdateEmployee {...{ match: { params: { idBar: 1 } }, params: { username:"employee1" } } } history={history}  />
+                <EmployeeUpdate {...{match: {params: {idBarActual: 1, userActual: "employee1"}}}}/>
             </Router>
         </Context.Provider>)
 }
@@ -63,10 +62,9 @@ describe('Testing render component correctly', () => {
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
         
+        let update = await rendered.findByText('Update')
 
-        let username1 = await rendered.findByText('Username')
-
-        expect(username1).toBeInTheDocument()
+        expect(update).toBeInTheDocument()
         
     }, [7000])
 
@@ -79,7 +77,10 @@ describe('Testing render component correctly', () => {
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
 
+        let update = await rendered.findByText('Update')
+
         await act(async () => {
+            await fireEvent.click(update)
         })
 
         let errorSubmit = await rendered.queryByText('Tienes que rellenar el formulario correctamente')

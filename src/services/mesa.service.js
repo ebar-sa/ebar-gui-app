@@ -19,7 +19,7 @@ class BarTableDataService{
         return http.post(`/tables/createTable/${barId.id}`,table, {headers: authHeader()});
     }
     removeBarTable(idBar,tableId) {
-        return http.post(`/tables/deleteTable/${idBar}/${tableId}`, { headers: authHeader()});
+        return http.delete(`/tables/deleteTable/${idBar}/${tableId}`, { headers: authHeader()});
     }
     updateBarTable(id,table) {
         return http.post(`/tables/updateTable/${id}`,table,{headers: authHeader()});

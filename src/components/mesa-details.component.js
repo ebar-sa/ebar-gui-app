@@ -10,6 +10,7 @@ import BillDataService from '../services/bill.service';
 import { Redirect } from "react-router"
 import MediaQuery from 'react-responsive';
 import {ToastContainer} from 'react-toastify';
+import { Unsubscribe } from '@material-ui/icons';
 
 export default class BarTableDetails extends Component {
   constructor(props) {
@@ -559,7 +560,7 @@ export default class BarTableDetails extends Component {
           }
           {!mesaActual.free ? 
           <div>
-          <MediaQuery  minWidth={768} maxWidth={1024}>
+          <MediaQuery  minWidth={768} maxWidth={1023}>
           <Grid item component={Card} xs={12}>
             <CardContent>
               <Table size="small" aria-label="a dense table">
@@ -638,7 +639,7 @@ export default class BarTableDetails extends Component {
             </CardContent>
           </Grid>
           </MediaQuery>
-          <MediaQuery  minWidth={1025}>
+          <MediaQuery  minWidth={1024}>
           <Grid container justify='center'>
           <Grid item component={Card} xs={6}>
             <CardContent>

@@ -3,13 +3,12 @@ import BarTableService from "../../services/mesa.service";
 import { makeStyles } from '@material-ui/core/styles';
 import '../../styles/create-voting.css'
 import Alert from '@material-ui/lab/Alert';
-import {TextField, Button, Snackbar, Container, Grid, Typography, FormControl, InputLabel, Input} from '@material-ui/core';
+import {Button, Snackbar, Container, Grid, Typography, FormControl, InputLabel, Input} from '@material-ui/core';
 import { useHistory } from 'react-router'
 import useUser from '../../hooks/useUser';
 import { useParams } from 'react-router-dom';
-import { names } from 'debug';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
     root: {
         '& .MuiInputLabel-formControl': {
             top: '-5px',
@@ -17,12 +16,12 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function BarTableUpdate(props){
+export default function BarTableUpdate(){
     const classes = useStyles();
     const params = useParams();
     const id = params.id;
     const idBar = params.idBar;
-    const [barTable,setBarTable] = useState({});
+    const [barTable,setBarTable] = useState({name: '', seats:0});
     const [openSubmitIncorrect, setOpenSubmitIncorrect] = useState(false)
     const history = useHistory()
     const { auth } = useUser()
@@ -46,7 +45,7 @@ export default function BarTableUpdate(props){
                 }
                 BarTableService.updateBarTable(id, object).then(response => {
                     if(response.status ===201){
-                        props.history.push({ pathname: '/mesas/' + idBar, barTable:{ data: true }});
+                        history.push({ pathname: '/mesas/' + idBar, barTable:{ data: true }});
                     }else{
                         setOpenSubmitIncorrect(true)
                     }
@@ -72,13 +71,13 @@ export default function BarTableUpdate(props){
         <Container fixed>
             <div style={{ marginTop: '50px', marginBottom: '100px'}}>
             <Typography className='h5' variant="h5" gutterBottom>
-                Creación de Mesa
+                Editar Mesa
             </Typography>
             <div style={{marginTop: '60px'}}>
                 <form onSubmit={(e) => handleSubmit(e)} className={classes.root}>
                     <Grid container justify="center" alignItems="center" >
                     <div>
-                    <FormControl focused="true">
+                    <FormControl focused>
                         <InputLabel htmlFor="name">Nombre</InputLabel>
                         <Input className='input-title' id="name" label="Nombre" name="name"  value={barTable.name} onChange={(e) => handleChange(e)}/>
                     </FormControl>
@@ -86,9 +85,9 @@ export default function BarTableUpdate(props){
                     </Grid>
                     <Grid container justify="center" alignItems="center" >
                     <div style={{marginTop: '20px'}}>
-                    <FormControl focused="true">
+                    <FormControl focused>
                         <InputLabel htmlFor="seats">Sillas</InputLabel>
-                        <Input className='input-title' type="number" InputProps={{inputProps: { max: 10, min: 0 }}} id="seats" label="Sillas" name="seats" onChange={(e) => handleChange(e)} value={barTable.seats}/>
+                        <Input className='input-title' type="number" inputprops={{inputProps: { max: 10, min: 0 }}} id="seats" label="Sillas" name="seats" onChange={(e) => handleChange(e)} value={barTable.seats}/>
                     </FormControl>
                     </div>
                     </Grid>

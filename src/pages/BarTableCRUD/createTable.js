@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function BarTableCreate(props){
+export default function BarTableCreate(){
     const classes = useStyles();
     const [state, setState] = useState('')
     const id = useParams();
@@ -24,7 +24,6 @@ export default function BarTableCreate(props){
     const history = useHistory()
     const { auth } = useUser()
     const admin = auth.roles.includes('ROLE_OWNER') || auth.roles.includes('ROLE_EMPLOYEE');
-
     useEffect(() => {
         if (!admin) history.push('/pageNotFound')
     }, [admin, history])
@@ -39,7 +38,7 @@ export default function BarTableCreate(props){
                 }
                 BarTableService.createBarTable(id, object).then(response => {
                     if(response.status ===201){
-                        props.history.push({ pathname: '/mesas/' + id.id, state:{ data: true }});
+                        history.push({ pathname: '/mesas/' + id.id, state:{ data: true }});
                     }else{
                         setOpenSubmitIncorrect(true)
                     }
@@ -76,7 +75,7 @@ export default function BarTableCreate(props){
                     </Grid>
                     <Grid container justify="center" alignItems="center" >
                     <div style={{marginTop: '20px'}}>
-                        <TextField className='input-title' type="number" InputProps={{inputProps: { max: 10, min: 0 }}} id="seats" label="Sillas" name="seats"aria-describedby="Seats" onChange={(e) => handleChange(e)}/>
+                        <TextField className='input-title' type="number" inputprops={{inputProps: { max: 10, min: 0 }}} id="seats" label="Sillas" name="seats"aria-describedby="Seats" onChange={(e) => handleChange(e)}/>
                     </div>
                     </Grid>
                     <Button

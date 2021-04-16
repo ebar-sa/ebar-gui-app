@@ -25,9 +25,9 @@ export default function useEmployee() {
             })
     }, [history])
 
-    const updateemployee = useCallback((idBar,user,{username, email, roles, password, firstName, lastName, dni, phoneNumber}) => {
+    const updateemployee = useCallback((idBar,user,{username, email, roles, firstName, lastName, dni, phoneNumber}) => {
         setState({loading: true, error: false})
-        employeeService.updateEmployees(idBar,user,{username, email, roles, password, firstName, lastName, dni, phoneNumber})
+        employeeService.updateEmployees(idBar,user,{username, email, roles, firstName, lastName, dni, phoneNumber})
             .then(() =>{
                 setRegistered(true)
             })

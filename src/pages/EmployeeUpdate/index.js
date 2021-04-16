@@ -38,7 +38,6 @@ export default function UpdateEmployee(props) {
     const classes = useStyles();
     const history = useHistory();
 
-    const [formData, setFormData] = useState({})
     const [formErrors, setFormErrors] = useState({})
     const [employee, setEmployee] = useState({})
 
@@ -67,13 +66,13 @@ console.log(employee)
         if(handleValidation()){
             let username = state.username
             let email = state.email
-            let password = state.password
             let firstName = state.firstName
             let lastName = state.lastName
             let dni = state.dni
             let phoneNumber = state.phoneNumber
-        updateemployee(idBar, user, {username, email, roles, password, firstName, lastName, dni, phoneNumber})
+        updateemployee(idBar, user, {username, email, roles, firstName, lastName, dni, phoneNumber})
         props.history.push(`/bar/${idBar}/employees`);
+        window.location.reload();
         }
     }
 
@@ -110,8 +109,7 @@ console.log(employee)
                 firstName: res.data.firstName,
                 lastName : res.data.lastName,
                 email : res.data.email,
-                phoneNumber : res.data.phoneNumber,
-                password : res.data.password,
+                phoneNumber : res.data.phoneNumber
             }
             setEmployee(res.data)
             
@@ -212,17 +210,6 @@ console.log(employee)
                                 name="dni"
                                 label="DNI"
                                 variant="outlined"
-                                onChange={(e) => handleChange(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField   fullWidth
-                                id="password"
-                                defaultValue = {state.password}
-                                name="password"
-                                label="Password"
-                                variant="outlined"
-                                type="password"
                                 onChange={(e) => handleChange(e)}
                             />
                         </Grid>

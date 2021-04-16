@@ -19,13 +19,12 @@ export function createEmployees(idBar, {username, email, roles, password, firstN
 }
 
 
-export function updateEmployees(idBar, user, {username, email, roles, password, firstName, lastName, dni, phoneNumber}) {
+export function updateEmployees(idBar, user, {username, email, roles, firstName, lastName, dni, phoneNumber}) {
     return http
         .put(`/bar/${idBar}/employees/update/${user}`, {
             username,
             email,
             roles,
-            password,
             firstName,
             lastName,
             dni,

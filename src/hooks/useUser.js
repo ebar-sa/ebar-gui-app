@@ -1,10 +1,12 @@
-import { useCallback, useContext, useState } from "react";
+import {useCallback, useContext, useState} from "react";
 import Context from '../context/UserContext'
 import * as authService from '../services/auth'
-import { useHistory } from 'react-router'
-export default function useUser () {
+import {useHistory} from 'react-router'
+
+export default function useUser() {
     const {auth, setAuth} = useContext(Context)
     const [state, setState] = useState({loading: false, error: false})
+    const [isRegistered, setRegistered] = useState(false)
     const history = useHistory()
 
     const login = useCallback(({username, password}) => {
@@ -17,7 +19,7 @@ export default function useUser () {
             })
             .catch(err => {
                 window.sessionStorage.removeItem('user')
-                
+
                 const status = err.response.status
                 if (status === 401) {
                     setState({loading: false, error: "Usuario o contraseña incorrectos"})
@@ -25,20 +27,42 @@ export default function useUser () {
                     history.push("/pageNotFound")
                 }
             })
-        }, [setAuth,history])
-    
+    }, [setAuth, history])
+
+    const signup = useCallback(({username, email, roles, password, firstName, lastName, dni, phoneNumber}) => {
+        setState({loading: true, error: false})
+        authService.register({username, email, roles, password, firstName, lastName, dni, phoneNumber})
+            .then(() =>{
+                setRegistered(true)
+            })
+            .catch(err => {
+                setRegistered(false)
+                if (err.response.status === 400) {
+                    let errmessage = err.response.data.message
+                    if(!errmessage){
+                        errmessage = "Please check the submitted fields"
+                    }
+                    setState({loading: false, error: errmessage})
+                } else {
+                    history.push("/pageNotFound")
+                }
+            })
+    }, [history])
+
     const logout = useCallback(() => {
-        history.push("/")  
+        history.push("/")
         window.sessionStorage.removeItem('user')
         setAuth(null)
-    }, [setAuth,history])
+    }, [setAuth, history])
 
     return {
         isLogged: Boolean(auth),
+        isRegistered,
         login,
+        signup,
         logout,
         auth,
         error: state.error
     }
-    
+
 }

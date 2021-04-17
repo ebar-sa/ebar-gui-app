@@ -119,10 +119,10 @@ export default function CreateEmployee(props) {
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField fullWidth required autoFocus
-                                id={"username"}
                                 name={"username"}
-                                label={"Username"}
+                                id={"username"}
                                 autoComplete={"username"}
+                                label={"Username"}
                                 variant={"outlined"}
                                 error={formErrors.username !== null && formErrors.username !== undefined && formErrors.username !== ''}
                                 helperText={formErrors.username}
@@ -131,10 +131,10 @@ export default function CreateEmployee(props) {
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField required fullWidth
-                                id="firstName"
                                 name="firstName"
-                                label="First Name"
+                                id="firstName"
                                 autoComplete="fname"
+                                label="First Name"
                                 variant="outlined"
                                 error={formErrors.firstName !== null && formErrors.firstName !== undefined && formErrors.firstName !== ''}
                                 helperText={formErrors.firstName}
@@ -143,10 +143,10 @@ export default function CreateEmployee(props) {
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField required fullWidth
-                                id="lastName"
                                 name="lastName"
-                                label="Last Name"
+                                id="lastName"
                                 variant="outlined"
+                                label="Last Name"
                                 autoComplete="lname"
                                 error={formErrors.lastName !== null && formErrors.lastName !== undefined && formErrors.lastName !== ''}
                                 helperText={formErrors.lastName}
@@ -155,10 +155,10 @@ export default function CreateEmployee(props) {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField required fullWidth
-                               id="email"
                                name="email"
-                               label="Email Address"
+                               id="email"
                                autoComplete="email"
+                               label="Email Address"
                                variant="outlined"
                                placeholder="example@mail.com"
                                error={formErrors.email !== null && formErrors.email !== undefined && formErrors.email !== ''}
@@ -168,10 +168,10 @@ export default function CreateEmployee(props) {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField required fullWidth
-                               id="phoneNumber"
                                name="phoneNumber"
-                               label="Phone Number"
+                               id="phoneNumber"
                                variant="outlined"
+                               label="Phone Number"
                                autoComplete="phone"
                                error={formErrors.phoneNumber !== null && formErrors.phoneNumber !== undefined && formErrors.phoneNumber !== ''}
                                helperText={formErrors.phoneNumber}
@@ -180,10 +180,10 @@ export default function CreateEmployee(props) {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField fullWidth
-                                id="dni"
                                 name="dni"
-                                label="DNI"
+                                id="dni"
                                 variant="outlined"
+                                label="DNI"
                                 autoComplete="dni"
                                 placeholder="12345678A"
                                 onChange={(e) => handleChange(e)}
@@ -191,10 +191,10 @@ export default function CreateEmployee(props) {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField required fullWidth
-                                id="password"
                                 name="password"
-                                label="Password"
+                                id="password"
                                 variant="outlined"
+                                label="Password"
                                 type="password"
                                 autoComplete="current-password"
                                 error={formErrors.password !== null && formErrors.password !== undefined && formErrors.password !== ''}

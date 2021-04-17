@@ -45,11 +45,15 @@ function Map(props) {
     }, [setError])
 
     useEffect(() => {
+        let isMounted = true;
         setLoading(true)
         setStartLoc().then(startLoc => {
+            if (isMounted){
             setLoading(false)
             setLocation(startLoc)
+            }
         }).catch(err => console.log(err))
+        return () => { isMounted = false };
     }, [setLocation, setStartLoc]);
 
     useEffect(() => {
@@ -82,8 +86,7 @@ function Map(props) {
                             setError(false)
                         },
                         (err) => {
-                            history.push("/pageNotFound")
-                            console.log(err);
+                            console.log('Existen direcciones no válidas');
                         })
                 })
             })

@@ -104,21 +104,22 @@ function Votings(props) {
         }
     }
 
-    function buttonRoles(x) {
-        if (admin) {
+    function buttonRoles(x, next) {
+        if (admin && next===true) {
             return <Link to={'/bares/' + barId + '/votings/voting/' + x.id +'/edit'}>
                 <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} >
                     Editar
                 </Button>
             </Link>
-        } else if (!x.votersUsernames.includes(username)) {
+        } else if (!admin && !x.votersUsernames.includes(username)) {
             return <Link to={'/bares/' + barId + '/votings/voting/' + x.id}>
                 <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} data-testid="but" >
                     Acceder
                 </Button>
             </Link>
+        } else if (!admin && x.votersUsernames.includes(username)){
+            return <div className='div-voting'>Ya has votado</div>
         }
-        return <div className='div-voting'>Ya has votado</div>
     }
 
     const pastVotings = votings.filter(getPastDates)
@@ -145,7 +146,7 @@ function Votings(props) {
                 <div key={x.id}>
                     <ListItem button onClick={() => handleClick(x.id)} style={{ ...stylesComponent.listitem }}>
                         <ListItemText disableTypography style={{ ...stylesComponent.listItemText1 }} primary={x.title} />
-                        {buttonRoles(x)}
+                        {buttonRoles(x, true)}
                         {expand(x.id)}
                     </ListItem>
                     <Collapse in={expanded[x.id]} timeout="auto" unmountOnExit>
@@ -252,7 +253,7 @@ function Votings(props) {
                 <div key={x.id}>
                     <ListItem button onClick={() => handleClick(x.id)} style={{ ...stylesComponent.listitem }}>
                         <ListItemText disableTypography style={{ ...stylesComponent.listItemText1 }} primary={x.title} />
-                        {buttonRoles(x)}
+                        {buttonRoles(x, false)}
                         {!expanded[x.id] ? <ExpandLess /> : <ExpandMore />}
                     </ListItem>
                     <Collapse in={expanded[x.id]} timeout="auto" unmountOnExit>

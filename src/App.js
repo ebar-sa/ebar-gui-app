@@ -18,7 +18,7 @@ import clsx from 'clsx'
 import Mesas from './pages/Mesas'
 import BottomBar from './components/bottom-bar'
 import useUser from './hooks/useUser'
-import BarTableDetails from './components/mesa-details.component'
+import BarTableDetails from './components/BarTableDetails.component'
 import UserMenuDetails from './components/user-menu.component'
 import UserBillDetails from './components/user-bill.component'
 import MenuGestion from './components/admin/menu-admin-gestion.component'
@@ -27,6 +27,7 @@ import PrivateRoute from "./components/private-route.js"
 import NotFoundPage from './hooks/pageError';
 import BarTableCreate from './pages/BarTableCRUD/createTable'
 import BarTableUpdate from './pages/BarTableCRUD/updateTable'
+import AccessDenied from './pages/AccessDenied'
 
 
 const drawerWidth = 240
@@ -88,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
 export function App() {
   const classes = useStyles()
   const { isLogged } = useUser()
-
+  const changeAndReload = false;
   return (
     <div className={classes.root}>
       <Header classes={classes} />
@@ -120,10 +121,12 @@ export function App() {
           <PrivateRoute exact path={'/mesas/:id/create'} component={BarTableCreate} />
           <PrivateRoute exact path={'/mesas/bar/:idBar/mesa/:id/edit'} component={BarTableUpdate} />
           <PrivateRoute exact path={'/pageNotFound/'} component={NotFoundPage}/>
+          <PrivateRoute exact path={'/accessDenied/'} component={AccessDenied}/>
+          
         </Switch>
       </main>
       <div className={classes.colorBar}>
-        <BottomBar classes={classes} />
+        <BottomBar props={changeAndReload} />
       </div>
     </div>
   )

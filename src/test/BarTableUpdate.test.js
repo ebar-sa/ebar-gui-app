@@ -73,7 +73,7 @@ function renderCreateFormAdmin(auth) {
 }
 
 
-describe('Render test CreateBarTable ', () => {
+describe('Render test UpdateBarTable ', () => {
 
     it('Render with a correct BarTable Form', async () => {
         mockAxios.onGet().replyOnce(200,detailsDataLibre);
@@ -104,7 +104,6 @@ describe('Render test CreateBarTable ', () => {
             fireEvent.change(name, {target : {value: 'Mesa Test 2'}})
             expect(name.value).toBe('Mesa Test 2');
 
-            // let seats = await rendered.getByRole('number', {seats: /Sillas/i})
             let seats = await rendered.getByLabelText('Sillas')
             fireEvent.change(seats, {target : {value: 6}})
             expect(seats.value).toBe('6');
@@ -112,7 +111,7 @@ describe('Render test CreateBarTable ', () => {
         })
 
         
-        it('Correct Submit to create a BarTable', async () => {
+        it('Correct Submit to update a BarTable', async () => {
             mockAxios.onGet().replyOnce(200,detailsDataLibre)
             mockAxios.onPost().replyOnce(201);
 
@@ -122,23 +121,18 @@ describe('Render test CreateBarTable ', () => {
             await act(() => promise)
 
             let name = await rendered.getByRole('textbox', {name: /Nombre/i})
-            fireEvent.change(name, {target : {value: 'Mesa Test 2'}})
-            expect(name.value).toBe('Mesa Test 2');
+            fireEvent.change(name, {target : {value: 'Mesa Test 3'}})        
 
-            //let seats = await rendered.getByRole('number', {seats: /Sillas/i})
             let seats = await rendered.getByLabelText('Sillas')
             fireEvent.change(seats, {target : {value: 6}})
-            expect(seats.value).toBe('6');
 
             let send = await rendered.getByRole('button', {name: /Enviar/i})
 
             await act(async () => {
                 fireEvent.click(send)
             })
-            let errorSubmit = await rendered.queryByText('Tienes que rellenar el formulario correctamente')
-            expect(errorSubmit).not.toBeInTheDocument()
         })
-        it('Incorrect Submit to create a BarTable', async () => {
+        it('Incorrect Submit to update a BarTable', async () => {
             mockAxios.onGet().replyOnce(200,detailsDataLibre)
             mockAxios.onPost().replyOnce(201);
 

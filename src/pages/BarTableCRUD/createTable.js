@@ -1,5 +1,5 @@
 import React, {useState,useEffect } from 'react';
-import BarTableService from "../../services/mesa.service";
+import BarTableService from "../../services/barTable.service";
 import { makeStyles } from '@material-ui/core/styles';
 import '../../styles/create-voting.css'
 import Alert from '@material-ui/lab/Alert';

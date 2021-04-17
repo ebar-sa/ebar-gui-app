@@ -1,5 +1,5 @@
 import React, {useState,useEffect } from 'react';
-import BarTableService from "../../services/mesa.service";
+import BarTableService from "../../services/barTable.service";
 import { makeStyles } from '@material-ui/core/styles';
 import '../../styles/create-voting.css'
 import Alert from '@material-ui/lab/Alert';
@@ -44,7 +44,7 @@ export default function BarTableUpdate(){
                     "name": barTable.name, "seats":parseInt(barTable.seats)
                 }
                 BarTableService.updateBarTable(id, object).then(response => {
-                    if(response.status ===201){
+                    if(response.status === 200){
                         history.push({ pathname: '/mesas/' + idBar, barTable:{ data: true }});
                     }else{
                         setOpenSubmitIncorrect(true)

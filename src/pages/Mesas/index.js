@@ -5,8 +5,9 @@ import { Grid } from '@material-ui/core'
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Button from "@material-ui/core/Button";
 import Mesa from '../../components/Mesa'
+import { useHistory } from 'react-router'
 import { getTables } from '../../services/bartable'
-import AuthService from '../../services/auth.service';
+import {getCurrentUser} from '../../services/auth';
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: '5rem',
@@ -14,23 +15,22 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function Mesas(props) {
-  const user = AuthService.getCurrentUser();
+  const user = getCurrentUser();
   const classes = useStyles()
   const [tables, setTables] = useState([])
   const params = useParams();
   const id = params.barId;
-  var isAdmin = false;
+  const history = useHistory();
+  var isAdmin = user.roles.includes('ROLE_OWNER') ||user.roles.includes('ROLE_EMPLOYEE');
   const barId = props.match.params.barId;
   useEffect(() => {
     getTables(barId).then((res) => setTables(res))
   }, [barId])
-  user.roles.forEach((rol) => {
-    if(rol === 'ROLE_OWNER' || rol ==='ROLE_EMPLOYEE'){
-      isAdmin = true;
-    }else{ 
-      isAdmin = false;
+  useEffect(() => {
+    if(!isAdmin){
+      history.push('/')
     }
-  })
+  }, [isAdmin,history])
 
   return (
     <div className={classes.root}>

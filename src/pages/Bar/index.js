@@ -16,9 +16,12 @@ import {ChevronLeft, ChevronRight} from "@material-ui/icons";
 import Slide from "@material-ui/core/Slide";
 import useUser from "../../hooks/useUser";
 import EditIcon from '@material-ui/icons/Edit';
-import {DialogActions, DialogContent, DialogContentText, DialogTitle, useMediaQuery} from "@material-ui/core";
+import {DialogActions, DialogContent, DialogContentText, DialogTitle, useMediaQuery,Snackbar} from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
 import TextField from "@material-ui/core/TextField";
+import MesaDataService from '../../services/barTable.service';
+import Alert from '@material-ui/lab/Alert';
+import BottomBar from '../../components/bottom-bar';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -61,6 +64,12 @@ const useStyles = makeStyles((theme) => ({
     },
     hrColor: {
         borderTop: "1px solid darkgray"
+    },
+    snak: {
+        marginBottom: '20px',
+    },
+    colorBar: {
+      backgroundColor: 'white'
     }
 }))
 
@@ -77,11 +86,15 @@ export default function Bar(props){
 
     const history = useHistory()
     const classes = useStyles();
+    const [token, setToken] = useState('');
+    const [hasBarTable, setHasBarTable] = useState(false);
+    const [barTable, setBarTable] = useState({});
     const [bar, setBar] = useState({});
     const [index, setIndex] = useState(0);
     const [slideIn, setSlideIn] = useState(true);
     const [slideDirection, setSlideDirection] = useState('down');
     const [open, setOpen] = useState(false);
+    const [openSubmitIncorrect, setOpenSubmitIncorrect] = useState(false)
     const img = bar && bar.images && bar.images.length > 0? bar.images[index] : null;
     const imgsLength = bar && bar.images? bar.images.length : 0;
     const barId = props.match.params.barId;
@@ -90,7 +103,8 @@ export default function Bar(props){
 
     const { auth } = useUser()
     let isOwner = bar && auth.username === bar.owner
-
+    const isEmployee = auth.roles.includes('ROLE_EMPLOYEE');
+    const isClient = auth.roles.includes('ROLE_CLIENT');
     useEffect( () => {
         BarDataService.getBar(barId).then(res => {
             setBar(res.data);
@@ -99,7 +113,20 @@ export default function Bar(props){
             history.push('/pageNotFound')
         })
     }, [barId, history])
-
+    useEffect( () => {
+        MesaDataService.getBarTableClient(auth.username).then((res) => {
+            if (res.status === 200){
+                setBarTable(res.data)
+                setHasBarTable(true);
+            }else{
+                setHasBarTable(false);
+            }
+        }).catch(error => {
+            setHasBarTable(false);
+            console.log("Error: " + error)
+            history.push('/pageNotFound')
+        })
+    }, [auth,history])
     const onArrowClick = (direction) => {
         const increment = direction === 'left' ? -1 : 1;
         const newIndex = (index + increment + imgsLength) % imgsLength;
@@ -135,10 +162,40 @@ export default function Bar(props){
 
     function handleClose() {
         setOpen(false)
+        setOpenSubmitIncorrect(false)
     }
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpenSubmitIncorrect(false)
+    };
+
+    function automaticOcuppatioWithToken() {
+        if(token === ''){
+            setOpenSubmitIncorrect(true);
+        }
+        console.log(token.token);
+        MesaDataService.ocupateBarTableByToken(token.token).then((res) => {
+            if(res.status ===200){
+                history.push(`/mesas/detallesMesa/${res.data.id}`)
+            }
+        }).catch(e => {
+          setOpenSubmitIncorrect(true);
+          console.log(e);
+        })
+      }
+
+    const handleChange = (event) => {
+        setToken({...token, [event.target.name]: event.target.value })
+    }
+
 
     return (
         <div className={classes.root}>
+            <div className={classes.colorBar}>
+                <BottomBar props={true}/>
+            </div>
             <Grid container spacing={1} alignContent="space-between" alignItems="center" justify={"center"}>
                 <Grid item align="center">
                     <Typography component="h4" variant="h4" align="center">
@@ -227,7 +284,7 @@ export default function Bar(props){
                         </Grid>
                     </Paper>
                 </Grid>
-
+                {isClient && !hasBarTable ? 
                 <Grid item xs={12} >
                     <Grid container spacing={1} justify={"center"}>
                         <Grid item xs={12}>
@@ -241,18 +298,19 @@ export default function Bar(props){
                                 <Grid container alignItems="center" justify="center" spacing={1}>
                                     <Grid item xs={12} align="center">
                                         <TextField required
-                                                   id={"token"}
-                                                   name={"token"}
+                                                   id="token"
+                                                   name="token"
                                                    label={'Token'}
                                                    variant={"outlined"}
                                                    InputLabelProps={{ shrink: true }}
+                                                   onChange = {(e) => handleChange(e)}
                                         />
                                     </Grid>
                                     <Grid item xs={12} align="center">
                                         <Button
-                                            type="submit"
                                             variant="contained"
-                                            color="primary">
+                                            color="primary"
+                                            onClick = {(e) => automaticOcuppatioWithToken()}>
                                             Enviar
                                         </Button>
                                         <hr className={classes.hrColor} />
@@ -262,19 +320,37 @@ export default function Bar(props){
                         </Grid>
                     </Grid>
                 </Grid>
+                :
+                <div></div>
+                }
 
                 <hr className={classes.hrColor} />
 
                 <Grid item container xs={12} >
                     <ButtonGroup fullWidth={true} color="primary" aria-label="outlined primary button group" className={classes.buttons}>
+                        {isClient && hasBarTable ? 
+                        <Button href={`/#/mesas/detallesMesa/${barTable.id}`}>Tu mesa</Button>
+                        :
+                            null
+                        }
+                        {isOwner || isEmployee ? 
                         <Button href={`/#/mesas/${barId}`}>Mesas</Button>
+                            : 
+                           null 
+                        }
                         <Button href={`/#/bares/${barId}/menu`}>Carta</Button>
                         <Button href={`/#/bares/${barId}/votings`}>Votaciones</Button>
                     </ButtonGroup>
                 </Grid>
 
             </Grid>
-
+            <div className={useStyles.snak}>
+                <Snackbar  open={openSubmitIncorrect} autoHideDuration={6000} onClose={handleCloseSnackBar}>
+                    <Alert onClose={handleCloseSnackBar} severity="error">
+                        El token no se corresponde con ninguna mesa
+                    </Alert>
+                </Snackbar>
+            </div>
 
         </div>
     );

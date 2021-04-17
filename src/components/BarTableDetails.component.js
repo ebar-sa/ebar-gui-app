@@ -1,16 +1,14 @@
-import React, { Component } from 'react';
+import {React,Component } from 'react';
 import { Typography, CardContent, Grid, CardActions,Card,Button,Dialog, DialogActions, DialogContent,
-  DialogContentText,DialogTitle, TextField,TableRow, Table, TableBody, TableHead, TableCell,ButtonGroup } from '@material-ui/core';
+  DialogContentText,DialogTitle,TableRow, Table, TableBody, TableHead, TableCell,ButtonGroup } from '@material-ui/core';
 import { withStyles, makeStyles } from '@material-ui/core/styles'
-import MesaDataService from '../services/mesa.service';
+import MesaDataService from '../services/barTable.service';
 import mesaLibre from '../static/images/table/mesaLibre.png'
 import mesaOcupada from '../static/images/table/mesaOcupada.png'
-import AuthService from '../services/auth.service';
+import {getCurrentUser} from '../services/auth';
 import BillDataService from '../services/bill.service';
 import { Redirect } from "react-router"
-import MediaQuery from 'react-responsive';
-import {ToastContainer} from 'react-toastify';
-import { Unsubscribe } from '@material-ui/icons';
+import BottomBar from './bottom-bar';
 
 export default class BarTableDetails extends Component {
   constructor(props) {
@@ -21,10 +19,10 @@ export default class BarTableDetails extends Component {
     this.isLogged = this.isLogged.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.automaticOcuppatioWithToken = this.automaticOcuppatioWithToken.bind(this);
     this.handleChangeToken = this.handleChangeToken.bind(this);
     this.currentWidth = this.currentWidth.bind(this);
-    
+    this.refreshBillAndOrder = this.refreshBillAndOrder.bind(this);
+    this.timer = 0;
     this.state = {
         mesaActual : {
           id : null,
@@ -53,38 +51,84 @@ export default class BarTableDetails extends Component {
         showMenuPhone: true,
         showBillPhone: false,
         sortOptions: [{ id: 'name', desc: true }],
-        openSubmitIncorrect: false
+        openSubmitIncorrect: false,
+        width: 0, 
+        height: 0 
     }
   };
 
   componentDidMount() {
+    this.updateDimensions();
+    window.addEventListener("resize", this.updateDimensions);
     this.getMesasDetails(this.props.match.params.id)
     this.isLogged();
-    this.timer = setInterval(() => this.getMesasDetails(this.props.match.params.id), 30000);
+    this.timer = setInterval(() => this.bannedClientFromTable(),3000)
+    this.timer = setInterval(() => this.refreshBillAndOrder(), 10000);
   } 
   componentWillUnmount() {
-    clearTimeout(this.timer);
+    clearInterval(this.timer);
+    window.removeEventListener("resize", this.updateDimensions);
   }
+
+  refreshBillAndOrder() {
+    const id = this.props.match.params.id;
+    MesaDataService.refreshBillAndOrder(id).then(res => { 
+      if(res.status === 200 ){
+        this.setState({
+          billActual : res.data
+        })
+      }
+    })
+  }
+
+  bannedClientFromTable() {
+    const user = getCurrentUser()
+    if(user.roles.includes('ROLE_CLIENT')){
+    MesaDataService.getBarTableClient(user.username).then(res => {
+
+    }).catch(e => {
+      this.props.history.push('/#/')
+    })
+    }
+  }
+
   isLogged(){
-    const user = AuthService.getCurrentUser()
-    user.roles.forEach((rol) => {
-    if(rol === 'ROLE_OWNER'){
+    const user = getCurrentUser()
+    this.setState({
+      isAdmin: user.roles.includes('ROLE_OWNER') || user.roles.includes('ROLE_EMPLOYEE')
+    })
+    if(user.roles.includes('ROLE_CLIENT')){
       this.setState({
-        isAdmin : true
+        userName : user.username
       })
     }
+  }
+  updateDimensions = () => {
+    this.setState({width : window.innerWidth, height: window.innerHeight});
+    if(window.innerWidth < 768){
+      this.setState({
+        isPhoneScreen: true
     })
+    }else{ 
+      this.setState({
+        isPhoneScreen: false
+      })
+    }
   }
   currentWidth() {
     console.log(this.props.width);
   }
   getMesasDetails(id) {
     MesaDataService.getBarTable(id).then(res => { 
-        this.setState({
+        if(res.status === 200){
+          this.setState({
             mesaActual : res.data[0],
             menuActual : res.data[1],
             billActual : res.data[2]
-        })
+        })        
+        }else if(res.status === 204){
+          this.props.history.push('/#/')
+        }
     })
     .catch(e => {
       this.setState({
@@ -111,33 +155,27 @@ export default class BarTableDetails extends Component {
   changeStateToFree() {
     const id = this.props.match.params.id;
     MesaDataService.updateBarTableStateToFree(id).then(res => { 
+      if(res.status === 200){
       this.setState({  
         mesaActual:res.data[0],
         billActual:res.data[1],
         openDialog:false,
       })
+    }
     }).catch(e =>{
       console.log(e);
     })
   }
   changeStateToOcupated() {
     const id = this.props.match.params.id;
+    console.log('He entrado aqui con el id ', id)
     MesaDataService.updateBarTableStateToBusy(id).then(res => { 
-      this.setState({  
-        mesaActual:res.data
-      })
+      if(res.status === 200){
+        this.setState({  
+          mesaActual:res.data
+        })
+      }
     }).catch(e =>{
-      console.log(e);
-    })
-  }
-
-  automaticOcuppatioWithToken() {
-    const id = this.props.match.params.id;
-    MesaDataService.ocupateBarTableByToken(id,this.state.token).then(res => {
-      this.setState({
-        mesaActual: res.data,
-      })
-    }).catch(e => {
       console.log(e);
     })
   }
@@ -208,7 +246,7 @@ export default class BarTableDetails extends Component {
       cardGrid: {
         paddingTop: theme.spacing(8),
         paddingBottom: theme.spacing(8),
-      },
+      }
     }))
 
     const stylesComponent = {
@@ -222,6 +260,15 @@ export default class BarTableDetails extends Component {
       buttonMovil: { 
         margin: '0 auto'
       },
+      buttonVolver: {
+        marginLeft:'10px'
+      },
+      colorBar: {
+        backgroundColor: 'white'
+      },
+      gridBill : {
+        margin: '15px 0px 50px 0px'
+      }
     }
       
     let total = this.state.billActual.itemBill.reduce((accumulator, currentValue) => 
@@ -247,13 +294,15 @@ export default class BarTableDetails extends Component {
         },
       },
     }))(TableRow);
-    const {mesaActual, menuActual, billActual, isAdmin,userName,openDialog,error,showMenuPhone,showBillPhone} = this.state
+    const {mesaActual, menuActual, billActual, isAdmin,userName,openDialog,error,showMenuPhone,showBillPhone,isPhoneScreen} = this.state
     return !error ?
       <div>
-        <ToastContainer/>
+        <div className={stylesComponent.colorBar}>
+          <BottomBar props={true}/>
+        </div>
         <div>
-        {/* Configuracion para movil */}
-        <MediaQuery maxWidth={767}>
+        {isPhoneScreen ? 
+        <div>
         <Grid container>
             <Grid item className={useStyles.cardGrid} component={Card} xs={12} align="center">
               <CardContent>
@@ -265,18 +314,14 @@ export default class BarTableDetails extends Component {
                 : 
                 <img alt="Mesa Ocupada" src={mesaOcupada} />
                 }
-                {isAdmin ?
-                  <Typography variant="h5"className={useStyles.title} gutterBottom> 
-                    Código 
-                  </Typography>
-                :
-                mesaActual.free ? 
-                  <Typography variant="h6"className={useStyles.title} gutterBottom> 
-                    Bienvenido comience ingresando el Código
-                  </Typography>
-                :
+                {
+                !mesaActual.free ? 
                   <Typography variant="h6"className={useStyles.title} gutterBottom>
                     Bienvenido {userName}
+                  </Typography>
+                :
+                  <Typography variant="h5"className={useStyles.title} gutterBottom> 
+                      Código 
                   </Typography>
                 }
                 {isAdmin ? 
@@ -291,27 +336,33 @@ export default class BarTableDetails extends Component {
               <CardActions>
                 <div style={stylesComponent.buttonMovil}>
                   { mesaActual.free ? 
+                    <div align='center'>
                     <Button variant="contained" color="primary" onClick = {this.changeStateToOcupated}>
                       Ocupar Manualmente
                     </Button>
+                    <Button style={stylesComponent.buttonVolver} variant="contained" color="primary" onClick = {() => this.props.history.goBack()}>
+                     Volver
+                    </Button>
+                    </div>
                     :
+                    <div align='center'>
                     <Button  variant="contained" color="secondary" onClick = {this.handleOpen}>
                       Desocupar Manualmente
                     </Button>
-
+                    <Button style={stylesComponent.buttonVolver} variant="contained" color="primary" onClick = {() => this.props.history.goBack()}>
+                      Volver
+                    </Button>
+                    </div>
                   }
                 </div>
               </CardActions>
               :
               <CardActions className={useStyles.buttonOcupar}>
                <div style={stylesComponent.buttonMovil}>
-                {mesaActual.free ? 
-                <form onSubmit={this.automaticOcuppatioWithToken}>
-                  <TextField label="Outlined" variant="outlined" type="text" value={this.state.value} onChange={this.handleChangeToken} /><br></br>
-                  <Button style={useStyles.buttonOcupar} variant="contained" color="primary" type="submit">Ocupar</Button>
-                </form>
+                {!mesaActual.free ? 
+                  <h4>Ya tienes ocupada la mesa disfruta de tu estancia. De desocupar la mesa se encarga el Camarero.</h4>
                 :
-                <h4>Ya tienes ocupada la mesa disfruta de tu estancia. De desocupar la mesa se encarga el Camarero.</h4>
+                  <p></p>
                 }
                 </div>
               </CardActions>
@@ -335,6 +386,7 @@ export default class BarTableDetails extends Component {
               </CardContent>
             </Grid>
           </Grid>
+          <div>
           {!mesaActual.free ? 
           <Grid item container xs={12} >
             <ButtonGroup fullWidth={true} color="primary" aria-label="outlined primary button group" >
@@ -355,8 +407,10 @@ export default class BarTableDetails extends Component {
           :
           <p></p>
           }
+          </div>
+          <div>
           {!mesaActual.free && showBillPhone ? 
-          <Grid>
+          <Grid container style={stylesComponent.gridBill}>
           <Grid item component={Card} xs={12}>
             <CardContent>
               <Table size="small" aria-label="a dense table">
@@ -438,93 +492,103 @@ export default class BarTableDetails extends Component {
           :
           <p></p>
           }
-        </MediaQuery>
-        {/* Vista PARA IPAD Y SUPERIOR */}
-        <MediaQuery minWidth={768}>
+          </div>
+          </div>
+        :
+          // Si no es vista de movil muestra la cabecera como siempre
           <Grid container justify="center">
-            <Grid item component={Card} xs={4}>
-              <CardContent>
-                <Typography variant="h5" className={useStyles.title} gutterBottom>
-                  <span data-testid="tableId">{mesaActual.name}</span>
-                </Typography>
-                {mesaActual.free ? 
-                <img alt="Mesa Libre" src={mesaLibre} />
-                : 
-                <img alt="Mesa Ocupada" src={mesaOcupada} />
-                }
-              </CardContent>
-            </Grid>
-            <Grid item component={Card} xs={4}>
-              <CardContent>
-                {isAdmin ?
-                  <Typography variant="h5"className={useStyles.title} gutterBottom> 
-                    Código
-                  </Typography>
-                :
-                mesaActual.free ? 
-                  <Typography variant="h6"className={useStyles.title} gutterBottom> 
-                    Bienvenido comience ingresando el Código
-                  </Typography>
-                :
-                  <Typography variant="h6"className={useStyles.title} gutterBottom>
-                    Bienvenido {userName}
-                  </Typography>
-                }
-                {isAdmin ? 
-                  <Typography variant="h5"className={useStyles.title} gutterBottom> 
-                    <span data-testid="tokenId">{mesaActual.token}</span>
-                  </Typography>
-                  :
-                  <p></p>
-                }
-              </CardContent>
+          <Grid item component={Card} xs={4}>
+            <CardContent>
+              <Typography variant="h5" className={useStyles.title} gutterBottom>
+                <span data-testid="tableId">{mesaActual.name}</span>
+              </Typography>
+              {mesaActual.free ? 
+              <img alt="Mesa Libre" src={mesaLibre} />
+              : 
+              <img alt="Mesa Ocupada" src={mesaOcupada} />
+              }
+            </CardContent>
+          </Grid>
+          <Grid item component={Card} xs={4}>
+            <CardContent>
+              {
+              !mesaActual.free ? 
+              <Typography variant="h6"className={useStyles.title} gutterBottom>
+                Bienvenido {userName}
+              </Typography>
+              :
+              <Typography variant="h5"className={useStyles.title} gutterBottom> 
+                Código
+              </Typography>
+              }
               {isAdmin ? 
-              <CardActions>
-                  { mesaActual.free ? 
+                <Typography variant="h5"className={useStyles.title} gutterBottom> 
+                  <span data-testid="tokenId">{mesaActual.token}</span>
+                </Typography>
+                :
+                <p></p>
+              }
+            </CardContent>
+            {isAdmin ? 
+            <CardActions>
+                { mesaActual.free ? 
+                  <div align='center'>
                     <Button variant="contained" color="primary" onClick = {this.changeStateToOcupated}>
                       Ocupar Manualmente
                     </Button>
-                    :
+                    <Button style={stylesComponent.buttonVolver} variant="contained" color="primary" onClick = {() => this.props.history.goBack()}>
+                     Volver
+                    </Button>
+                  </div>
+                  :
+                  <div align='center'>
                     <Button variant="contained" color="secondary" onClick = {this.handleOpen}>
                       Desocupar Manualmente
                     </Button>
-                  }
-              </CardActions>
-              :
-              <CardActions className={useStyles.buttonOcupar}>
-                {mesaActual.free ? 
-                <form onSubmit={this.automaticOcuppatioWithToken}>
-                  <TextField label="Outlined" variant="outlined" type="text" value={this.state.value} onChange={this.handleChangeToken} /><br></br>
-                  <Button style={useStyles.buttonOcupar} variant="contained" color="primary" type="submit">Ocupar</Button>
-                </form>
-                :
-                <h4>Ya tienes ocupada la mesa disfruta de tu estancia. De desocupar la mesa se encarga el Camarero.</h4>
+                    <Button style={stylesComponent.buttonVolver} variant="contained" color="primary" onClick = {() => this.props.history.goBack()}>
+                      Volver
+                    </Button>
+                  </div>
                 }
-              </CardActions>
+            </CardActions>
+            :
+            <CardActions className={useStyles.buttonOcupar}>
+              {!mesaActual.free ? 
+                <h4>Ya tienes ocupada la mesa disfruta de tu estancia. De desocupar la mesa se encarga el Camarero.</h4>
+              :
+              <h3 style={useStyles.mesaLibre}>La {mesaActual.name} se encuentra libre, ocupe la mesa para comenzar.</h3>
               }
-            </Grid>
-
-            <Grid item component={Card} xs={4}>
-              <CardContent>
-                <Typography variant="h5" className={useStyles.title} gutterBottom> 
-                  Información
-                </Typography> 
-                <Typography variant="h6" className={useStyles.pos}>
-                  {mesaActual.free ? 
-                      <p>ESTADO: <span data-testid="freeId">Libre</span></p> 
-                      :
-                      <p>ESTADO: <span data-testid="notFreeId">Ocupada</span></p> 
-                  } 
-                </Typography>
-                <Typography variant="h6" className={useStyles.title} gutterBottom> 
-                    ASIENTOS: {mesaActual.seats}
-                </Typography>  
-              </CardContent>
-            </Grid>
+            </CardActions>
+            }
           </Grid>
-        </MediaQuery>        
+
+          <Grid item component={Card} xs={4}>
+            <CardContent>
+              <Typography variant="h5" className={useStyles.title} gutterBottom> 
+                Información
+              </Typography> 
+              <Typography variant="h6" className={useStyles.pos}>
+                {mesaActual.free ? 
+                    <p>ESTADO: <span data-testid="freeId">Libre</span></p> 
+                    :
+                    <p>ESTADO: <span data-testid="notFreeId">Ocupada</span></p> 
+                } 
+              </Typography>
+              <Typography variant="h6" className={useStyles.title} gutterBottom> 
+                  ASIENTOS: {mesaActual.seats}
+              </Typography>  
+            </CardContent>
+          </Grid>
+        </Grid>
+      
+        }
+        
+        {/* Vista PARA IPAD Y SUPERIOR */}
+        {/* <MediaQuery minWidth={768}> */}
+
+        {/* </MediaQuery>         */}
         {!mesaActual.free && showMenuPhone ? 
-        <Grid container spacing={0} justify="center">
+        <Grid container spacing={0} justify="center" style={stylesComponent.gridBill}>
           <Grid item component={Card} xs={12}>
             <CardContent>
               <Table size="small" aria-label="a dense table">
@@ -558,10 +622,10 @@ export default class BarTableDetails extends Component {
           :
           <p></p>
           }
-          {!mesaActual.free ? 
+          {!mesaActual.free && !isPhoneScreen ? 
           <div>
-          <MediaQuery  minWidth={768} maxWidth={1023}>
-          <Grid item component={Card} xs={12}>
+          <Grid container style={stylesComponent.gridBill}>
+          <Grid item component={Card} xs={12} lg={6} xl={6}> 
             <CardContent>
               <Table size="small" aria-label="a dense table">
               <caption>PRODUCTOS PEDIDOS PERO NO ENTREGADOS</caption>
@@ -603,87 +667,7 @@ export default class BarTableDetails extends Component {
               </Button>
             </CardContent>
           </Grid>
-          <Grid item component={Card} xs={12}>
-            <CardContent>
-              <Table size="small" aria-label="a dense table">
-              <caption>PRODUCTOS PEDIDOS Y ENTREGADOS</caption>
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
-                  <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
-                  <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Cantidad</Typography></StyledTableCell>
-                  <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Total</Typography></StyledTableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {billActual.itemBill && billActual.itemBill.map((row) => (
-                <StyledTableRow key={row.id}>
-                  <StyledTableCell align="center" component="th" scope="row">
-                      {row.itemMenu.name}
-                  </StyledTableCell>
-                  <StyledTableCell align="center" component="th" scope="row">
-                      {row.itemMenu.price} €
-                  </StyledTableCell>
-                  <StyledTableCell align="center" component="th" scope="row">
-                      {row.amount}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">{row.itemMenu.price*row.amount} €</StyledTableCell>
-                </StyledTableRow>
-                ))}
-                <TableRow>
-                  <TableCell align="right" colSpan={3}><Typography variant="h6"className={useStyles.body} gutterBottom>Total</Typography></TableCell>
-                    <TableCell align="center"><Typography variant="h6"className={useStyles.body} gutterBottom> {total} € </Typography></TableCell>
-                </TableRow>
-              </TableBody>
-              </Table>
-            </CardContent>
-          </Grid>
-          </MediaQuery>
-          <MediaQuery  minWidth={1024}>
-          <Grid container justify='center'>
-          <Grid item component={Card} xs={6}>
-            <CardContent>
-              <Table size="small" aria-label="a dense table">
-              <caption>PRODUCTOS PEDIDOS PERO NO ENTREGADOS</caption>
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Nombre</Typography></StyledTableCell>
-                     <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Precio</Typography></StyledTableCell>
-                     <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Cantidad</Typography></StyledTableCell>
-                     <StyledTableCell align="center"><Typography variant="h6"className={useStyles.title} gutterBottom>Entregado</Typography></StyledTableCell>
-                   </TableRow>
-                </TableHead>
-                <TableBody>
-                {billActual.itemOrder && billActual.itemOrder.map((row) => (
-                  <StyledTableRow key={row.id}>
-                    <StyledTableCell align="center" component="th" scope="row">
-                       {row.itemMenu.name}
-                    </StyledTableCell>
-                    <StyledTableCell align="center" component="th" scope="row">
-                      {row.itemMenu.price} €
-                    </StyledTableCell>
-                    <StyledTableCell align="center" component="th" scope="row">
-                      {row.amount}
-                    </StyledTableCell>
-                    <StyledTableCell align="center">
-                    {isAdmin ? 
-                    <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAñadir }} onClick = {() => this.addToBill(row.id)}  >
-                      Entregado
-                    </Button>
-                    :
-                    <p>-</p>
-                    }
-                    </StyledTableCell>
-                  </StyledTableRow>
-                ))}
-                </TableBody> 
-              </Table>
-              <Button variant="contained" size='small' onClick = {() => this.getMesasDetails(this.props.match.params.id)}>
-                  <span>Refrescar Comanda</span>
-              </Button>
-            </CardContent>
-          </Grid>
-          <Grid item component={Card} xs={6}>
+          <Grid item component={Card} xs={12} lg={6} xl={6}>
             <CardContent>
               <Table size="small" aria-label="a dense table">
               <caption>PRODUCTOS PEDIDOS Y ENTREGADOS</caption>
@@ -719,11 +703,10 @@ export default class BarTableDetails extends Component {
             </CardContent>
           </Grid>
           </Grid>
-          </MediaQuery>
           </div>
           :
           <div>
-          <h3 style={useStyles.mesaLibre}>La {mesaActual.name} se encuentra libre, ocupe la mesa para comenzar.</h3>
+          
           </div>
         }
         {openDialog ? 

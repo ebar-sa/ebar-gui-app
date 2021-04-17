@@ -82,7 +82,7 @@ export function Mesa(props) {
     <Grid item container xs={12}>
         <ButtonGroup fullWidth={true} aria-label="outlined primary button group" >
             <Button className={classes.buttonEditar} href={`/#/mesas/bar/${idBar}/mesa/${id}/edit`}>Editar Mesa</Button>
-            <Button className={classes.buttonBorrar} onClick={() => removeBarTable(id)}>Eliminar Mesa</Button>
+            <Button className={classes.buttonBorrar} onClick={() => removeBarTable()}>Eliminar Mesa</Button>
         </ButtonGroup>
     </Grid>
     :

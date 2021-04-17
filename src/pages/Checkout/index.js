@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { loadStripe } from '@stripe/stripe-js'
 import {
   CardElement,
@@ -47,6 +47,7 @@ function CheckoutForm() {
   const history = useHistory()
   const stripe = useStripe()
   const elements = useElements()
+  const [errorMessage, setErrorMessage] = useState(false)
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -56,17 +57,15 @@ function CheckoutForm() {
     })
 
     if (error) {
-      alert('Error')
+      setErrorMessage(error.message)
     } else {
       const token = paymentMethod.id
       checkoutService
         .addCard({ token })
         .then(() => history.push('/payments/subscriptions'))
-        .catch(() => {})
+        .catch(() => setErrorMessage('Error, intentelo más tarde.'))
     }
   }
-
-  const error = false
 
   return (
     <Container component="main" maxWidth="xs">
@@ -78,10 +77,10 @@ function CheckoutForm() {
         <Typography component="h1" variant="h5">
           Añadir método de pago
         </Typography>
-        {error && (
+        {errorMessage && (
           <Alert severity="error" style={{ width: '100%', marginTop: 30 }}>
             <AlertTitle>Error</AlertTitle>
-            {error}
+            {errorMessage}
           </Alert>
         )}
         <form className={classes.form} onSubmit={handleSubmit}>

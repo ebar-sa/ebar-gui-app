@@ -71,25 +71,27 @@ export default function CreateEmployee(props) {
     function handleValidation() {
         let valid = true
         let objErrors = {}
-        if (!formData.username || formData.username.length < 3 || formData.username.length > 20) {
-            valid = false
-            objErrors["username"] = "El nombre de usuario debe tener más de 3 caracteres y menos de 20"
-        }
+        
         if (!formData.email || !emailPatt.test(formData.email) || formData.email.length > 50) {
             valid = false
             objErrors["email"] = "Se debe introducir un correo electrónico válido y no mayor de 50 caracteres"
+        }
+        if (!formData.username || formData.username.length < 3 || formData.username.length > 20) {
+            valid = false
+            objErrors["username"] = "El nombre de usuario debe tener más de 3 caracteres y menos de 20"
         }
         if (!formData.password || formData.password.length < 6 || formData.password.length > 40) {
             valid = false
             objErrors["password"] = "La contraseña debe tener más de 6 caracteres y menos de 40"
         }
-        if (!formData.firstName) {
-            valid = false
-            objErrors["firstName"] = "El nombre no puede estar vacío"
-        }
+        
         if (!formData.lastName) {
             valid = false
             objErrors["lastName"] = "El apellido no puede estar vacío"
+        }
+        if (!formData.firstName) {
+            valid = false
+            objErrors["firstName"] = "El nombre no puede estar vacío"
         }
         if (!formData.phoneNumber || !phonePatt.test(formData.phoneNumber)) {
             valid = false

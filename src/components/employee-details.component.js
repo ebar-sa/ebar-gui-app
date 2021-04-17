@@ -25,7 +25,7 @@ export default class EmployeeDetails extends Component {
           userActual: null
     };
     
-  };
+  }
   
   componentDidMount() {
     console.log(this.props.match.params.idBar, this.props.match.params.user); 

@@ -41,13 +41,6 @@ export default class EmployeeList extends Component {
 
     render() {
         const useStyles = makeStyles({
-          card: {
-            margin: 16,
-            display: "flex",
-            flexDirection: "column",
-            maxWidth: 100,
-            justifyContent: "space-between"
-          },
           title: {
             fontSize: 16,
           },
@@ -58,18 +51,15 @@ export default class EmployeeList extends Component {
           cardAction: {
             width: '100%',
           },
-          nombreMesa: { 
-            textAlign:'center',
-            marginLeft: 15
-          },
           pos: {
             marginBottom: 12,
           },
-          occupied: {
-            backgroundColor: '#ddd',
-          }, 
-          free: {
-            backgroundColor: '#fff',
+          card: {
+            margin: 16,
+            display: "flex",
+            flexDirection: "column",
+            maxWidth: 100,
+            justifyContent: "space-between"
           },
           root: {
             flexGrow: 1,

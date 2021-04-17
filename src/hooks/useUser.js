@@ -38,7 +38,11 @@ export default function useUser() {
             .catch(err => {
                 setRegistered(false)
                 if (err.response.status === 400) {
-                    setState({loading: false, error: err.response.data.message})
+                    let errmessage = err.response.data.message
+                    if(!errmessage){
+                        errmessage = "Please check the submitted fields"
+                    }
+                    setState({loading: false, error: errmessage})
                 } else {
                     history.push("/pageNotFound")
                 }

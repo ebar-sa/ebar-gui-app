@@ -58,6 +58,7 @@
 
 .p {
     margin-top: 12px;
+    font-size: 15px;
 }
 
 .div-list {
@@ -72,4 +73,15 @@
 .div-voting {
     margin-right: 50px;
     font-weight: 600;
+}
+
+.options {
+    font-weight: 600;
+    text-decoration: underline;
+    font-size: 15px;
+}
+
+.loading{
+    margin-top: 150px;
+    text-align: center;
 }

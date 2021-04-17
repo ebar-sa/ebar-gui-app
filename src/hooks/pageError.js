@@ -21,8 +21,8 @@ function NotFoundPage(){
         } 
         return <div>
             <img alt="error" style={useStyles.centerImage} src={PageNotFound}/>
-            <div style={{margin:"0 auto"}}>
-                <Button style={{marginLeft:"45%"}} variant="contained" color="primary" onClick = {routeRedirect}>
+            <div style={{margin:"auto", textAlign:'center'}}>
+                <Button variant="contained" color="primary" onClick = {routeRedirect}>
                     Ir al inicio
                 </Button>
             </div>

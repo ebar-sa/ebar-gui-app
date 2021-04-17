@@ -15,23 +15,24 @@ import EmployeeDataService from "../../services/employee.service";
 
 
 const useStyles = makeStyles((theme) => ({
+    avatar: {
+        margin: theme.spacing(1),
+        backgroundColor: theme.palette.secondary.main,
+    },
     paper: {
         marginTop: theme.spacing(8),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
     },
-    avatar: {
-        margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
+    submit: {
+        margin: theme.spacing(3, 0, 0),
     },
     form: {
         width: '100%', 
         marginTop: theme.spacing(3),
     },
-    submit: {
-        margin: theme.spacing(3, 0, 0),
-    },
+
 }));
 
 export default function UpdateEmployee(props) {

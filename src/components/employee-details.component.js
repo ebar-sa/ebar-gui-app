@@ -60,6 +60,19 @@ export default class EmployeeDetails extends Component {
 
     render() {
         const useStyles = makeStyles({
+
+          title: {
+            fontSize: 16,
+          },
+          cardAction: {
+            width: '100%',
+          },
+          pos: {
+            marginBottom: 12,
+          },
+          root: {
+            padding: '5rem',
+          },
           card: {
             margin: 16,
             display: "flex",
@@ -67,32 +80,12 @@ export default class EmployeeDetails extends Component {
             maxWidth: 100,
             justifyContent: "space-between"
           },
-          title: {
-            fontSize: 16,
-          },
+
           botton: {
             fontSize: 16,
 
           },
-          cardAction: {
-            width: '100%',
-          },
-          nombreMesa: { 
-            textAlign:'center',
-            marginLeft: 15
-          },
-          pos: {
-            marginBottom: 12,
-          },
-          occupied: {
-            backgroundColor: '#ddd',
-          }, 
-          free: {
-            backgroundColor: '#fff',
-          },
-          root: {
-            padding: '5rem',
-          },
+
         })
         
     

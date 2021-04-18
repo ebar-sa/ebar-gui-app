@@ -5,7 +5,7 @@ import {act, render, fireEvent} from "@testing-library/react";
 import { createMemoryHistory } from 'history';
 import MockAdapter from 'axios-mock-adapter';
 
-import UpdateItemMenu from '../pages/Menu/EditItem';
+import UpdateItemMenu from '../pages/Menu/EditItemMenu';
 import Context from '../context/UserContext';
 import http from '../http-common';
 

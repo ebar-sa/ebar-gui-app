@@ -11,7 +11,7 @@ import MesaDataService from '../services/barTable.service';
 
 const useStyles = makeStyles({
     root: {
-        width: 350,
+        width: '100%',
         textAlign: 'center',
         margin: 'auto',
     },

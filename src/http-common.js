@@ -1,9 +1,8 @@
-import axios from "axios";
+import axios from 'axios'
 
 export default axios.create({
-  //baseURL: "https://ebar-srv-sprint2.herokuapp.com/api/",
-  baseURL: "http://localhost:8080/api/",
+  baseURL: 'https://ebar-srv-sprint2.herokuapp.com/api/',
   headers: {
-    "Content-type": "application/json"
-  }
-});
+    'Content-type': 'application/json',
+  },
+})

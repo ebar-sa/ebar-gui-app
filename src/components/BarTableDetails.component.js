@@ -55,8 +55,8 @@ export default class BarTableDetails extends Component {
         width: 0, 
         height: 0 
     }
-  };
-
+  }
+  
   componentDidMount() {
     this.updateDimensions();
     window.addEventListener("resize", this.updateDimensions);

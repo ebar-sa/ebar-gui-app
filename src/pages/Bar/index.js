@@ -1,3 +1,4 @@
+
 import React, {useEffect, useState} from "react";
 import { useHistory } from 'react-router';
 import BarDataService from "../../services/bar.service";
@@ -109,8 +110,14 @@ export default function Bar(props){
         BarDataService.getBar(barId).then(res => {
             setBar(res.data);
         }).catch(error => {
-            console.log("Error: " + error)
-            history.push('/pageNotFound')
+            // Http 402 -> Payment required
+            if (error.response?.status === 402) {
+                history.push(`/payments/subscribe/${barId}`)
+            }else{
+                console.log("Error: " + error)
+                history.push('/pageNotFound')
+            }
+            
         })
     }, [barId, history])
     useEffect( () => {
@@ -127,6 +134,7 @@ export default function Bar(props){
             history.push('/pageNotFound')
         })
     }, [auth,history])
+
     const onArrowClick = (direction) => {
         const increment = direction === 'left' ? -1 : 1;
         const newIndex = (index + increment + imgsLength) % imgsLength;
@@ -284,6 +292,7 @@ export default function Bar(props){
                         </Grid>
                     </Paper>
                 </Grid>
+
                 {isClient && !hasBarTable ? 
                 <Grid item xs={12} >
                     <Grid container spacing={1} justify={"center"}>
@@ -342,19 +351,16 @@ export default function Bar(props){
                         <Button href={`/#/bares/${barId}/votings`}>Votaciones</Button>
                     </ButtonGroup>
                 </Grid>
-
+                <div className={useStyles.snak}>
+                    <Snackbar  open={openSubmitIncorrect} autoHideDuration={6000} onClose={handleCloseSnackBar}>
+                        <Alert onClose={handleCloseSnackBar} severity="error">
+                            El token no se corresponde con ninguna mesa
+                        </Alert>
+                    </Snackbar>
+                </div>
             </Grid>
-            <div className={useStyles.snak}>
-                <Snackbar  open={openSubmitIncorrect} autoHideDuration={6000} onClose={handleCloseSnackBar}>
-                    <Alert onClose={handleCloseSnackBar} severity="error">
-                        El token no se corresponde con ninguna mesa
-                    </Alert>
-                </Snackbar>
-            </div>
-
         </div>
     );
-
-    
-    
 }
+
+

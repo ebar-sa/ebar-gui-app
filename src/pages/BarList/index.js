@@ -12,7 +12,8 @@ import {Paper} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     container: {
-        marginTop: "10px"
+        marginTop: "10px",
+        marginBottom: "100px"
     },
     list: {
         textAlign: 'left',

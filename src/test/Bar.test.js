@@ -56,19 +56,30 @@ const bar = {
     "owner": "test-owner"
 }
 
+const barTable = {
+    "id": 1,
+    "name": "Mesa",
+    "token": "abcdef",
+    "free": false,
+    "seats": 4
+}
+
 describe('Render test suite', () => {
     it('Render with a correct bar', async () => {
 
-        mockAxios.onGet().replyOnce(200, bar)
+        mockAxios.onGet("/bar/1").replyOnce(200, bar)
+        mockAxios.onGet("/tables/tableClient/test-owner").reply(200, barTable)
+        // mockAxios.onGet("/bar/1").replyOnce(200, bar)
+        window.sessionStorage.setItem("user",JSON.stringify(auth))
 
         let rendered = render(
-            <Context.Provider value={{auth, setAuth}}>
+            <UserContextProvider>
                 <Router history={history} >
                     <Bar {...{match: {params: {barId: 1}}}}/>
                 </Router>
-            </Context.Provider>)
+            </UserContextProvider>)
 
-        let promise = new Promise(r => setTimeout(r, 250));
+        let promise = new Promise(r => setTimeout(r, 2000));
         await act(() => promise)
 
         let title = await rendered.findByText('Burger Food Porn')
@@ -150,7 +161,8 @@ describe('Render test suite', () => {
 
         window.sessionStorage.setItem("user",JSON.stringify(wrongAuth))
 
-        mockAxios.onGet().replyOnce(200, bar)
+        mockAxios.onGet("/bar/1").replyOnce(200, bar)
+        mockAxios.onGet("/tables/tableClient/test-owner2").reply(200, barTable)
 
         let rendered = render(
             <UserContextProvider>

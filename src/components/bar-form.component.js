@@ -42,8 +42,8 @@ export default function BarForm(props) {
         location: '',
         contact: ''
     })
-    const [openingTime, setOpeningTime] = useState(new Date().getTime())
-    const [closingTime, setClosingTime] = useState(new Date().getTime())
+    const [openingTime, setOpeningTime] = useState(new Date())
+    const [closingTime, setClosingTime] = useState(new Date())
     const [selectedFiles, setSelectedFiles] = useState([])
     const [openingTimeError, setOpeningTimeError] = useState('')
     const [closingTimeError, setClosingTimeError] = useState('')

@@ -6,7 +6,7 @@ import { createMemoryHistory } from 'history';
 import MockAdapter from 'axios-mock-adapter';
 
 import UpdateBar from '../pages/BarUpdate';
-import Context from '../context/UserContext';
+import Context, {UserContextProvider} from '../context/UserContext';
 import http from '../http-common';
 
 const setAuth = jest.fn()
@@ -19,6 +19,14 @@ window.getComputedStyle = (elt) => getComputedStyle(elt);
 const auth = {
     username: "test-owner",
     email: "test@owner.com",
+    roles: ["ROLE_OWNER"],
+    tokenType: "Bearer",
+    accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pMyIsImlhdCI6MTYxNzMyNjA3NywiZXhwIjoxNjE3NDEyNDc3fQ.Hcpf9naGfM1FiQ6CEdBMthcsa9m9rIHs7ae4zaiO7MCPKAT3HpK9Is5fAKbuu7MlF4bLuTN2qctRalxTz8elQg"
+}
+
+const wrongAuth = {
+    username: "test-owner2",
+    email: "test@owner2.com",
     roles: ["ROLE_OWNER"],
     tokenType: "Bearer",
     accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pMyIsImlhdCI6MTYxNzMyNjA3NywiZXhwIjoxNjE3NDEyNDc3fQ.Hcpf9naGfM1FiQ6CEdBMthcsa9m9rIHs7ae4zaiO7MCPKAT3HpK9Is5fAKbuu7MlF4bLuTN2qctRalxTz8elQg"
@@ -82,6 +90,46 @@ describe("BarUpdate test suite", () => {
         expect(submit).toBeInTheDocument()
     })
 
+    it("404 error", async () => {
+        const spy = jest.spyOn(history, 'push')
+        mockAxios.onGet().replyOnce(404, bar)
+
+        let rendered = render(
+            <Context.Provider value={{auth, setAuth}}>
+                <Router history={history} >
+                    <UpdateBar {...{match: {params: {barId: 1}}}} />
+                </Router>
+            </Context.Provider>
+        )
+
+        let promise = new Promise(r => setTimeout(r, 2000));
+        await act(() => promise)
+
+        expect(spy).toHaveBeenCalledTimes(1)
+
+    })
+
+    it("Try to update bar with wrong owner", async () => {
+
+        const spy = jest.spyOn(history, 'push')
+        mockAxios.onGet().replyOnce(200, bar)
+        window.sessionStorage.setItem("user", JSON.stringify(wrongAuth))
+
+        let rendered = render(
+            <UserContextProvider>
+                <Router history={history} >
+                    <UpdateBar {...{match: {params: {barId: 1}}}} />
+                </Router>
+            </UserContextProvider>
+        )
+
+        let promise = new Promise(r => setTimeout(r, 2000));
+        await act(() => promise)
+
+        expect(spy).toHaveBeenCalledTimes(1)
+
+    })
+
     it("Correct submit", async () => {
 
         mockAxios.onGet().replyOnce(200, bar)
@@ -101,7 +149,7 @@ describe("BarUpdate test suite", () => {
         let name = await rendered.getByRole('textbox', { name: /Nombre/i })
         fireEvent.change(name, { target: { value: 'Burger Food Porn' } })
 
-        let description = await rendered.getByRole('textbox', { name: "" })
+        let description = await rendered.container.querySelector("#description")
         fireEvent.change(description, { target: { value: 'El templo de la hamburguesa.' } })
 
         let contact = await rendered.getByRole('textbox', { name: /Contacto/i })

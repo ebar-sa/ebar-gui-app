@@ -1,6 +1,7 @@
 import React from 'react';
 import { Router } from 'react-router-dom';
 import {act, render, fireEvent} from "@testing-library/react";
+import userEvent from '@testing-library/user-event'
 
 import { createMemoryHistory } from 'history';
 import MockAdapter from 'axios-mock-adapter';
@@ -72,7 +73,7 @@ describe("BarCreate test suite", () => {
         fireEvent.change(name, { target: { value: 'Burger Food Porn' } })
         expect(name.value).toBe('Burger Food Porn')
 
-        let description = await rendered.getByRole('textbox', { name: "" })
+        let description = await rendered.container.querySelector("#description")
         fireEvent.change(description, { target: { value: 'El templo de la hamburguesa.' } })
         expect(description.value).toBe('El templo de la hamburguesa.')
 
@@ -138,7 +139,7 @@ describe("BarCreate test suite", () => {
         let name = await rendered.getByRole('textbox', { name: /Nombre/i })
         fireEvent.change(name, { target: { value: 'Burger Food Porn' } })
 
-        let description = await rendered.getByRole('textbox', { name: "" })
+        let description = await rendered.container.querySelector("#description")
         fireEvent.change(description, { target: { value: 'El templo de la hamburguesa.' } })
 
         let contact = await rendered.getByRole('textbox', { name: /Contacto/i })
@@ -179,7 +180,7 @@ describe("BarCreate test suite", () => {
         let name = await rendered.getByRole('textbox', { name: /Nombre/i })
         fireEvent.change(name, { target: { value: '' } })
 
-        let description = await rendered.getByRole('textbox', { name: "" })
+        let description = await rendered.container.querySelector("#description")
         fireEvent.change(description, { target: { value: '' } })
 
         let contact = await rendered.getByRole('textbox', { name: /Contacto/i })
@@ -203,4 +204,33 @@ describe("BarCreate test suite", () => {
         let errorSubmit = await rendered.queryByText('Tienes que rellenar el formulario correctamente')
         expect(errorSubmit).toBeInTheDocument()
     })
+
+    it("Add images to form", async () => {
+
+        var file1 = new File(["foo"], "foo.png", {
+            type: "image/png",
+        });
+
+        let rendered = render(
+            <Context.Provider value={{auth, setAuth}}>
+                <Router history={history} >
+                    <CreateBar history={history}/>
+                </Router>
+            </Context.Provider>
+        )
+
+        let input = rendered.getByTestId("prueba")
+        expect(input).toBeInTheDocument()
+
+        await userEvent.upload(input, file1)
+
+        let promise = new Promise(r => setTimeout(r, 2000));
+        await act(() => promise)
+
+        let deleteImg = await rendered.getByRole('button', { name: /Eliminar/i })
+        expect(deleteImg).toBeInTheDocument()
+
+    })
+
+
 })

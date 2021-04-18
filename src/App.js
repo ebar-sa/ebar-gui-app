@@ -10,11 +10,14 @@ import BarList from './pages/BarList'
 import CreateVotings from './pages/VotingCreate'
 import Votings from './pages/VotingList'
 import VotingDetailUser from './pages/VotingDetail'
-import BarCreate from "./pages/BarCreate";
-import BarUpdate from "./pages/BarUpdate";
+
+import CreateItem from './pages/Menu/CreateItemMenu'
+import EditItem from './pages/Menu/EditItemMenu'
+
+import BarCreate from "./pages/BarCreate"
+import BarUpdate from "./pages/BarUpdate"
 import Subscriptions from './pages/Subscriptions'
 import EditVoting from './pages/VotingEdit'
-
 
 import Header from './components/Header'
 
@@ -26,11 +29,11 @@ import useUser from './hooks/useUser'
 import BarTableDetails from './components/BarTableDetails.component'
 import UserMenuDetails from './components/user-menu.component'
 import UserBillDetails from './components/user-bill.component'
-import MenuGestion from './components/admin/menu-admin-gestion.component'
+import MenuGestion from './components/menu.component'
 
 import Bar from "./pages/Bar"
 import PrivateRoute from "./components/private-route.js"
-import NotFoundPage from './hooks/pageError';
+import NotFoundPage from './hooks/pageError'
 import BarTableCreate from './pages/BarTableCRUD/createTable'
 import BarTableUpdate from './pages/BarTableCRUD/updateTable'
 import AccessDenied from './pages/AccessDenied'
@@ -40,7 +43,6 @@ import UpdateEmployee from './pages/EmployeeUpdate'
 import EmployeeDetails from './components/employee-details.component'
 import Checkout from './pages/Checkout'
 import Subscribe from './pages/Subscribe'
-
 
 const drawerWidth = 240
 
@@ -55,6 +57,8 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+    color : 'white',
+    backgroundColor: '#3f51b5' 
   },
   appBarShift: {
     marginLeft: drawerWidth,
@@ -138,6 +142,9 @@ export function App() {
           <PrivateRoute exact path={'/bar/:idBarActual/employees/update/:userActual'} component={UpdateEmployee} />
           <PrivateRoute exact path={'/bar/:idBar/employees/:user'} component={EmployeeDetails} />
           <PrivateRoute exact path={'/pageNotFound/'} component={NotFoundPage}/>
+          <PrivateRoute exact path={'/bares/:idBar/menu/itemMenu'} component={CreateItem} />
+          <PrivateRoute exact path={'/bares/:idBar/menu/itemMenu/:idItemMenu'} component={EditItem} />
+
           <PrivateRoute
             exact
             path={'/payments/subscriptions'}

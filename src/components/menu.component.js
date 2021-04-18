@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
 import MenuDataService from '../services/menu.service'
 import {withStyles, makeStyles } from '@material-ui/core/styles'
-import {Typography, CardContent, Grid, Card} from '@material-ui/core'
-import {TableRow, Table, TableBody, TableHead, TableCell} from '@material-ui/core'
+import {Typography, CardContent, Grid, Card, Snackbar,TableRow, Table, TableBody, TableHead, TableCell} from '@material-ui/core'
 import Button from "@material-ui/core/Button"
 import * as AuthService from '../services/auth'
 import Alert from '@material-ui/lab/Alert'
-import {Snackbar} from "@material-ui/core"
 import Paper from "@material-ui/core/Paper/Paper"
 
 export default class Menu extends Component {    

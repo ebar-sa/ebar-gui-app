@@ -11,11 +11,11 @@ import CreateVotings from './pages/VotingCreate'
 import Votings from './pages/VotingList'
 import VotingDetailUser from './pages/VotingDetail'
 
-import CreateItem from './pages/Menu/CreateItem'
-import EditItem from './pages/Menu/EditItem'
+import CreateItem from './pages/Menu/CreateItemMenu'
+import EditItem from './pages/Menu/EditItemMenu'
 
-import BarCreate from "./pages/BarCreate";
-import BarUpdate from "./pages/BarUpdate";
+import BarCreate from "./pages/BarCreate"
+import BarUpdate from "./pages/BarUpdate"
 import Subscriptions from './pages/Subscriptions'
 import EditVoting from './pages/VotingEdit'
 
@@ -33,7 +33,7 @@ import MenuGestion from './components/menu.component'
 
 import Bar from "./pages/Bar"
 import PrivateRoute from "./components/private-route.js"
-import NotFoundPage from './hooks/pageError';
+import NotFoundPage from './hooks/pageError'
 import BarTableCreate from './pages/BarTableCRUD/createTable'
 import BarTableUpdate from './pages/BarTableCRUD/updateTable'
 import AccessDenied from './pages/AccessDenied'

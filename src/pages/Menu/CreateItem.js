@@ -23,7 +23,6 @@ const useStyles = makeStyles(() => ({
 }))
 export default function CreateItemMenu(props) {
     const [state, setState] = useState('');
-    const [setOpenSubmitIncorrect] = useState(false);
     const params = useParams();
     const classes = useStyles();
     const idBar = params.idBar;

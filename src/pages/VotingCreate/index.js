@@ -10,6 +10,7 @@ import Alert from '@material-ui/lab/Alert';
 import {TextField, Button, IconButton, Snackbar, Container, Grid, Typography} from '@material-ui/core';
 import { useHistory } from 'react-router'
 import useUser from '../../hooks/useUser'
+import BarDataService from "../../services/bar.service";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -37,11 +38,7 @@ export default function CreateVotings(props){
 
     const history = useHistory()
     const { auth } = useUser()
-    const admin = auth.roles.includes('ROLE_OWNER') || auth.roles.includes('ROLE_EMPLOYEE');
-
-    useEffect(() => {
-        if (!admin) history.push('/profile')
-    }, [admin, history])
+    const username = auth.username
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -54,6 +51,17 @@ export default function CreateVotings(props){
             clearInterval(interval);
         };
     }, [now, openingHour]);
+
+    useEffect(() => {
+        BarDataService.getBar(barId).then(res => {
+            let owner = res.data.owner
+            let emp = res.data.employees.map(a => a.username)
+            console.log('Emp', emp)
+            if (!(owner === username || emp.includes(username))) history.push('/')
+        }).catch(err => {
+            history.push('/pageNotFound')
+        })
+    }, [barId, history, username])
 
     const handleSubmit = (evt) => {
         evt.preventDefault();

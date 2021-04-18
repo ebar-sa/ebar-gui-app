@@ -53,6 +53,10 @@ class VotingDataService {
     updateVoting = (barId, votingId, object) => {
         return http.put('/bar/'+barId+'/voting/'+votingId, object,  {headers: authHeader()})
     }
+
+    deleteVoting = (barId, votingId) => {
+        return http.delete('/bar/' + barId + '/voting/' + votingId, { headers: authHeader() })
+    }
 }
 
 export default new VotingDataService()

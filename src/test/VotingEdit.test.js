@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, render, fireEvent } from "@testing-library/react";
+import { act, render, fireEvent, screen } from "@testing-library/react";
 import MockAdapter from "axios-mock-adapter";
 import VotingEdit from '../pages/VotingEdit';
 import http from "../http-common";
@@ -17,6 +17,15 @@ const auth = {username:"client1",
     roles:["ROLE_OWNER"],
     tokenType:"Bearer",
     accessToken:"AnyToken"
+}
+
+
+const barList = {
+    "id": 99,
+    "name": "Burger Food Porn",
+    "capacity": "7/11",
+    "owner": "client1",
+    "employees": [{}]
 }
 
 const correctVotingDummy = {
@@ -98,9 +107,11 @@ describe('Testing render component correctly', () => {
 
     it('Render form with correct inital data', async() => {
 
+        
+        mockAxios.onGet().replyOnce(200, barList)
         mockAxios.onGet().replyOnce(200, correctVotingDummy)
         let rendered = renderComponent()
-
+        screen.debug()
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
         
@@ -124,6 +135,8 @@ describe('Testing render component correctly', () => {
     }, [7000])
 
     it('Render component with an already began voting', async () => {
+
+        mockAxios.onGet().replyOnce(200, barList)
         mockAxios.onGet().replyOnce(200, begunVotingDummy)
         let rendered = renderComponent()
 
@@ -136,12 +149,15 @@ describe('Testing render component correctly', () => {
     })
 
     it('Render component with a closed voting', async () => {
+        
+        mockAxios.onGet().replyOnce(200, barList)
         mockAxios.onGet().replyOnce(200, closedVotingDummy)
+        
         let rendered = renderComponent()
 
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
-
+        screen.debug()
         let alreadyBegunAlert = await rendered.findByText('No puedes editar votaciones ya comenzadas')
         expect(alreadyBegunAlert).toBeInTheDocument()
         
@@ -151,7 +167,9 @@ describe('Testing render component correctly', () => {
 describe('Behaviour testing', () => {
     
     it('Changing fields', async () => {
+        mockAxios.onGet().replyOnce(200, barList)
         mockAxios.onGet().replyOnce(200, correctVotingDummy)
+        
         mockAxios.onPut().replyOnce(200)
 
         let rendered = renderComponent()
@@ -184,8 +202,9 @@ describe('Behaviour testing', () => {
     }, [7000])
 
     it('Deleting an option', async () => {
+        mockAxios.onGet().replyOnce(200, barList)
         mockAxios.onGet().replyOnce(200, correctVotingDummy)
-
+       
         let rendered = renderComponent()
 
         let promise = new Promise(r => setTimeout(r, 250));
@@ -210,8 +229,10 @@ describe('Behaviour testing', () => {
     }, [7000])
 
     it('Adding an option',async () => {
+        
+        mockAxios.onGet().replyOnce(200, barList)
         mockAxios.onGet().replyOnce(200, correctVotingDummy)
-
+        
         let rendered = renderComponent()
 
         let promise = new Promise(r => setTimeout(r, 250));
@@ -240,9 +261,11 @@ describe('Behaviour testing', () => {
     }, [7000])
 
     it('Clicking success edit button', async () => {
+        
+        mockAxios.onGet().replyOnce(200, barList)
         mockAxios.onGet().replyOnce(200, correctVotingDummy)
+        
         mockAxios.onPut().replyOnce(200)
-
         let rendered = renderComponent()
 
         let promise = new Promise(r => setTimeout(r, 250));
@@ -264,7 +287,10 @@ describe('Behaviour testing', () => {
     }, [7000])
 
     it('Testing validators', async () => {
+        
+        mockAxios.onGet().replyOnce(200, barList)
         mockAxios.onGet().replyOnce(200, correctVotingDummy)
+        
         mockAxios.onPut().replyOnce(200)
 
         let rendered = renderComponent()
@@ -300,8 +326,10 @@ describe('Behaviour testing', () => {
     }, [7000])
 
     it('Testing date validator closing before opening', async () => {
+        
+        mockAxios.onGet().replyOnce(200, barList)
         mockAxios.onGet().replyOnce(200, correctVotingDummy)
-
+        
         let rendered = renderComponent()
 
         let promise = new Promise(r => setTimeout(r, 250));

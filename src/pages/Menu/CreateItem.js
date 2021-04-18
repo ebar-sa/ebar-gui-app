@@ -52,14 +52,10 @@ export default function CreateItemMenu(props) {
             MenuDataService.createItem(idBar, itemMenu).then(response => {
                 if(response.status === 201) {
                     props.history.push({pathname: `/bares/${idBar}/menu`, state: { data: true }})
-                } else {
-                    setOpenSubmitIncorrect(true)
                 }
             }).catch(error => {
                 console.log("Error" + error)
             })
-        } else {
-            setOpenSubmitIncorrect(true)
         }
     }
 

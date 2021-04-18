@@ -5,7 +5,7 @@ import {act, render} from "@testing-library/react";
 import { createMemoryHistory } from 'history';
 import MockAdapter from 'axios-mock-adapter';
 
-import MenuAdmin from '../components/admin/menu-admin-gestion.component'
+import MenuAdmin from '../components/menu.component'
 import Context from '../context/UserContext';
 import http from '../http-common';
 
@@ -13,7 +13,8 @@ const setAuth = jest.fn()
 const mockAxios = new MockAdapter(http)
 const history = createMemoryHistory()
 
-const auth = {username: "test-user",
+const auth = {
+    username: "test-user",
     email: "test@user.com",
     roles: ["ROLE_OWNER"],
     tokenType: "Bearer",
@@ -27,13 +28,9 @@ const menu = {
             "id": 10,
             "name": "Secreto Ibérico",
             "description": "descripcion",
-            "rationType": "RATION",
+            "rationType": "Racion",
             "price": 15.5,
-            "category": {
-                "id": 1,
-                "name": "Carne",
-                "new": false
-            },
+            "category": "Carnes",
             "image": {
                 "id": 1,
                 "fileName": "name",
@@ -73,12 +70,14 @@ describe('Render test suite', () => {
         
         let name = await rendered.findByText('Secreto Ibérico')
         let description = await rendered.findByText('descripcion')
-        let rationType = await rendered.findByText('RATION')
-        let price = await rendered.findByText('15.5')
+        let rationType = await rendered.findByText('Racion')
+        let category = await rendered.findByText('Carnes')
+        let back = await rendered.findByText("Volver")
         
         expect(name).toBeInTheDocument()
         expect(description).toBeInTheDocument()
         expect(rationType).toBeInTheDocument()
-        expect(price).toBeInTheDocument()
-    })
+        expect(category).toBeInTheDocument()
+        expect(back).toBeInTheDocument()
+    },[10000])
 });

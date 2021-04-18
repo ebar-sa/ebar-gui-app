@@ -29,3 +29,7 @@ export function register({username, email, password}) {
             return response.data;
         });
   }
+
+export function getCurrentUser() {
+    return JSON.parse(sessionStorage.getItem('user'));
+}

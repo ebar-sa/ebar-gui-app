@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Typography, CardContent, Grid,Card } from '@material-ui/core';
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import BillDataService from '../services/bill.service';
-import AuthService from '../services/auth.service';
+import * as AuthService from '../services/auth';
 import {TableRow, Table, TableBody, TableHead, TableCell
 } from '@material-ui/core';
 
@@ -23,7 +23,7 @@ export default class UserBillDetails extends Component {
         isClient:false
     };
     
-  };
+  }
   
   componentDidMount() {
     console.log(this.props.match.params.id); 

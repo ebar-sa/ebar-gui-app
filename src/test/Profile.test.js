@@ -36,7 +36,7 @@ describe('Render test suite', () => {
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
 
-        let user = await rendered.findByText('test-user')
+        let user = await rendered.findByTestId('username')
 
         expect(user).toBeInTheDocument()
     })

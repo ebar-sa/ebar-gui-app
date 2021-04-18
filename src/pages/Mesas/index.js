@@ -35,7 +35,7 @@ export default function Mesas(props) {
           history.push('/pageNotFound')
         }
       })
-  }, [barId])
+  }, [barId, history])
   useEffect(() => {
     if (!isAdmin) {
       history.push('/')

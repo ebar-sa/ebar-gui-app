@@ -9,20 +9,25 @@ import '../../styles/votings.css'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, LabelList, ResponsiveContainer, Cell } from "recharts";
 import Footer from '../../components/Footer';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { useHistory } from 'react-router';
+import BarDataService from "../../services/bar.service";
 
 function Votings(props) {
     
+    const history = useHistory()
     const [votings, setVotings] = useState([])
     const [expanded, setExpanded] = useState({});
     const [time, setTime] = useState(new Date());
     const { auth } = useUser()
     const username = auth.username
-    const roles = auth.roles
-    const admin = roles.includes('ROLE_OWNER') || roles.includes('ROLE_EMPLOYEE');
     const [data, setData] = useState(false)
+    const [del, setDel] = useState(false)
+    const [edit, setEdit] = useState(false)
     const [openVal, setOpenVal] = useState(false)
     const barId = props.match.params.idBar
     const [loading, setLoading] = useState(false)
+    const [owner, setOwner] = useState()
+    const [employees, setEmployees] = useState([])
 
     const handleClick = (id) => {
         setExpanded({
@@ -42,13 +47,37 @@ function Votings(props) {
         })
     }, [barId])
 
+
     useEffect(() => {
-        setData(typeof props.history.location.state !== 'undefined' ? true : false)
+        BarDataService.getBar(barId).then(res => {
+            setOwner(res.data.owner);
+            let emp = res.data.employees.map(a => a.username)
+            setEmployees(emp)
+        }).catch(err => {
+            history.push('/pageNotFound')
+        })
+    }, [barId, history])
+
+
+
+    useEffect(() => {
+        let state = props.history.location.state;
+        if (typeof state !== 'undefined'){
+            if(state.data){
+                setData(true)
+            }else if(state.delete){
+                setDel(true)
+            
+            } else if (state.edit) {
+                setEdit(true)
+            }
+        }
         const interval = setInterval(() => setTime(Date.now()), 60000);
         return () => {
             clearInterval(interval);
         };
     }, [props.history.location.state]);
+
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
@@ -56,6 +85,8 @@ function Votings(props) {
         }
         setData(false)
         setOpenVal(false)
+        setDel(false)
+        setEdit(false)
     };
 
     const formatDate = (date) => {
@@ -96,6 +127,7 @@ function Votings(props) {
             return item;
         }
     }
+     
 
     const getNextDates = (item) => {
         const list = convertDate(item)
@@ -105,19 +137,19 @@ function Votings(props) {
     }
 
     function buttonRoles(x, next) {
-        if (admin && next===true) {
+        if ((owner === username || employees.includes(username)) && next===true) {
             return <Link to={'/bares/' + barId + '/votings/voting/' + x.id +'/edit'}>
                 <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} >
                     Editar
                 </Button>
             </Link>
-        } else if (!admin && !x.votersUsernames.includes(username)) {
+        } else if (!(owner === username || employees.includes(username)) && !x.votersUsernames.includes(username)) {
             return <Link to={'/bares/' + barId + '/votings/voting/' + x.id}>
                 <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} data-testid="but" >
                     Acceder
                 </Button>
             </Link>
-        } else if (!admin && x.votersUsernames.includes(username)){
+        } else if (!(owner === username || employees.includes(username)) && x.votersUsernames.includes(username)){
             return <div className='div-voting'>Ya has votado</div>
         }
     }
@@ -177,7 +209,7 @@ function Votings(props) {
 
 
     const adminOrUser = () => {
-            if(admin){
+            if(owner===username || employees.includes(username)){
                 return <div className="header">
                     <Link to={'/bares/' + barId + '/votings/voting/create'}>
                         <Button variant="contained" color="primary" style={{ ...stylesComponent.buttonCrear }} startIcon={<Add />}>
@@ -185,10 +217,11 @@ function Votings(props) {
                                     </Button>
                     </Link>
                 </div>
+            }else{
+                return <Typography className='h5' variant="h6" gutterBottom>
+                            A continuación, podrá encontrar la lista de votaciones disponibles en las que puede participar, junto con las finalizadas
+                        </Typography>
             }
-            return <Typography className='h5' variant="h6" gutterBottom>
-                        A continuación, podrá encontrar la lista de votaciones disponibles en las que puede participar, junto con las finalizadas
-                    </Typography>
         }
 
 
@@ -265,7 +298,7 @@ function Votings(props) {
                                                                 {x.closingHour === null || x.closingHour === '' ? ' Indefinida'
                                             : formatDate(x.closingHour)}
                                     </p>
-                                    {x.options.length > 0 && admin &&
+                                    {x.options.length > 0 && (owner === username || employees.includes(username)) &&
                                         <div style={{ width: '70%', margin: 'auto', textAlign: 'center' }}>
                                             <p className='options'>Votos</p>
                                             <div style={{ margin: 'auto', textAlign: 'center', height: `${x.options.length * 50}px`, width: '100%' }}>
@@ -318,7 +351,7 @@ function Votings(props) {
                                     {showCurrentVotings()}
                                 </List>
                             </div>
-                            {admin &&
+                            {(owner === username || employees.includes(username)) &&
                                 <div className='current'>
                                     <Typography className='h5' variant="h6" gutterBottom>
                                         Próximas votaciones
@@ -331,6 +364,16 @@ function Votings(props) {
                         < Snackbar open={data} autoHideDuration={6000} onClose={handleClose} >
                             <Alert onClose={handleClose} severity="success">
                                 Votación creada con éxito!
+                            </Alert>
+                        </Snackbar >
+                        < Snackbar open={del} autoHideDuration={6000} onClose={handleClose} >
+                            <Alert onClose={handleClose} severity="success">
+                                Votación eliminada con éxito!
+                            </Alert>
+                        </Snackbar >
+                        < Snackbar open={edit} autoHideDuration={6000} onClose={handleClose} >
+                            <Alert onClose={handleClose} severity="success">
+                                Votación editada con éxito!
                             </Alert>
                         </Snackbar >
                         <Snackbar open={openVal} autoHideDuration={6000} onClose={handleClose}>

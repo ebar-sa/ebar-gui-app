@@ -1,4 +1,5 @@
-import { IconButton, Button, LinearProgress, Snackbar, Container, Typography, TextField, Grid } from '@material-ui/core';
+import { IconButton, Button, LinearProgress, Snackbar, Container, Typography, TextField, Grid, Dialog, DialogActions, 
+    DialogContent, DialogTitle, DialogContentText } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from "react-router"
@@ -8,6 +9,7 @@ import {AddCircle, Delete}from "@material-ui/icons";
 import useUser from '../../hooks/useUser'
 import VotingDataService from "../../services/votings.service";
 import DateFnsUtils from '@date-io/date-fns';
+import BarDataService from "../../services/bar.service";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -36,11 +38,10 @@ function EditVoting(props) {
     const [add, setAdd] = useState([])
     const [errors, setErrors] = useState({})
     const [now, setNow] = useState(new Date())
+    const [showContent, setShowContent] = useState(false)
 
     const history = useHistory()
-    const { auth } = useUser()
-    const admin = auth.roles.includes('ROLE_OWNER') || auth.roles.includes('ROLE_EMPLOYEE');
-    
+    const { auth } = useUser()    
 
     function formatDateToString(date) {
         if(date === null) {
@@ -90,9 +91,20 @@ function EditVoting(props) {
         }
     }
 
+    const handleCloseDialog = () => {
+        setShowContent(false);
+    };
+
     useEffect(() => {
-        if (!admin) history.push('/profile')
-    }, [admin, history])
+        BarDataService.getBar(barId).then(res => {
+            let owner = res.data.owner;
+            let emp = res.data.employees.map(a => a.username)
+            if (!(owner === auth.username || emp.includes(auth.username))) history.push('/')
+        }).catch(err => {
+            history.push('/pageNotFound')
+        })
+    }, [barId, history, auth.username])
+
 
     useEffect(() => {
         VotingDataService.getVoting(votingId, auth.accessToken)
@@ -201,7 +213,7 @@ function EditVoting(props) {
             VotingDataService.updateVoting(barId, voting.id, object)
                 .then( res => {
                     if (res.status === 200) {
-                        props.history.push({pathname: '/bares/' + barId + '/votings', state: { data: true}})
+                        props.history.push({pathname: '/bares/' + barId + '/votings', state: { edit: true}})
                     } else {
                         setShowErrorFormAlert(true)
                     }
@@ -215,6 +227,19 @@ function EditVoting(props) {
 
     const handleChange = (evt) => {
         setState({...state, [evt.target.name]: evt.target.value})
+    }
+
+    const handleDelete = (evt) => {
+        VotingDataService.deleteVoting(barId, voting.id)
+            .then(res => {
+                if(res.status === 200){
+                    props.history.push({ pathname: '/bares/' + barId + '/votings', state: { delete: true } })
+                } else {
+                    setShowErrorFormAlert(true)
+                }
+            }).catch(exc => {
+                history.push('/pageNotFound')
+            })
     }
 
     const handleDateOpenChange = (date) => {
@@ -367,13 +392,29 @@ function EditVoting(props) {
                         </div>
                         
                         <div >
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                color="primary"
-                                style={{ ...stylesComponent.buttonCrear }}>
-                                    Editar votación
-                            </Button> 
+                            <Grid container
+                                direction="row"
+                                justify="center"
+                                alignItems="center" spacing={3}>
+                                <Grid item>
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        color="primary"
+                                        style={{ ...stylesComponent.buttonCrear }}>
+                                            Editar votación
+                                    </Button> 
+                                </Grid>
+                                <Grid item>
+                                    
+                                    <Button
+                                        onClick={() => setShowContent(true)}
+                                        variant="contained"
+                                        style={{ ...stylesComponent.buttonDiscard }}>
+                                        Descartar
+                                    </Button>
+                                </Grid>
+                            </Grid>
 
                             <Button
                                 variant="contained"
@@ -395,6 +436,23 @@ function EditVoting(props) {
                                 Tienes que rellenar el formulario correctamente
                             </Alert>
                         </Snackbar>
+
+                        <Dialog open={showContent} onClose={handleCloseDialog} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+                            <DialogTitle id="alert-dialog-title">{"Eliminar votación"}</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText id="alert-dialog-description">
+                                    ¿Estas seguro de que deseas borrar la votación?
+                                </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleCloseDialog} color="primary">
+                                    Atrás
+                                </Button>
+                                <Button onClick={handleDelete} color="primary" autoFocus>
+                                    Aceptar
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
                     </form>
                 </div>
             </div>
@@ -432,6 +490,15 @@ const stylesComponent = {
         textAlign: 'center',
         margin: 'auto',
         display: 'block',
+        marginTop: '30px'
+    },
+    buttonDiscard: {
+        backgroundColor: '#d53249',
+        color: 'white',
+        textTransform: 'none',
+        letterSpacing: 'normal',
+        fontSize: '15px',
+        fontWeight: '600',
         marginTop: '30px'
     }
 }

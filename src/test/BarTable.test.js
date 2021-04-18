@@ -33,11 +33,11 @@ describe('Render test suite', () => {
     it('Render with a correct list of tables', async () => {
 
         mockAxios.onGet().replyOnce(200, tableList)
-
+        window.sessionStorage.setItem('user',JSON.stringify(auth));
         let rendered = render(
             <Context.Provider value={{auth, setAuth}}>
                 <Router history={history} >
-                    <Mesas />
+                    <Mesas {...{ match: { params: { idBar: 1 } }, history: { location: { state: {} } } }}/>
                 </Router>
             </Context.Provider>)
 

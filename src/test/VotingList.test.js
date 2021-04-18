@@ -9,7 +9,9 @@ import Context from '../context/UserContext';
 import userEvent from '@testing-library/user-event'
 
 // Hide warning
-console.error = () => { }
+console.error = () => {
+    //empty function necessary
+ }
 
 const votings = [
     {
@@ -159,6 +161,12 @@ function renderVotingsAdmin(auth) {
 
 describe('Testing Voting list', () => {
 
+    beforeAll(() => {
+        jest.spyOn(HTMLElement.prototype, 'clientHeight', 'get').mockReturnValue(100);
+        jest.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(100);
+    });
+
+
     it('Render with correct text user', async () => {
         mockAxios.onGet().replyOnce(200, votings)
         let rendered = renderVotingsUser(client)
@@ -199,9 +207,9 @@ describe('Testing Voting list', () => {
         expect(title1).toBeInTheDocument()
         expect(title2).toBeInTheDocument()
         expect(title3).toBeInTheDocument()
-        expect(title4).not.toBeInTheDocument()
+        expect(title4).toBeInTheDocument()
         expect(textButtonCreate).toBeInTheDocument()
-        expect(edit).toHaveLength(2)
+        expect(edit).toHaveLength(1)
 
     })
 
@@ -248,16 +256,13 @@ describe('Testing Voting list', () => {
 
         userEvent.click(screen.getByText('Última canción'))
         let results = await rendered.queryByText('Resultados')
-        let option1 = await rendered.queryByText('Fiesta pagana: 0 votos')
-        let option2 = await rendered.queryByText('El farsante: 0 votos')
-
         expect(results).not.toBeInTheDocument()
-        expect(option1).not.toBeInTheDocument()
-        expect(option2).not.toBeInTheDocument()
 
     })
 
-    it('Correct expand past', async () => {
+    it('Correct expand past votings', async () => {
+
+
         mockAxios.onGet().replyOnce(200, votings)
         let rendered = renderVotingsUser(client)
 
@@ -267,15 +272,8 @@ describe('Testing Voting list', () => {
         userEvent.click(screen.getByText('Próxima canción'))
         let description = await rendered.findByText('Próxima canción pinchada')
         let results = await rendered.findByText('Resultados')
-        let option1 = await rendered.findByText('Gasolina: 0 votos')
-        let option2 = await rendered.findByText('Pobre diabla: 0 votos')
-        let option3 = await rendered.findByText('Despacito: 0 votos')
-
         expect(description).toBeInTheDocument()
         expect(results).toBeInTheDocument()
-        expect(option1).toBeInTheDocument()
-        expect(option2).toBeInTheDocument()
-        expect(option3).toBeInTheDocument()
 
     })
 

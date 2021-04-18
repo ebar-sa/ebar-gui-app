@@ -19,7 +19,7 @@ export default function CreateBar() {
             description: '',
             location: '',
             contact: ''
-        }} openingTime={new Date().getTime()} closingTime={new Date().getTime() + 1} type="create" history={history}/>
+        }} openingTime={new Date()} closingTime={new Date()} type="create" history={history}/>
     )
 
 

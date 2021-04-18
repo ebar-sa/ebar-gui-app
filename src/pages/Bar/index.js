@@ -80,7 +80,7 @@ function Arrow(props) {
     const { direction, clickFunction } = props;
     const icon = direction === 'left'? <ChevronLeft/> : <ChevronRight/>
 
-    return <div onClick={clickFunction}>{icon}</div>
+    return <div id={"arrow-" + direction} onClick={clickFunction}>{icon}</div>
 }
 
 export default function Bar(props){
@@ -213,11 +213,14 @@ export default function Bar(props){
                 {isOwner &&
                 <Grid item>
                     <Button
+                        startIcon={<EditIcon/>}
                         type="button"
+                        color="primary"
+                        variant="contained"
                         onClick={() => {
                             history.push("/bares/" + barId + "/update")
                         }}>
-                        <EditIcon/>
+                        Editar
                     </Button>
                 </Grid>
                 }

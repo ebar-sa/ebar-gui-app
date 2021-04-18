@@ -10,8 +10,12 @@ import BarList from './pages/BarList'
 import CreateVotings from './pages/VotingCreate'
 import Votings from './pages/VotingList'
 import VotingDetailUser from './pages/VotingDetail'
-import BarCreate from './pages/BarCreate'
-import BarUpdate from './pages/BarUpdate'
+import CreateItem from './pages/Menu/CreateItemMenu'
+import EditItem from './pages/Menu/EditItemMenu'
+
+import BarCreate from "./pages/BarCreate"
+import BarUpdate from "./pages/BarUpdate"
+
 import Subscriptions from './pages/Subscriptions'
 import EditVoting from './pages/VotingEdit'
 
@@ -25,10 +29,12 @@ import useUser from './hooks/useUser'
 import BarTableDetails from './components/BarTableDetails.component'
 import UserMenuDetails from './components/user-menu.component'
 import UserBillDetails from './components/user-bill.component'
-import MenuGestion from './components/admin/menu-admin-gestion.component'
+import MenuGestion from './components/menu.component'
+
 
 import Bar from './pages/Bar'
 import PrivateRoute from './components/private-route.js'
+
 import NotFoundPage from './hooks/pageError'
 import BarTableCreate from './pages/BarTableCRUD/createTable'
 import BarTableUpdate from './pages/BarTableCRUD/updateTable'
@@ -53,6 +59,8 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
+    color : 'white',
+    backgroundColor: '#3f51b5' 
   },
   appBarShift: {
     marginLeft: drawerWidth,
@@ -118,95 +126,26 @@ export function App() {
           <Route exact path={'/profile'} component={Profile} />
           <PrivateRoute exact path={'/bares/create'} component={BarCreate} />
           <PrivateRoute exact path={'/bares/:barId'} component={Bar} />
-          <PrivateRoute
-            exact
-            path={'/bares/:barId/update'}
-            component={BarUpdate}
-          />
-          <PrivateRoute
-            exact
-            path={'/bares/:idBar/menu'}
-            component={MenuGestion}
-          />
-          <PrivateRoute
-            exact
-            path={'/bares/:idBar/votings'}
-            component={Votings}
-          />
-          <PrivateRoute
-            exact
-            path={'/bares/:idBar/votings/voting/create'}
-            component={CreateVotings}
-          />
-          <PrivateRoute
-            exact
-            path={'/bares/:idBar/votings/voting/:votingId/edit'}
-            component={EditVoting}
-          />
-          <PrivateRoute
-            path={'/bares/:idBar/votings/voting/:votingId'}
-            component={VotingDetailUser}
-          />
-          <PrivateRoute
-            exact
-            path={'/bar/bill/:id'}
-            component={UserBillDetails}
-          />
-          <PrivateRoute
-            exact
-            path={'/bar/menu/:id'}
-            component={UserMenuDetails}
-          />
-          <PrivateRoute
-            exact
-            path={'/mesas/detallesMesa/:id'}
-            component={BarTableDetails}
-          />
-          <PrivateRoute
-            exact
-            path={'/mesas/:id/create'}
-            component={BarTableCreate}
-          />
-          <PrivateRoute
-            exact
-            path={'/mesas/bar/:idBar/mesa/:id/edit'}
-            component={BarTableUpdate}
-          />
-          <PrivateRoute
-            exact
-            path={'/pageNotFound/'}
-            component={NotFoundPage}
-          />
-          <PrivateRoute
-            exact
-            path={'/accessDenied/'}
-            component={AccessDenied}
-          />
-          <PrivateRoute
-            exact
-            path={'/bar/:idBar/employees'}
-            component={EmployeeList}
-          />
-          <PrivateRoute
-            exact
-            path={'/bar/:idBar/employees/create'}
-            component={CreateEmployee}
-          />
-          <PrivateRoute
-            exact
-            path={'/bar/:idBarActual/employees/update/:userActual'}
-            component={UpdateEmployee}
-          />
-          <PrivateRoute
-            exact
-            path={'/bar/:idBar/employees/:user'}
-            component={EmployeeDetails}
-          />
-          <PrivateRoute
-            exact
-            path={'/pageNotFound/'}
-            component={NotFoundPage}
-          />
+          <PrivateRoute exact path={'/bares/:barId/update'} component={BarUpdate} />
+          <PrivateRoute exact path={'/bares/:idBar/menu'} component={MenuGestion} />
+          <PrivateRoute exact path={"/bares/:idBar/votings"} component={Votings} />
+          <PrivateRoute exact path={'/bares/:idBar/votings/voting/create'} component={CreateVotings} />
+          <PrivateRoute exact path={'/bares/:idBar/votings/voting/:votingId/edit'} component={EditVoting} />
+          <PrivateRoute path={'/bares/:idBar/votings/voting/:votingId'} component={VotingDetailUser} />
+          <PrivateRoute exact path={'/bar/bill/:id'} component={UserBillDetails} />
+          <PrivateRoute exact path={'/bar/menu/:id'} component={UserMenuDetails} />
+          <PrivateRoute exact path={'/mesas/detallesMesa/:id'} component={BarTableDetails} />
+          <PrivateRoute exact path={'/mesas/:id/create'} component={BarTableCreate} />
+          <PrivateRoute exact path={'/mesas/bar/:idBar/mesa/:id/edit'} component={BarTableUpdate} />
+          <PrivateRoute exact path={'/pageNotFound/'} component={NotFoundPage}/>
+          <PrivateRoute exact path={'/accessDenied/'} component={AccessDenied}/>
+          <PrivateRoute exact path={'/bar/:idBar/employees'} component={EmployeeList} />
+          <PrivateRoute exact path={'/bar/:idBar/employees/create'} component={CreateEmployee} />
+          <PrivateRoute exact path={'/bar/:idBarActual/employees/update/:userActual'} component={UpdateEmployee} />
+          <PrivateRoute exact path={'/bar/:idBar/employees/:user'} component={EmployeeDetails} />
+          <PrivateRoute exact path={'/pageNotFound/'} component={NotFoundPage}/>
+          <PrivateRoute exact path={'/bares/:idBar/menu/itemMenu'} component={CreateItem} />
+          <PrivateRoute exact path={'/bares/:idBar/menu/itemMenu/:idItemMenu'} component={EditItem} />
           <PrivateRoute
             exact
             path={'/payments/subscriptions'}

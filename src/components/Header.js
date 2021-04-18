@@ -13,7 +13,7 @@ import { useHistory } from 'react-router'
 import clsx from 'clsx'
 
 export default function Header(props) {
-  const { isLogged, logout } = useUser()
+  const { isLogged, logout, auth } = useUser()
   const { classes } = props
 
   const [anchorEl, setAnchorEl] = useState(null)
@@ -68,14 +68,21 @@ export default function Header(props) {
               onClose={handleClose}
             >
               <MenuItem onClick={() => history.push('/profile')}>
-                Profile
+                Perfil
               </MenuItem>
-              <MenuItem onClick={logout}>Logout</MenuItem>
+              {auth.roles.includes('ROLE_OWNER') && (
+                <MenuItem
+                  onClick={() => history.push('/payments/subscriptions')}
+                >
+                  Mis suscripciones
+                </MenuItem>
+              )}
+              <MenuItem onClick={logout}>Cerrar sesión</MenuItem>
             </Menu>
           </div>
         ) : (
           <Button color="inherit" href="#login">
-            Login
+            Iniciar sesión
           </Button>
         )}
       </Toolbar>

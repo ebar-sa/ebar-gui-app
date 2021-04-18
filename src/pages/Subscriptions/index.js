@@ -64,7 +64,8 @@ export default function Subscriptions() {
         setSubscriptions(
           subscriptions.map((s) => ({
             ...s,
-            cancel_at_period_end: s.bar_id === id,
+            cancel_at_period_end:
+              s.bar_id === id ? true : s.cancel_at_period_end,
           }))
         )
       })

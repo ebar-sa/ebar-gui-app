@@ -17,12 +17,21 @@ import { ChevronLeft, ChevronRight } from "@material-ui/icons";
 import Slide from "@material-ui/core/Slide";
 import useUser from "../../hooks/useUser";
 import EditIcon from '@material-ui/icons/Edit';
-import { DialogActions, DialogContent, DialogContentText, DialogTitle, useMediaQuery, Snackbar } from "@material-ui/core";
+import {
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    useMediaQuery,
+    Snackbar,
+    CssBaseline
+} from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
 import TextField from "@material-ui/core/TextField";
 import MesaDataService from '../../services/barTable.service';
 import Alert from '@material-ui/lab/Alert';
 import BottomBar from '../../components/bottom-bar';
+import Container from 'react-bootstrap/Container';
 
 
 const useStyles = makeStyles((theme) => ({

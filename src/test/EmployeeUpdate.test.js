@@ -62,7 +62,7 @@ describe('Testing render component correctly', () => {
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
         
-        let update = await rendered.findByText('Update')
+        let update = await rendered.findByText('Actualizar empleado')
 
         expect(update).toBeInTheDocument()
         
@@ -77,7 +77,7 @@ describe('Testing render component correctly', () => {
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
 
-        let update = await rendered.findByText('Update')
+        let update = await rendered.findByText('Actualizar empleado')
 
         await act(async () => {
             await fireEvent.click(update)

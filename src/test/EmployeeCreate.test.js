@@ -40,13 +40,14 @@ describe('Testing create employee', () => {
         let rendered = renderCreateEmployee(admin)
         
 
-        let username = await rendered.findByText('Username')
-        let firstName = await rendered.findByText('First Name')
-        let lastName = await rendered.findByText('Last Name')
-        let email = await rendered.findByText('Email Address')
-        let phoneNumber = await rendered.findByText('Phone Number')
-        let password = await rendered.findByText('Password')
-        let send = await rendered.findByText('Create')
+        let username = await rendered.findByText('Nombre de usuario')
+        let firstName = await rendered.findByText('Nombre')
+        let lastName = await rendered.findByText('Apellido')
+        let email = await rendered.findByText('Email')
+        let phoneNumber = await rendered.findByText('Telefono')
+        let dni = await rendered.findAllByText('DNI')
+        let password = await rendered.findByText('Contraseña')
+        let send = await rendered.findByText('Crear')
 
         expect(username).toBeInTheDocument()
         expect(firstName).toBeInTheDocument()
@@ -54,6 +55,7 @@ describe('Testing create employee', () => {
         expect(email).toBeInTheDocument()
         expect(phoneNumber).toBeInTheDocument()
         expect(password).toBeInTheDocument()
+        expect(dni[0]).toBeInTheDocument()
         expect(send).toBeInTheDocument()
 
     })
@@ -66,7 +68,7 @@ describe('Testing create employee', () => {
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
 
-        let username = await rendered.getByRole('textbox', { name: /Username/i })
+        let username = await rendered.getByRole('textbox', { name: /Nombre de usuario/i })
         fireEvent.change(username, { target: { value: 'employee1' } })
 
         let firstName = await rendered.container.querySelector('#firstName');
@@ -84,7 +86,7 @@ describe('Testing create employee', () => {
         let password = await rendered.container.querySelector('#password');
         fireEvent.change(password, { target: { value: '123456' } })
 
-        let send = await rendered.getByRole('button', { name: /Create/i })        
+        let send = await rendered.getByRole('button', { name: /Crear/i })
         
         await act(async () => {
             fireEvent.click(send)

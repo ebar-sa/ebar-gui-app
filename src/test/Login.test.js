@@ -31,11 +31,11 @@ describe('Login test suite', () => {
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
 
-        let signin = await rendered.findByText('Log in')
-        let username = await rendered.findByText("Username")
-        let password = await rendered.findByText("Password")
+        let signin = await rendered.findAllByText('Iniciar sesión')
+        let username = await rendered.findByText("Nombre de usuario")
+        let password = await rendered.findByText("Contraseña")
 
-        expect(signin).toBeInTheDocument()
+        expect(signin[0]).toBeInTheDocument()
         expect(username).toBeInTheDocument()
         expect(password).toBeInTheDocument()
     })
@@ -50,11 +50,11 @@ describe('Login test suite', () => {
             </Context.Provider>
         )
 
-        let username = await rendered.getByRole('textbox', {name: /Username/i})
+        let username = await rendered.getByRole('textbox', {name: /Nombre de usuario/i})
         fireEvent.change(username, {target: {value: 'testusername'}})
         expect(username.value).toBe('testusername')
 
-        let password = await rendered.getByLabelText(/Password/i)
+        let password = await rendered.getByLabelText(/Contraseña/i)
         fireEvent.change(password, {target: {value: 'password1234'}})
         expect(password.value).toBe('password1234')
 
@@ -74,13 +74,13 @@ describe('Login test suite', () => {
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
 
-        let username = await rendered.getByRole('textbox', {name: /Username/i})
+        let username = await rendered.getByRole('textbox', {name: /Nombre de usuario/i})
         fireEvent.change(username, {target: {value: ''}})
 
-        let password = await rendered.getByLabelText(/Password/i)
+        let password = await rendered.getByLabelText(/Contraseña/i)
         fireEvent.change(password, {target: {value: ''}})
 
-        let submit = await rendered.getByRole('button', {name: /Log In/i})
+        let submit = await rendered.getByRole('button', {name: /Iniciar sesión/i})
 
         await act(async () => {
             fireEvent.click(submit)

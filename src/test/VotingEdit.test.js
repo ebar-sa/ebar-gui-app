@@ -111,7 +111,6 @@ describe('Testing render component correctly', () => {
         mockAxios.onGet().replyOnce(200, barList)
         mockAxios.onGet().replyOnce(200, correctVotingDummy)
         let rendered = renderComponent()
-        screen.debug()
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
         

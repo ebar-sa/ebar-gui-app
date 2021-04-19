@@ -62,7 +62,13 @@ function CheckoutForm() {
       const token = paymentMethod.id
       checkoutService
         .addCard({ token })
-        .then(() => history.push('/payments/subscriptions'))
+        .then(() => {
+          if (history.location !== undefined && history.location.state !== undefined) {
+            history.push(history.location.state.next)
+          } else {
+            history.push('/payments/subscriptions')
+          }
+        })
         .catch(() => setErrorMessage('Error, intentelo más tarde.'))
     }
   }

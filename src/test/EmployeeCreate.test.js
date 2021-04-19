@@ -22,6 +22,14 @@ const admin = {
     tokenType: "Bearer",
     accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0LWFkbWluIiwiaWF0IjoxNjE3NDUwNzk0LCJleHAiOjE2MTc1MzcxOTR9.KhlzaCxWGb25NHgJ557N1L6ETwNdTOqrKJ1s4cnBG7L2rZFEWLnbhizLJ5LizHxUqGxqrps3NU-gx-l6FyozRg"
 }
+const barList = {
+    "id": 1,
+    "name": "Burger Food Porn",
+    "capacity": "7/11",
+    "owner":"test-admin",
+    "employees": [{}]
+}
+
 
 
 function renderCreateEmployee(auth){
@@ -38,7 +46,7 @@ describe('Testing create employee', () => {
 
     it('Render form with correct text admin', async () => {
         let rendered = renderCreateEmployee(admin)
-        
+        mockAxios.onGet().replyOnce(200, barList)
 
         let username = await rendered.findByText('Nombre de usuario')
         let firstName = await rendered.findByText('Nombre')
@@ -61,6 +69,7 @@ describe('Testing create employee', () => {
     })
 
     it('Correct submit', async () => {
+        mockAxios.onGet().replyOnce(200, barList)
         mockAxios.onPost().replyOnce(201)
 
         let rendered = renderCreateEmployee(admin)

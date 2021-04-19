@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
-import { Typography, CardContent, Grid, Card, Button, ButtonBase } from '@material-ui/core';
+import BarDataService from "../services/bar.service";
+import { Button } from '@material-ui/core';
+import Divider from "@material-ui/core/Divider";
 import { makeStyles } from '@material-ui/core/styles'
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import * as AuthService from '../services/auth'
 import EmployeeDataService from '../services/employee.service';
+
+import {Link} from "react-router-dom";
 
 
 export default class EmployeeList extends Component {
@@ -19,8 +27,15 @@ export default class EmployeeList extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.match.params.idBar);
-    this.getEmployees(this.props.match.params.idBar);
+    BarDataService.getBar(this.props.match.params.idBar).then(res => {
+      const userActual = AuthService.getCurrentUser()
+      let owner = res.data.owner;
+      let emp = res.data.employees.map(a => a.username)
+      if (!(owner === userActual.username || emp.includes(userActual.username))) this.props.history.push('/')
+      this.getEmployees(this.props.match.params.idBar);
+  }).catch(err => {
+    this.props.history.push('/pageNotFound')
+  })
   }
 
   getEmployees(idBar) {
@@ -29,10 +44,10 @@ export default class EmployeeList extends Component {
         employees: res.data,
         idBarActual: idBar
       })
-    })
-      .catch(e => {
-        console.log(e);
-      })
+      
+    }).catch(err => {
+      this.props.history.push('/')
+  })
   }
 
   routeRedirectEmployee(user) {
@@ -79,23 +94,20 @@ export default class EmployeeList extends Component {
           <div style={{ "textAlign": "center" }}>
             <h1>Empleados</h1>
 
-            {employees.map((employee) => (
-              <Grid container className={useStyles.title} wrap="nowrap" spacing={0} key={employee.username}>
-                <Card>
-                  <ButtonBase
-                    onClick={() => this.routeRedirectEmployee(employee.username)}>
-                    <CardContent>
-                      <Typography className={useStyles.title} gutterBottom>
-                        {employee.username}
-                      </Typography>
-                      <Typography variant="h5" component="h2">
-                        {employee.firstName + " " + employee.lastName}
-                      </Typography>
-                    </CardContent>
-                  </ButtonBase>
-                </Card>
-              </Grid>
-            ))}
+           
+                <List component={"nav"} >
+                {employees  && employees.map((employee, idx) => (
+                    <div key={employee.id}>
+
+                        <ListItem button component={Link} to={"/bar/"+idBarActual+"/employees/"+employee.username}>
+                            <ListItemText
+                                primary={employee.username}
+                                secondary={"Nombre: " + employee.firstName +" "+ employee.lastName}/>
+                        </ListItem>
+                        {employees.length > (idx+1) ? <Divider /> : ""}
+                    </div>
+                    ))}
+                </List>
 
 
             <br></br>

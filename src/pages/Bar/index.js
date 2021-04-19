@@ -31,7 +31,6 @@ import TextField from "@material-ui/core/TextField";
 import MesaDataService from '../../services/barTable.service';
 import Alert from '@material-ui/lab/Alert';
 import BottomBar from '../../components/bottom-bar';
-import Container from 'react-bootstrap/Container';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -208,9 +207,9 @@ export default function Bar(props) {
     }
 
 
-    return (<Container component="main" maxWidth="xs">
-        <CssBaseline />
+    return (
         <div className={classes.root}>
+            <CssBaseline />
             <div className={classes.colorBar}>
                 <BottomBar props={true} />
             </div>
@@ -374,7 +373,6 @@ export default function Bar(props) {
                 </div>
             </Grid>
         </div>
-    </Container>
     );
 }
 

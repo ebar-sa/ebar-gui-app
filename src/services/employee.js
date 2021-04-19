@@ -40,5 +40,10 @@ export function deleteEmployees(idBar, user) {
         .delete(`/bar/${idBar}/employees/delete/${user}`,  {headers: authHeader()})
         .then(response => {
             return response.data;
-        });
+        }).catch(err => {
+            console.log(err)
+            this.props.history.push('/pageNotFound/')
+        })
+
+        
 }

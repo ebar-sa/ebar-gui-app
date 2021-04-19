@@ -1,4 +1,4 @@
-import React, { useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router';
 import useUser from "../../hooks/useUser";
 import BarForm from "../../components/bar-form.component";
@@ -13,13 +13,13 @@ export default function CreateBar() {
         if (!admin) history.push('/profile')
     }, [admin, history])
 
-    return(
+    return (
         <BarForm bar={{
             name: '',
             description: '',
             location: '',
             contact: ''
-        }} openingTime={new Date()} closingTime={new Date()} type="create" history={history}/>
+        }} openingTime={new Date()} closingTime={new Date()} type="create" history={history} />
     )
 
 

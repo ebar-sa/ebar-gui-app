@@ -1,5 +1,5 @@
 
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from 'react-router';
 import BarDataService from "../../services/bar.service";
 import Typography from "@material-ui/core/Typography";
@@ -7,17 +7,17 @@ import Grid from "@material-ui/core/Grid";
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import CloseIcon from '@material-ui/icons/Close';
 import Paper from "@material-ui/core/Paper";
-import {makeStyles, useTheme} from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import SvgIcon from "@material-ui/core/SvgIcon";
-import {green, red} from "@material-ui/core/colors";
+import { green, red } from "@material-ui/core/colors";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Button from "@material-ui/core/Button";
 import CarouselSlide from "../../components/CarouselSlide";
-import {ChevronLeft, ChevronRight} from "@material-ui/icons";
+import { ChevronLeft, ChevronRight } from "@material-ui/icons";
 import Slide from "@material-ui/core/Slide";
 import useUser from "../../hooks/useUser";
 import EditIcon from '@material-ui/icons/Edit';
-import {DialogActions, DialogContent, DialogContentText, DialogTitle, useMediaQuery,Snackbar} from "@material-ui/core";
+import { DialogActions, DialogContent, DialogContentText, DialogTitle, useMediaQuery, Snackbar } from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
 import TextField from "@material-ui/core/TextField";
 import MesaDataService from '../../services/barTable.service';
@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: '20px',
     },
     colorBar: {
-      backgroundColor: 'white'
+        backgroundColor: 'white'
     }
 }))
 
@@ -78,12 +78,12 @@ const logo = require('../../img/no-image.png');
 
 function Arrow(props) {
     const { direction, clickFunction } = props;
-    const icon = direction === 'left'? <ChevronLeft/> : <ChevronRight/>
+    const icon = direction === 'left' ? <ChevronLeft /> : <ChevronRight />
 
     return <div id={"arrow-" + direction} onClick={clickFunction}>{icon}</div>
 }
 
-export default function Bar(props){
+export default function Bar(props) {
 
     const history = useHistory()
     const classes = useStyles();
@@ -96,8 +96,8 @@ export default function Bar(props){
     const [slideDirection, setSlideDirection] = useState('down');
     const [open, setOpen] = useState(false);
     const [openSubmitIncorrect, setOpenSubmitIncorrect] = useState(false)
-    const img = bar && bar.images && bar.images.length > 0? bar.images[index] : null;
-    const imgsLength = bar && bar.images? bar.images.length : 0;
+    const img = bar && bar.images && bar.images.length > 0 ? bar.images[index] : null;
+    const imgsLength = bar && bar.images ? bar.images.length : 0;
     const barId = props.match.params.barId;
     const theme = useTheme()
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -106,26 +106,26 @@ export default function Bar(props){
     let isOwner = bar && auth.username === bar.owner
     const isEmployee = auth.roles.includes('ROLE_EMPLOYEE');
     const isClient = auth.roles.includes('ROLE_CLIENT');
-    useEffect( () => {
+    useEffect(() => {
         BarDataService.getBar(barId).then(res => {
             setBar(res.data);
         }).catch(error => {
             // Http 402 -> Payment required
             if (error.response?.status === 402) {
                 history.push(`/payments/subscribe/${barId}`)
-            }else{
+            } else {
                 console.log("Error: " + error)
                 history.push('/pageNotFound')
             }
-            
+
         })
     }, [barId, history])
-    useEffect( () => {
+    useEffect(() => {
         MesaDataService.getBarTableClient(auth.username).then((res) => {
-            if (res.status === 200){
+            if (res.status === 200) {
                 setBarTable(res.data)
                 setHasBarTable(true);
-            }else{
+            } else {
                 setHasBarTable(false);
             }
         }).catch(error => {
@@ -133,7 +133,7 @@ export default function Bar(props){
             console.log("Error: " + error)
             history.push('/pageNotFound')
         })
-    }, [auth,history])
+    }, [auth, history])
 
     const onArrowClick = (direction) => {
         const increment = direction === 'left' ? -1 : 1;
@@ -154,7 +154,7 @@ export default function Bar(props){
     function deleteCurrentImage() {
         if (auth.username === bar.owner) {
             BarDataService.deleteImage(barId, img.id).then(() => {
-                let newBar = {...bar}
+                let newBar = { ...bar }
                 newBar.images = bar.images.filter(i => i.id !== img.id)
                 setIndex(0)
                 setBar(newBar)
@@ -180,29 +180,30 @@ export default function Bar(props){
     };
 
     function automaticOcuppatioWithToken() {
-        if(token === ''){
+        if (token === '') {
             setOpenSubmitIncorrect(true);
         }
         console.log(token.token);
         MesaDataService.ocupateBarTableByToken(token.token).then((res) => {
-            if(res.status ===200){
+            if (res.status === 200) {
                 history.push(`/mesas/detallesMesa/${res.data.id}`)
             }
         }).catch(e => {
-          setOpenSubmitIncorrect(true);
-          console.log(e);
+            setOpenSubmitIncorrect(true);
+            console.log(e);
         })
-      }
+    }
 
     const handleChange = (event) => {
-        setToken({...token, [event.target.name]: event.target.value })
+        setToken({ ...token, [event.target.name]: event.target.value })
     }
 
 
-    return (
+    return (<Container component="main" maxWidth="xs">
+        <CssBaseline />
         <div className={classes.root}>
             <div className={classes.colorBar}>
-                <BottomBar props={true}/>
+                <BottomBar props={true} />
             </div>
             <Grid container spacing={1} alignContent="space-between" alignItems="center" justify={"center"}>
                 <Grid item align="center">
@@ -211,18 +212,18 @@ export default function Bar(props){
                     </Typography>
                 </Grid>
                 {isOwner &&
-                <Grid item>
-                    <Button
-                        startIcon={<EditIcon/>}
-                        type="button"
-                        color="primary"
-                        variant="contained"
-                        onClick={() => {
-                            history.push("/bares/" + barId + "/update")
-                        }}>
-                        Editar
+                    <Grid item>
+                        <Button
+                            startIcon={<EditIcon />}
+                            type="button"
+                            color="primary"
+                            variant="contained"
+                            onClick={() => {
+                                history.push("/bares/" + barId + "/update")
+                            }}>
+                            Editar
                     </Button>
-                </Grid>
+                    </Grid>
                 }
             </Grid>
 
@@ -234,25 +235,25 @@ export default function Bar(props){
                     {(bar && bar.images && imgsLength > 0) ?
                         <Grid container spacing={1} alignItems="center" justify="center" className={classes.overflowHidden}>
                             <Grid item xs={1} align={"center"}>
-                                <Arrow direction="left" clickFunction={() => onArrowClick("left")}/>
+                                <Arrow direction="left" clickFunction={() => onArrowClick("left")} />
                             </Grid>
                             <Grid item xs={10} align={"center"}>
                                 <Slide in={slideIn} direction={slideDirection}  >
                                     <div>
-                                        <CarouselSlide content={img} open={open} isOwner={isOwner} clickFunction={() => handleClickDelete()}/>
+                                        <CarouselSlide content={img} open={open} isOwner={isOwner} clickFunction={() => handleClickDelete()} />
                                     </div>
                                 </Slide>
                             </Grid>
                             <Grid item xs={1} align={"center"}>
-                                <Arrow direction="right" clickFunction={() => onArrowClick("right")}/>
+                                <Arrow direction="right" clickFunction={() => onArrowClick("right")} />
                             </Grid>
                         </Grid>
                         :
-                        <img alt="" src={logo.default}/>}
+                        <img alt="" src={logo.default} />}
                 </Grid>
 
                 <Dialog open={open} fullScreen={fullScreen} onClose={handleClose}
-                        aria-labelledby="responsive-dialog-title">
+                    aria-labelledby="responsive-dialog-title">
                     <DialogTitle id={'responsive-dialog-title'}>Eliminación de imagen</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
@@ -272,8 +273,8 @@ export default function Bar(props){
                                 <Grid container justify={"center"}>
                                     <Grid item>
                                         {(bar.freeTables > 0) ?
-                                            <SvgIcon style={{ color: green[300] }} component={CheckBoxIcon} viewBox="0 0 24 18"/> :
-                                            <SvgIcon style={{ color: red[300] }} component={CloseIcon} viewBox="0 0 24 18"/>}
+                                            <SvgIcon style={{ color: green[300] }} component={CheckBoxIcon} viewBox="0 0 24 18" /> :
+                                            <SvgIcon style={{ color: red[300] }} component={CloseIcon} viewBox="0 0 24 18" />}
                                     </Grid>
                                     <Grid item>
                                         <Typography component="h6" variant="h6" align="center">
@@ -296,59 +297,59 @@ export default function Bar(props){
                     </Paper>
                 </Grid>
 
-                {isClient && !hasBarTable ? 
-                <Grid item xs={12} >
-                    <Grid container spacing={1} justify={"center"}>
-                        <Grid item xs={12}>
-                            <hr className={classes.hrColor} />
-                            <Typography variant={"h6"} align="center">
-                                ¿Tienes un token? Introdúcelo y ocupa tu mesa:
+                {isClient && !hasBarTable ?
+                    <Grid item xs={12} >
+                        <Grid container spacing={1} justify={"center"}>
+                            <Grid item xs={12}>
+                                <hr className={classes.hrColor} />
+                                <Typography variant={"h6"} align="center">
+                                    ¿Tienes un token? Introdúcelo y ocupa tu mesa:
                             </Typography>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <form>
-                                <Grid container alignItems="center" justify="center" spacing={1}>
-                                    <Grid item xs={12} align="center">
-                                        <TextField required
-                                                   id="token"
-                                                   name="token"
-                                                   label={'Token'}
-                                                   variant={"outlined"}
-                                                   InputLabelProps={{ shrink: true }}
-                                                   onChange = {(e) => handleChange(e)}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} align="center">
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            onClick = {(e) => automaticOcuppatioWithToken()}>
-                                            Enviar
+                            </Grid>
+                            <Grid item xs={12}>
+                                <form>
+                                    <Grid container alignItems="center" justify="center" spacing={1}>
+                                        <Grid item xs={12} align="center">
+                                            <TextField required
+                                                id="token"
+                                                name="token"
+                                                label={'Token'}
+                                                variant={"outlined"}
+                                                InputLabelProps={{ shrink: true }}
+                                                onChange={(e) => handleChange(e)}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} align="center">
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={(e) => automaticOcuppatioWithToken()}>
+                                                Enviar
                                         </Button>
-                                        <hr className={classes.hrColor} />
+                                            <hr className={classes.hrColor} />
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-                            </form>
+                                </form>
+                            </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
-                :
-                <div></div>
+                    :
+                    <div></div>
                 }
 
                 <hr className={classes.hrColor} />
 
                 <Grid item container xs={12} >
-                    <ButtonGroup fullWidth={true} color="primary" aria-label="outlined primary button group" orientation={fullScreen? "vertical" : "horizontal"} className={classes.buttons}>
-                        {isClient && hasBarTable ? 
-                        <Button href={`/#/mesas/detallesMesa/${barTable.id}`}>Tu mesa</Button>
-                        :
+                    <ButtonGroup fullWidth={true} color="primary" aria-label="outlined primary button group" orientation={fullScreen ? "vertical" : "horizontal"} className={classes.buttons}>
+                        {isClient && hasBarTable ?
+                            <Button href={`/#/mesas/detallesMesa/${barTable.id}`}>Tu mesa</Button>
+                            :
                             null
                         }
-                        {isOwner || isEmployee ? 
-                        <Button href={`/#/mesas/${barId}`}>Mesas</Button>
-                            : 
-                           null 
+                        {isOwner || isEmployee ?
+                            <Button href={`/#/mesas/${barId}`}>Mesas</Button>
+                            :
+                            null
                         }
                         <Button href={`/#/bares/${barId}/menu`}>Carta</Button>
                         <Button href={`/#/bares/${barId}/votings`}>Votaciones</Button>
@@ -356,7 +357,7 @@ export default function Bar(props){
                     </ButtonGroup>
                 </Grid>
                 <div className={useStyles.snak}>
-                    <Snackbar  open={openSubmitIncorrect} autoHideDuration={6000} onClose={handleCloseSnackBar}>
+                    <Snackbar open={openSubmitIncorrect} autoHideDuration={6000} onClose={handleCloseSnackBar}>
                         <Alert onClose={handleCloseSnackBar} severity="error">
                             El token no se corresponde con ninguna mesa
                         </Alert>
@@ -364,6 +365,7 @@ export default function Bar(props){
                 </div>
             </Grid>
         </div>
+    </Container>
     );
 }
 

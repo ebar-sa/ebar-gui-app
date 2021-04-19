@@ -13,7 +13,7 @@ import { useHistory } from 'react-router';
 import BarDataService from "../../services/bar.service";
 
 function Votings(props) {
-    
+
     const history = useHistory()
     const [votings, setVotings] = useState([])
     const [expanded, setExpanded] = useState({});
@@ -62,12 +62,12 @@ function Votings(props) {
 
     useEffect(() => {
         let state = props.history.location.state;
-        if (typeof state !== 'undefined'){
-            if(state.data){
+        if (typeof state !== 'undefined') {
+            if (state.data) {
                 setData(true)
-            }else if(state.delete){
+            } else if (state.delete) {
                 setDel(true)
-            
+
             } else if (state.edit) {
                 setEdit(true)
             }
@@ -127,7 +127,7 @@ function Votings(props) {
             return item;
         }
     }
-     
+
 
     const getNextDates = (item) => {
         const list = convertDate(item)
@@ -137,8 +137,8 @@ function Votings(props) {
     }
 
     function buttonRoles(x, next) {
-        if ((owner === username || employees.includes(username)) && next===true) {
-            return <Link to={'/bares/' + barId + '/votings/voting/' + x.id +'/edit'}>
+        if ((owner === username || employees.includes(username)) && next === true) {
+            return <Link to={'/bares/' + barId + '/votings/voting/' + x.id + '/edit'}>
                 <Button variant="contained" size='small' color="primary" style={{ ...stylesComponent.buttonAcceder }} >
                     Editar
                 </Button>
@@ -149,7 +149,7 @@ function Votings(props) {
                     Acceder
                 </Button>
             </Link>
-        } else if (!(owner === username || employees.includes(username)) && x.votersUsernames.includes(username)){
+        } else if (!(owner === username || employees.includes(username)) && x.votersUsernames.includes(username)) {
             return <div className='div-voting'>Ya has votado</div>
         }
     }
@@ -209,51 +209,51 @@ function Votings(props) {
 
 
     const adminOrUser = () => {
-            if(owner===username || employees.includes(username)){
-                return <div className="header">
-                    <Link to={'/bares/' + barId + '/votings/voting/create'}>
-                        <Button variant="contained" color="primary" style={{ ...stylesComponent.buttonCrear }} startIcon={<Add />}>
-                            Crear votación
+        if (owner === username || employees.includes(username)) {
+            return <div className="header">
+                <Link to={'/bares/' + barId + '/votings/voting/create'}>
+                    <Button variant="contained" color="primary" style={{ ...stylesComponent.buttonCrear }} startIcon={<Add />}>
+                        Crear votación
                                     </Button>
-                    </Link>
-                </div>
-            }else{
-                return <Typography className='h5' variant="h6" gutterBottom>
-                            A continuación, podrá encontrar la lista de votaciones disponibles en las que puede participar, junto con las finalizadas
+                </Link>
+            </div>
+        } else {
+            return <Typography className='h5' variant="h6" gutterBottom>
+                A continuación, podrá encontrar la lista de votaciones disponibles en las que puede participar, junto con las finalizadas
                         </Typography>
-            }
         }
+    }
 
 
     const showPastVotings = () => {
-        if(pastVotings.length > 0){
-                return pastVotings.map(x => {
-                    const votes = x.options.map(a => a.votes);
-                    return <div key={x.id}>
-                        <ListItem button onClick={() => handleClick(x.id)} style={{ ...stylesComponent.listitem }}>
-                            <ListItemText disableTypography style={{ ...stylesComponent.listItemText1 }} primary={x.title} />
-                            {!expanded[x.id] ? <ExpandLess /> : <ExpandMore />}
-                        </ListItem>
-                        <Collapse in={expanded[x.id]} timeout="auto" unmountOnExit>
-                            <List component="div" disablePadding style={{ ...stylesComponent.listdetail }}>
-                                <ListItem>
-                                    <ListItemText disableTypography style={{ ...stylesComponent.listItemText2 }}>
-                                        <p className='p'>{x.description}</p>
-                                        {x.options.length > 0 &&
-                                            <div style={{ width: '70%', margin: 'auto', textAlign: 'center' }}>
-                                                <p className='options'>Resultados</p>
-                                                <div style={{ margin: 'auto', textAlign: 'center', height: `${x.options.length * 50}px`, width: '100%' }}>
-                                                    <ResponsiveContainer width='99%' >
-                                                        {getChart(x, votes)}
-                                                    </ResponsiveContainer>
-                                                </div>
-                                            </div>}
-                                    </ListItemText>
-                                </ListItem>
-                            </List>
-                        </Collapse>
-                    </div>
-                })
+        if (pastVotings.length > 0) {
+            return pastVotings.map(x => {
+                const votes = x.options.map(a => a.votes);
+                return <div key={x.id}>
+                    <ListItem button onClick={() => handleClick(x.id)} style={{ ...stylesComponent.listitem }}>
+                        <ListItemText disableTypography style={{ ...stylesComponent.listItemText1 }} primary={x.title} />
+                        {!expanded[x.id] ? <ExpandLess /> : <ExpandMore />}
+                    </ListItem>
+                    <Collapse in={expanded[x.id]} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding style={{ ...stylesComponent.listdetail }}>
+                            <ListItem>
+                                <ListItemText disableTypography style={{ ...stylesComponent.listItemText2 }}>
+                                    <p className='p'>{x.description}</p>
+                                    {x.options.length > 0 &&
+                                        <div style={{ width: '70%', margin: 'auto', textAlign: 'center' }}>
+                                            <p className='options'>Resultados</p>
+                                            <div style={{ margin: 'auto', textAlign: 'center', height: `${x.options.length * 50}px`, width: '100%' }}>
+                                                <ResponsiveContainer width='99%' >
+                                                    {getChart(x, votes)}
+                                                </ResponsiveContainer>
+                                            </div>
+                                        </div>}
+                                </ListItemText>
+                            </ListItem>
+                        </List>
+                    </Collapse>
+                </div>
+            })
         }
         return <div className='center'>No existen votaciones finalizadas</div>
     }
@@ -281,8 +281,8 @@ function Votings(props) {
     }
 
     const showCurrentVotings = () => {
-        if(currentVotings.length > 0){
-                return currentVotings.map(x =>
+        if (currentVotings.length > 0) {
+            return currentVotings.map(x =>
                 <div key={x.id}>
                     <ListItem button onClick={() => handleClick(x.id)} style={{ ...stylesComponent.listitem }}>
                         <ListItemText disableTypography style={{ ...stylesComponent.listItemText1 }} primary={x.title} />
@@ -312,17 +312,18 @@ function Votings(props) {
                         </List>
                     </Collapse>
                 </div>
-            )}
+            )
+        }
         return <div className='center'>No existen votaciones en curso</div>
     }
 
 
     return (
-        
-            <div>
-                {loading ? 
+
+        <div>
+            {loading ?
                 <div className='loading'>
-                    <CircularProgress/>
+                    <CircularProgress />
                     <p>Cargando votaciones...</p>
                 </div> :
                 <div>
@@ -331,7 +332,7 @@ function Votings(props) {
                             <Typography className='h5' variant="h4" gutterBottom>
                                 Votaciones
                             </Typography>
-                            
+
                         </div>
                         <div>
                             {adminOrUser()}
@@ -384,22 +385,22 @@ function Votings(props) {
                     </div>
                     <Footer />
                 </div>
-            }    
-        </div > 
+            }
+        </div >
     )
 }
 
 const stylesComponent = {
 
     buttonCrear: {
-        backgroundColor: '#007bff',
+        backgroundColor: '#006e85',
         textTransform: 'none',
         letterSpacing: 'normal',
         fontSize: '15px',
         fontWeight: '600'
     },
     buttonAcceder: {
-        backgroundColor: '#007bff',
+        backgroundColor: '#006e85',
         marginRight: '60px',
         textTransform: 'none',
         letterSpacing: 'normal',

@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import MenuDataService from "../../services/menu.service"
 import { makeStyles } from '@material-ui/core/styles'
 import '../../styles/create-voting.css'
-import {TextField, Button, Container, Grid, Typography} from '@material-ui/core'
+import { TextField, Button, Container, Grid, Typography } from '@material-ui/core'
 import { useParams } from 'react-router-dom'
 import useUser from '../../hooks/useUser'
 import { useHistory } from 'react-router'
@@ -39,18 +39,18 @@ export default function CreateItemMenu(props) {
     const handleSubmit = (evt) => {
         evt.preventDefault();
 
-        if(handleValidation()) {
+        if (handleValidation()) {
             const itemMenu = {
                 "name": state.name,
-                "description" : state.description,
-                "category" : state.category,
+                "description": state.description,
+                "category": state.category,
                 "rationType": state.rationType,
-                "price" : state.price,
-                "image" : selectedFile   
+                "price": state.price,
+                "image": selectedFile
             }
             MenuDataService.createItem(idBar, itemMenu).then(response => {
-                if(response.status === 201) {
-                    props.history.push({pathname: `/bares/${idBar}/menu`, state: { data: true }})
+                if (response.status === 201) {
+                    props.history.push({ pathname: `/bares/${idBar}/menu`, state: { data: true } })
                 }
             }).catch(error => {
                 console.log("Error" + error)
@@ -66,39 +66,39 @@ export default function CreateItemMenu(props) {
         let objErrors = {}
         let valid = true
         const decimal = new RegExp('^[0-9]+(.[0-9]{1,2})?$')
-        
-        if(!state.name) {
+
+        if (!state.name) {
             valid = false
             objErrors['name'] = "El nombre del item tiene que rellenarse"
         }
 
-        if(!state.category) {
+        if (!state.category) {
             valid = false
             objErrors['category'] = "La categoría del item tiene que rellenarse"
         }
 
-        if(!state.rationType) {
+        if (!state.rationType) {
             valid = false
             objErrors['rationType'] = "La cantidad (ud, media ración, ración...) del item tiene que rellenarse"
         }
-        
+
         if (!state.price.match(decimal)) {
             valid = false
             objErrors['price'] = "El precio puede contener hasta 2 decimales"
         }
-        
-        if (state.price < 0 ) {
+
+        if (state.price < 0) {
             valid = false
             objErrors['price'] = "El precio debe de ser mayor a 0.00 €"
         }
-        
+
         setErrors(objErrors)
         return valid
     }
 
     const stylesComponent = {
-        buttonAñadir: {
-            backgroundColor: '#007bff',
+        buttonCrear: {
+            backgroundColor: '#006e85',
             textTransform: 'none',
             letterSpacing: 'normal',
             fontSize: '15px',
@@ -125,72 +125,72 @@ export default function CreateItemMenu(props) {
 
     return (
         <Container fixed>
-            <div style={{ marginTop: '30px', marginBottom: '100px'}}>
-            <Typography className='h5' variant="h5" gutterBottom>
-                Creación del Item
+            <div style={{ marginTop: '30px', marginBottom: '100px' }}>
+                <Typography className='h5' variant="h5" gutterBottom>
+                    Creación del Item
             </Typography>
-            <div style={{marginTop: '30px'}}>
-                <form onSubmit={(e) => handleSubmit(e)} className={classes.root}>
-                    <Grid container justify="center" alignItems="center">
-                        <div>
-                            <TextField fullWidth required 
-                                id="name" 
-                                label="Nombre" 
-                                name="name" 
-                                helperText={errors.name}
-                                onChange={(e) => handleChange(e)}/>
-                        </div>
-                    </Grid>
-                    <Grid container justify="center" alignItems="center" >
-                        <div style={{"paddingBottom": "10px"}} >
-                            <TextField fullWidth 
-                                id="description" 
-                                label="Descripción" 
-                                name="description" 
-                                onChange={(e) => handleChange(e)}/>
-                        </div>
-                    </Grid>
-                    <Grid container justify="center" alignItems="center" >
-                        <div style={{"paddingBottom": "10px"}} >
-                            <TextField fullWidth required
-                                id="category" 
-                                label="Categoria" 
-                                name="category" 
-                                helperText={errors.category}
-                                onChange={(e) => handleChange(e)}/>
-                        </div>
-                    </Grid>
-                    <Grid container justify="center" alignItems="center" >
-                        <div style={{"paddingBottom": "10px"}} >
-                            <TextField fullWidth required
-                                id="rationType" 
-                                label="Cantidad" 
-                                name="rationType" 
-                                helperText={errors.rationType}
-                                onChange={(e) => handleChange(e)}/>
-                        </div>
-                    </Grid>
+                <div style={{ marginTop: '30px' }}>
+                    <form onSubmit={(e) => handleSubmit(e)} className={classes.root}>
+                        <Grid container justify="center" alignItems="center">
+                            <div>
+                                <TextField fullWidth required
+                                    id="name"
+                                    label="Nombre"
+                                    name="name"
+                                    helperText={errors.name}
+                                    onChange={(e) => handleChange(e)} />
+                            </div>
+                        </Grid>
+                        <Grid container justify="center" alignItems="center" >
+                            <div style={{ "paddingBottom": "10px" }} >
+                                <TextField fullWidth
+                                    id="description"
+                                    label="Descripción"
+                                    name="description"
+                                    onChange={(e) => handleChange(e)} />
+                            </div>
+                        </Grid>
+                        <Grid container justify="center" alignItems="center" >
+                            <div style={{ "paddingBottom": "10px" }} >
+                                <TextField fullWidth required
+                                    id="category"
+                                    label="Categoria"
+                                    name="category"
+                                    helperText={errors.category}
+                                    onChange={(e) => handleChange(e)} />
+                            </div>
+                        </Grid>
+                        <Grid container justify="center" alignItems="center" >
+                            <div style={{ "paddingBottom": "10px" }} >
+                                <TextField fullWidth required
+                                    id="rationType"
+                                    label="Cantidad"
+                                    name="rationType"
+                                    helperText={errors.rationType}
+                                    onChange={(e) => handleChange(e)} />
+                            </div>
+                        </Grid>
 
-                    <Grid container justify="center" alignItems="center" >
-                        <div style={{"paddingBottom": "10px"}} >
-                            <TextField fullWidth type="text" required 
-                                id="price"
-                                label="Precio" 
-                                name="price"
-                                helperText={errors.price}
-                                onChange={(e) => handleChange(e)}/>
-                        </div>
-                    </Grid>
-                    <Grid container justify="center" alignItems="center">
-                        <div style={{"paddingBottom": "10px"}} >
-                            <input
-                                accept="image/*"
-                                id="contained-button-file"
-                                type="file"
-                                className={classes.inputFile}
-                                data-testid={"prueba"}
-                                onChange={selectFile}
-                            />
+                        <Grid container justify="center" alignItems="center" >
+                            <div style={{ "paddingBottom": "10px" }} >
+                                <TextField fullWidth type="text" required
+                                    id="price"
+                                    label="Precio"
+                                    name="price"
+                                    helperText={errors.price}
+                                    onChange={(e) => handleChange(e)} />
+                            </div>
+                        </Grid>
+                        <Grid container justify="center" alignItems="center">
+                            <div style={{ "paddingBottom": "10px" }} >
+                                <input
+                                    accept="image/*"
+                                    id="contained-button-file"
+                                    type="file"
+                                    className={classes.inputFile}
+                                    data-testid={"prueba"}
+                                    onChange={selectFile}
+                                />
                                 <Typography className={classes.inputFile} variant="subtitle1" gutterBottom>
                                     Subida de imágenes
                                 </Typography>
@@ -199,29 +199,27 @@ export default function CreateItemMenu(props) {
                                         Subir imágenes
                                     </Button>
                                 </label>
-                        </div>
-                    </Grid>
-                    <Grid>
-                        <div style={{"textAlign":"center","paddingBottom": "10px"}}>
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            style={{ ...stylesComponent.buttonCrear }}>
-                            Enviar
-                        </Button> 
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            style={{ ...stylesComponent.buttonCrear }}
-                            onClick={() => history.goBack()}>
-                            Volver
+                            </div>
+                        </Grid>
+                        <Grid>
+                            <div style={{ "textAlign": "center", "paddingBottom": "10px" }}>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary">
+                                    Enviar
                         </Button>
-                    </div>
-                    </Grid>
-                </form>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => history.goBack()}>
+                                    Volver
+                        </Button>
+                            </div>
+                        </Grid>
+                    </form>
+                </div>
             </div>
-        </div>
         </Container>
 
     )

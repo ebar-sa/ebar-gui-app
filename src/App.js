@@ -159,6 +159,7 @@ export function App() {
             <PrivateRoute exact path={'/pageNotFound/'} component={NotFoundPage} />
             <PrivateRoute exact path={'/bares/:idBar/menu/itemMenu'} component={CreateItem} />
             <PrivateRoute exact path={'/bares/:idBar/menu/itemMenu/:idItemMenu'} component={EditItem} />
+            
             <PrivateRoute
               exact
               path={'/payments/subscriptions'}
@@ -179,6 +180,7 @@ export function App() {
               path={'/payments/cancel/:id'}
               component={Checkout}
             />
+            <PrivateRoute component={NotFoundPage} />
           </Switch>
         </main>
         <div className={classes.colorBar}>

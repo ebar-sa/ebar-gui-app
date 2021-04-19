@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useHistory } from "react-router"
+import React, { useEffect, useState } from 'react';
+import useUser from '../../hooks/useUser'
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -11,6 +11,8 @@ import Container from '@material-ui/core/Container';
 import useEmployee from '../../hooks/useEmployee'
 import Copyright from '../../components/Copyright'
 import { Alert, AlertTitle } from '@material-ui/lab'
+import { useHistory } from "react-router"
+import BarDataService from "../../services/bar.service";
 import EmployeeDataService from "../../services/employee.service";
 
 
@@ -41,7 +43,7 @@ export default function UpdateEmployee(props) {
 
     const [formErrors, setFormErrors] = useState({})
     const [employee, setEmployee] = useState({})
-
+    const { auth } = useUser()
     const [state, setState] = useState({})
 
     const roles = ['ROLE_EMPLOYEE'];
@@ -49,6 +51,7 @@ export default function UpdateEmployee(props) {
     const user = props.match.params.userActual
     const emailPatt = new RegExp(/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i)
     const phonePatt = new RegExp("^[+]*[(]?[0-9]{1,4}[)]?[-s./0-9]*$")
+    const dniPatt = new RegExp("^[0-9]{8}[A-Z]$")
 
 
     const { updateemployee, error } = useEmployee()
@@ -61,6 +64,15 @@ export default function UpdateEmployee(props) {
         setFormErrors({})
     }
 
+    useEffect(() => {
+        BarDataService.getBar(idBar).then(res => {
+            let owner = res.data.owner;
+            if (owner !== auth.username) history.push('/')
+        }).catch(err => {
+            history.push('/pageNotFound')
+        })
+    }, [idBar, history, auth.username])
+
     console.log(employee)
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -72,8 +84,6 @@ export default function UpdateEmployee(props) {
             let dni = state.dni
             let phoneNumber = state.phoneNumber
             updateemployee(idBar, user, { username, email, roles, firstName, lastName, dni, phoneNumber })
-            props.history.push(`/bar/${idBar}/employees`);
-            window.location.reload();
         }
     }
 
@@ -88,6 +98,12 @@ export default function UpdateEmployee(props) {
             valid = false
             objErrors["firstName"] = "El nombre no puede estar vacío"
         }
+
+        if (!state.dni || !dniPatt.test(state.dni)) {
+            valid = false
+            objErrors["dni"] = "El DNI introducido no es válido, debe tener 8 dígitos seguidos de una letra mayúscula"
+        }
+
         if (!employee.lastName) {
             valid = false
             objErrors["lastName"] = "El apellido no puede estar vacío"
@@ -110,6 +126,7 @@ export default function UpdateEmployee(props) {
                     firstName: res.data.firstName,
                     lastName: res.data.lastName,
                     email: res.data.email,
+                    dni: res.data.dni,
                     phoneNumber: res.data.phoneNumber
                 }
                 setEmployee(res.data)
@@ -212,6 +229,9 @@ export default function UpdateEmployee(props) {
                                         name="dni"
                                         label="DNI"
                                         variant="outlined"
+                                        placeholder="12345678A"
+                                        error={formErrors.dni !== null && formErrors.dni !== undefined && formErrors.dni !== ''}
+                                        helperText={formErrors.dni}
                                         onChange={(e) => handleChange(e)}
                                     />
                                 </Grid>

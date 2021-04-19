@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import useUser from '../../hooks/useUser'
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -10,6 +11,8 @@ import Container from '@material-ui/core/Container';
 import useEmployee from '../../hooks/useEmployee'
 import Copyright from '../../components/Copyright'
 import { Alert, AlertTitle } from '@material-ui/lab'
+import { useHistory } from "react-router"
+import BarDataService from "../../services/bar.service";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -34,14 +37,15 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CreateEmployee(props) {
     const classes = useStyles();
-
+    const history = useHistory()
     const [formData, setFormData] = useState({})
     const [formErrors, setFormErrors] = useState({})
-
+    const { auth } = useUser()
     const roles = ['ROLE_EMPLOYEE'];
     const idBar = props.match.params.idBar
     const emailPatt = new RegExp(/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i)
     const phonePatt = new RegExp("^[+]*[(]?[0-9]{1,4}[)]?[-s./0-9]*$")
+    const dniPatt = new RegExp("^[0-9]{8}[A-Z]$")
 
 
     const { createemployee, error } = useEmployee()
@@ -63,10 +67,18 @@ export default function CreateEmployee(props) {
             let dni = formData.dni
             let phoneNumber = formData.phoneNumber
             createemployee(idBar, { username, email, roles, password, firstName, lastName, dni, phoneNumber })
-            props.history.push(`/bar/${idBar}/employees`);
-            window.location.reload();
         }
+
     }
+
+    useEffect(() => {
+        BarDataService.getBar(idBar).then(res => {
+            let owner = res.data.owner;
+            if (owner !== auth.username) history.push('/')
+        }).catch(err => {
+            history.push('/pageNotFound')
+        })
+    }, [idBar, history, auth.username])
 
     function handleValidation() {
         let valid = true
@@ -83,6 +95,11 @@ export default function CreateEmployee(props) {
         if (!formData.password || formData.password.length < 6 || formData.password.length > 40) {
             valid = false
             objErrors["password"] = "La contraseña debe tener más de 6 caracteres y menos de 40"
+        }
+
+        if (!formData.dni || !dniPatt.test(formData.dni)) {
+            valid = false
+            objErrors["dni"] = "El DNI introducido no es válido, debe tener 8 dígitos seguidos de una letra mayúscula"
         }
 
         if (!formData.lastName) {
@@ -186,6 +203,8 @@ export default function CreateEmployee(props) {
                                 label="DNI"
                                 autoComplete="dni"
                                 placeholder="12345678A"
+                                error={formErrors.dni !== null && formErrors.dni !== undefined && formErrors.dni !== ''}
+                                helperText={formErrors.dni}
                                 onChange={(e) => handleChange(e)}
                             />
                         </Grid>

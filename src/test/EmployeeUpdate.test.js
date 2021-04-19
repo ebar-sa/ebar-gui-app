@@ -19,6 +19,33 @@ const auth = {
     tokenType: "Bearer",
     accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0ZXN0LWFkbWluIiwiaWF0IjoxNjE3NDUwNzk0LCJleHAiOjE2MTc1MzcxOTR9.KhlzaCxWGb25NHgJ557N1L6ETwNdTOqrKJ1s4cnBG7L2rZFEWLnbhizLJ5LizHxUqGxqrps3NU-gx-l6FyozRg"
 }
+const bar = {
+    "id": 1,
+    "name": "Burger Food Porn",
+    "capacity": "7/11",
+    "owner":"test-user",
+    "employees": [{
+        "username": "employee1",
+        "firstName": "nombre",
+        "lastName": "apellido",
+        "dni": null,
+        "email": "employee1@email.es",
+        "phoneNumber": null,
+        "password": "$2a$10$zo1PML1AqY9sQhzkxo0xPeXH1axXJ5cVYMNP/HZSjf66Sn8CIC//O",
+        "roles": [
+            "ROLE_EMPLOYEE"
+        ],
+        "enabled": true,
+        "authorities": [
+            {
+                "authority": "ROLE_EMPLOYEE"
+            }
+        ],
+        "accountNonExpired": true,
+        "credentialsNonExpired": true,
+        "accountNonLocked": true
+    }]
+}
 
 const correctEmployeeDummy = {
     
@@ -55,9 +82,11 @@ function renderComponent() {
 describe('Testing render component correctly', () => {
 
     it('Render form with correct inital data', async() => {
-
+        mockAxios.onGet().replyOnce(200, bar)
         mockAxios.onGet().replyOnce(200, correctEmployeeDummy)
+        window.sessionStorage.setItem("user",JSON.stringify(auth))
         let rendered = renderComponent()
+        
 
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
@@ -69,8 +98,10 @@ describe('Testing render component correctly', () => {
     }, [7000])
 
     it('Clicking success edit button', async () => {
+        mockAxios.onGet().replyOnce(200, bar)
         mockAxios.onGet().replyOnce(200, correctEmployeeDummy)
         mockAxios.onPut().replyOnce(200)
+        window.sessionStorage.setItem("user",JSON.stringify(auth))
 
         let rendered = renderComponent()
 

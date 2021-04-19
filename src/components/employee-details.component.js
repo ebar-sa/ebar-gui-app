@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { Typography, Grid, Card, CardContent, TableRow, Table, TableBody, TableHead, TableCell, Button } from '@material-ui/core';
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import EmployeeDataService from '../services/employee.service';
+import * as AuthService from '../services/auth'
+import BarDataService from "../services/bar.service";
 
 
 export default class EmployeeDetails extends Component {
@@ -28,8 +30,14 @@ export default class EmployeeDetails extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.match.params.idBar, this.props.match.params.user);
-    this.getEmplByUsername(this.props.match.params.idBar, this.props.match.params.user);
+    BarDataService.getBar(this.props.match.params.idBar).then(res => {
+      const userActual = AuthService.getCurrentUser()
+      let owner = res.data.owner;
+      if (owner !== userActual.username) this.props.history.push('/')
+      this.getEmplByUsername(this.props.match.params.idBar, this.props.match.params.user );
+  }).catch(err => {
+    this.props.history.push('/pageNotFound')
+  })
   }
 
   getEmplByUsername(idBar, user) {
@@ -54,7 +62,7 @@ export default class EmployeeDetails extends Component {
       })
       this.props.history.push(`/bar/${idBar}/employees`);
     }).catch(e => {
-      console.log(e);
+      this.props.history.push(`/pageNotFound/`)
     })
   }
 

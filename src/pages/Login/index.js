@@ -89,7 +89,7 @@ export default function Login() {
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                    Log in
+                    Iniciar sesión
                 </Typography>
                 {error && (
                     <Alert severity="error" style={{ width: '100%', marginTop: 30 }}>
@@ -101,7 +101,7 @@ export default function Login() {
                     <TextField autoFocus required fullWidth
                         id="username"
                         name="username"
-                        label="Username"
+                        label="Nombre de usuario"
                         variant="outlined"
                         margin="normal"
                         autoComplete="username"
@@ -112,7 +112,7 @@ export default function Login() {
                     <TextField required fullWidth
                         id="password"
                         name="password"
-                        label="Password"
+                        label="Contraseña"
                         variant="outlined"
                         margin="normal"
                         type="password"
@@ -128,12 +128,12 @@ export default function Login() {
                         color="primary"
                         className={classes.submit}
                     >
-                        Log In
+                        Iniciar sesión
                     </Button>
                     <Grid container>
                         <Grid item>
                             <Link href="#/signup" variant="body2">
-                                {"Don't have an account? Sign Up"}
+                                {"Registrarse"}
                             </Link>
                         </Grid>
                     </Grid>

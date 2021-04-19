@@ -11,11 +11,13 @@ import Copyright from '../../components/Copyright'
 import { Alert, AlertTitle } from '@material-ui/lab'
 import useUser from '../../hooks/useUser'
 import { Redirect } from 'react-router'
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
+import Avatar from '@material-ui/core/Avatar'
 
 
 const useStyles = makeStyles((theme) => ({
     paper: {
-        marginTop: theme.spacing(8),
+        marginTop: theme.spacing(4),
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -97,6 +99,9 @@ export default function Profile() {
         <Container component="main" maxWidth="xs">
             <CssBaseline />
             <div className={classes.paper}>
+                <Avatar className={classes.avatar}>
+                    <LockOutlinedIcon />
+                </Avatar>
                 <Typography component="h1" variant="h5">
                     Perfil
                 </Typography>
@@ -167,7 +172,7 @@ export default function Profile() {
                         color="primary"
                         className={classes.submit}
                     >
-                        Update
+                        Actualizar
                     </Button>
                 </form>
 

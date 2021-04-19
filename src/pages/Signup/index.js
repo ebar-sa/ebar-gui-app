@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -8,14 +8,14 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
-import {useHistory} from 'react-router'
+import { useHistory } from 'react-router'
 
 import useUser from '../../hooks/useUser'
 import Copyright from '../../components/Copyright'
-import {Alert, AlertTitle} from '@material-ui/lab'
+import { Alert, AlertTitle } from '@material-ui/lab'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -49,7 +49,7 @@ export default function SignUp() {
     const phonePatt = new RegExp("^[+]*[(]?[0-9]{1,4}[)]?[-s./0-9]*$")
     const dniPatt = new RegExp("^[0-9]{8}[A-Z]$")
 
-    const {isLogged, isRegistered, signup, error} = useUser()
+    const { isLogged, isRegistered, signup, error } = useUser()
 
     useEffect(() => {
         if (isLogged) {
@@ -58,13 +58,13 @@ export default function SignUp() {
     }, [isLogged, history])
 
     const handleChange = (e) => {
-        setFormData({...formData, [e.target.name]: e.target.value})
+        setFormData({ ...formData, [e.target.name]: e.target.value })
         setFormErrors({})
     }
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        if(handleValidation()){
+        if (handleValidation()) {
             let username = formData.username
             let email = formData.email
             let password = formData.password
@@ -72,7 +72,7 @@ export default function SignUp() {
             let lastName = formData.lastName
             let dni = formData.dni
             let phoneNumber = formData.phoneNumber
-            signup({username, email, roles, password, firstName, lastName, dni, phoneNumber})
+            signup({ username, email, roles, password, firstName, lastName, dni, phoneNumber })
         }
     }
 
@@ -113,24 +113,24 @@ export default function SignUp() {
 
     return (
         <Container component="main" maxWidth="xs">
-            <CssBaseline/>
+            <CssBaseline />
             <div className={classes.paper}>
                 <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon/>
+                    <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                    Sign up
+                    Registrarse
                 </Typography>
                 {error && (
-                    <Alert severity="error" style={{width: '100%', marginTop: 30}}>
+                    <Alert severity="error" style={{ width: '100%', marginTop: 30 }}>
                         <AlertTitle>Error</AlertTitle>
                         {error}
                     </Alert>
                 )}
                 {isRegistered && (
-                    <Alert severity="success" style={{width: '100%', marginTop: 30}}>
-                        <AlertTitle>Success</AlertTitle>
-                        You've been registered successfully. <a href="#/login">Click here</a> to log in.
+                    <Alert severity="success" style={{ width: '100%', marginTop: 30 }}>
+                        <AlertTitle>Éxito</AlertTitle>
+                        Te has registrado correctamente. <a href="#/login">Pulsa aquí</a> para iniciar sesión.
                     </Alert>
                 )}
                 <form className={classes.form} onSubmit={handleSubmit}>
@@ -139,7 +139,7 @@ export default function SignUp() {
                             <TextField fullWidth required autoFocus
                                 id={"username"}
                                 name={"username"}
-                                label={"Username"}
+                                label={"Nombre de usuario"}
                                 autoComplete={"username"}
                                 variant={"outlined"}
                                 error={formErrors.username !== null && formErrors.username !== undefined && formErrors.username !== ''}
@@ -151,7 +151,7 @@ export default function SignUp() {
                             <TextField required fullWidth
                                 id="firstName"
                                 name="firstName"
-                                label="First Name"
+                                label="Nombre"
                                 autoComplete="fname"
                                 variant="outlined"
                                 error={formErrors.firstName !== null && formErrors.firstName !== undefined && formErrors.firstName !== ''}
@@ -163,7 +163,7 @@ export default function SignUp() {
                             <TextField required fullWidth
                                 id="lastName"
                                 name="lastName"
-                                label="Last Name"
+                                label="Apellido"
                                 variant="outlined"
                                 autoComplete="lname"
                                 error={formErrors.lastName !== null && formErrors.lastName !== undefined && formErrors.lastName !== ''}
@@ -173,27 +173,27 @@ export default function SignUp() {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField required fullWidth
-                               id="email"
-                               name="email"
-                               label="Email Address"
-                               autoComplete="email"
-                               variant="outlined"
-                               placeholder="example@mail.com"
-                               error={formErrors.email !== null && formErrors.email !== undefined && formErrors.email !== ''}
-                               helperText={formErrors.email}
-                               onChange={(e) => handleChange(e)}
+                                id="email"
+                                name="email"
+                                label="Email"
+                                autoComplete="email"
+                                variant="outlined"
+                                placeholder="example@mail.com"
+                                error={formErrors.email !== null && formErrors.email !== undefined && formErrors.email !== ''}
+                                helperText={formErrors.email}
+                                onChange={(e) => handleChange(e)}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField required fullWidth
-                               id="phoneNumber"
-                               name="phoneNumber"
-                               label="Phone Number"
-                               variant="outlined"
-                               autoComplete="phone"
-                               error={formErrors.phoneNumber !== null && formErrors.phoneNumber !== undefined && formErrors.phoneNumber !== ''}
-                               helperText={formErrors.phoneNumber}
-                               onChange={(e) => handleChange(e)}
+                                id="phoneNumber"
+                                name="phoneNumber"
+                                label="Telefono"
+                                variant="outlined"
+                                autoComplete="phone"
+                                error={formErrors.phoneNumber !== null && formErrors.phoneNumber !== undefined && formErrors.phoneNumber !== ''}
+                                helperText={formErrors.phoneNumber}
+                                onChange={(e) => handleChange(e)}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
@@ -213,7 +213,7 @@ export default function SignUp() {
                             <TextField required fullWidth
                                 id="password"
                                 name="password"
-                                label="Password"
+                                label="Contraseña"
                                 variant="outlined"
                                 type="password"
                                 autoComplete="current-password"
@@ -230,19 +230,19 @@ export default function SignUp() {
                         color="primary"
                         className={classes.submit}
                     >
-                        Sign Up
+                        Registrarse
                     </Button>
                     <Grid container justify="flex-end">
                         <Grid item>
                             <Link href="#/login" variant="body2">
-                                Already have an account? Sign in
+                                Inicia sesion
                             </Link>
                         </Grid>
                     </Grid>
                 </form>
             </div>
             <Box mt={5}>
-                <Copyright/>
+                <Copyright />
             </Box>
         </Container>
     );

@@ -1,11 +1,5 @@
-import React, {useState} from 'react'
-import Button from '@material-ui/core/Button'
-import Card from '@material-ui/core/Card'
-import CardActions from '@material-ui/core/CardActions'
-import CardContent from '@material-ui/core/CardContent'
-import CardMedia from '@material-ui/core/CardMedia'
+import React, { useState } from 'react'
 import CssBaseline from '@material-ui/core/CssBaseline'
-import Grid from '@material-ui/core/Grid'
 import Typography from '@material-ui/core/Typography'
 import Container from '@material-ui/core/Container'
 
@@ -15,6 +9,7 @@ import useUser from '../../hooks/useUser'
 import LocationSearch from '../../components/LocationSearch'
 import '../../styles/home.css'
 import Map from '../../components/map'
+import Logo from "../../img/ebarLogo.png"
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -42,9 +37,11 @@ const useStyles = makeStyles((theme) => ({
   cardContent: {
     flexGrow: 1,
   },
+  center1: {
+    margin: 'auto',
+    display: 'block',
+  },
 }))
-
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 export default function Home() {
   const classes = useStyles()
@@ -59,21 +56,13 @@ export default function Home() {
       <main>
         <div className={classes.heroContent}>
           <Container>
-            <Typography
-              component="h1"
-              variant="h2"
-              align="center"
-              color="textPrimary"
-              gutterBottom
-            >
-              Ebar app
-            </Typography>
+            <img alt="" src={Logo} width="50%" height="50%" className={classes.center1} /><br></br>
             <Typography
               variant="h5"
               align="center"
               color="textSecondary"
               paragraph
-            >
+            ><br></br>
               Tu bar a la palma de la mano. Carta digital como nunca la habías
               visto. Gestión del entretenimiento.
             </Typography>
@@ -89,62 +78,27 @@ export default function Home() {
                     ¿En que zona desea buscar restaurantes?
                   </Typography>
                 </div>
-                  <LocationSearch setError={setError} setLocation={setLocation} />
-                  {error === true && <p className='error'>Error al obtener la dirección</p>}
-                  <Map setError={setError} error={error} setLocation={setLocation} location={location}/>
+                <LocationSearch setError={setError} setLocation={setLocation} />
+                {error === true && <p className='error'>Error al obtener la dirección</p>}
+                <Map setError={setError} error={error} setLocation={setLocation} location={location} />
               </div>
-          :
-          <div className={classes.heroButtons}>
-            <Grid container spacing={2} justify="center">
-              <Grid item>
-                <Button variant="contained" color="primary">
-                  Comienza ahora
-              </Button>
-              </Grid>
-              <Grid item>
-                <Button variant="outlined" color="primary">
-                  descargar
-              </Button>
-              </Grid>
-            </Grid>
-          </div>
-          }
+              :
+              <div className={classes.heroButtons}>
+                <Typography
+                  variant="h5"
+                  align="center"
+                  color="textSecondary"
+                  paragraph
+                ><br></br>
+              Inicia sesión para poder disfrutar de todos nuestros servicios.
+            </Typography>
+              </div>
+            }
           </Container>
         </div>
-        <Container className={classes.cardGrid} maxWidth="md">
-          <Grid container spacing={4}>
-            {cards.map((card) => (
-              <Grid item key={card} xs={12} sm={6} md={4}>
-                <Card className={classes.card}>
-                  <CardMedia
-                    className={classes.cardMedia}
-                    image="https://source.unsplash.com/random"
-                    title="Image title"
-                  />
-                  <CardContent className={classes.cardContent}>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      Heading
-                    </Typography>
-                    <Typography>
-                      This is a media card. You can use this section to describe
-                      the content.
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button size="small" color="primary">
-                      View
-                    </Button>
-                    <Button size="small" color="primary">
-                      Edit
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
+
       </main>
       <Footer />
-    </React.Fragment> 
+    </React.Fragment>
   )
 }

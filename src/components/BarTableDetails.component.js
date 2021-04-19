@@ -288,8 +288,8 @@ export default class BarTableDetails extends Component {
     }))
 
     const stylesComponent = {
-      buttonAñadir: {
-        backgroundColor: '#007bff',
+      buttonCrear: {
+        backgroundColor: '#006e85',
         textTransform: 'none',
         letterSpacing: 'normal',
         fontSize: '15px',
@@ -591,7 +591,7 @@ export default class BarTableDetails extends Component {
                                         size="small"
                                         color="primary"
                                         style={{
-                                          ...stylesComponent.buttonAñadir,
+                                          ...stylesComponent.buttonCrear,
                                         }}
                                         onClick={() => this.addToBill(row.id)}
                                       >
@@ -906,7 +906,7 @@ export default class BarTableDetails extends Component {
                                 variant="contained"
                                 size="small"
                                 color="primary"
-                                style={{ ...stylesComponent.buttonAñadir }}
+                                style={{ ...stylesComponent.buttonCrear }}
                                 onClick={() => this.addToOrder(row.id)}
                               >
                                 Añadir
@@ -1000,7 +1000,7 @@ export default class BarTableDetails extends Component {
                                     variant="contained"
                                     size="small"
                                     color="primary"
-                                    style={{ ...stylesComponent.buttonAñadir }}
+                                    style={{ ...stylesComponent.buttonCrear }}
                                     onClick={() => this.addToBill(row.id)}
                                   >
                                     Entregado

@@ -38,14 +38,14 @@ describe("SignUp test suite", () => {
             </Context.Provider>
         )
 
-        let username = await rendered.findByText("Username")
-        let firstName = await rendered.findByText("First Name")
-        let lastName = await rendered.findByText("Last Name")
-        let email = await rendered.findByText("Email Address")
-        let phoneNumber = await rendered.findByText("Phone Number")
+        let username = await rendered.findByText("Nombre de usuario")
+        let firstName = await rendered.findByText("Nombre")
+        let lastName = await rendered.findByText("Apellido")
+        let email = await rendered.findByText("Email")
+        let phoneNumber = await rendered.findByText("Telefono")
         let dni = await rendered.findAllByText('DNI')
-        let password = await rendered.findByText("Password")
-        let submit = await rendered.findByText("Sign Up")
+        let password = await rendered.findByText("Contraseña")
+        let submit = await rendered.findAllByText("Registrarse")
 
         expect(username).toBeInTheDocument()
         expect(firstName).toBeInTheDocument()
@@ -54,7 +54,7 @@ describe("SignUp test suite", () => {
         expect(dni[0]).toBeInTheDocument()
         expect(phoneNumber).toBeInTheDocument()
         expect(password).toBeInTheDocument()
-        expect(submit).toBeInTheDocument()
+        expect(submit[0]).toBeInTheDocument()
 
     })
 
@@ -68,19 +68,19 @@ describe("SignUp test suite", () => {
             </Context.Provider>
         )
 
-        let username = await rendered.getByRole('textbox', {name: /Username/i})
+        let username = await rendered.getByRole('textbox', {name: /Nombre de usuario/i})
         fireEvent.change(username, {target: {value: 'testusername'}})
         expect(username.value).toBe('testusername')
 
-        let firstName = await rendered.getByRole('textbox', {name: /First Name/i})
-        fireEvent.change(firstName, {target: {value: 'Test'}})
-        expect(firstName.value).toBe('Test')
+        let firstName = await rendered.getAllByRole('textbox', {name: /Nombre/i})
+        fireEvent.change(firstName[1], {target: {value: 'Test'}})
+        expect(firstName[1].value).toBe('Test')
 
-        let lastName = await rendered.getByRole('textbox', {name: /Last Name/i})
+        let lastName = await rendered.getByRole('textbox', {name: /Apellido/i})
         fireEvent.change(lastName, {target: {value: 'Last'}})
         expect(lastName.value).toBe('Last')
 
-        let email = await rendered.getByRole('textbox', {name: /Email Address/i})
+        let email = await rendered.getByRole('textbox', {name: /Email/i})
         fireEvent.change(email, {target: {value: 'test@mail.com'}})
         expect(email.value).toBe('test@mail.com')
 
@@ -88,11 +88,11 @@ describe("SignUp test suite", () => {
         fireEvent.change(dni, {target: {value: '12345678A'}})
         expect(dni.value).toBe('12345678A')
 
-        let phoneNumber = await rendered.getByRole('textbox', {name: /Phone Number/i})
+        let phoneNumber = await rendered.getByRole('textbox', {name: /Telefono/i})
         fireEvent.change(phoneNumber, {target: {value: '666111222'}})
         expect(phoneNumber.value).toBe('666111222')
 
-        let password = await rendered.getByLabelText(/Password/i)
+        let password = await rendered.getByLabelText(/Contraseña/i)
         fireEvent.change(password, {target: {value: 'password1234'}})
         expect(password.value).toBe('password1234')
 
@@ -112,28 +112,28 @@ describe("SignUp test suite", () => {
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
 
-        let username = await rendered.getByRole('textbox', {name: /Username/i})
+        let username = await rendered.getByRole('textbox', {name: /Nombre de usuario/i})
         fireEvent.change(username, {target: {value: 'a'}})
 
-        let firstName = await rendered.getByRole('textbox', {name: /First Name/i})
-        fireEvent.change(firstName, {target: {value: ''}})
+        let firstName = await rendered.getAllByRole('textbox', {name: /Nombre/i})
+        fireEvent.change(firstName[1], {target: {value: ''}})
 
-        let lastName = await rendered.getByRole('textbox', {name: /Last Name/i})
+        let lastName = await rendered.getByRole('textbox', {name: /Apellido/i})
         fireEvent.change(lastName, {target: {value: ''}})
 
-        let email = await rendered.getByRole('textbox', {name: /Email Address/i})
+        let email = await rendered.getByRole('textbox', {name: /Email/i})
         fireEvent.change(email, {target: {value: 'testmail.com'}})
 
         let dni = await rendered.getByRole('textbox', {name: /DNI/i})
         fireEvent.change(dni, {target: {value: '8A'}})
 
-        let phoneNumber = await rendered.getByRole('textbox', {name: /Phone Number/i})
+        let phoneNumber = await rendered.getByRole('textbox', {name: /Telefono/i})
         fireEvent.change(phoneNumber, {target: {value: '+666111+222'}})
 
-        let password = await rendered.getByLabelText(/Password/i)
+        let password = await rendered.getByLabelText(/Contraseña/i)
         fireEvent.change(password, {target: {value: 'pass'}})
 
-        let submit = await rendered.getByRole('button', {name: /Sign Up/i})
+        let submit = await rendered.getByRole('button', {name: /Registrarse/i})
 
         await act(async () => {
             fireEvent.click(submit)
@@ -170,34 +170,34 @@ describe("SignUp test suite", () => {
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
 
-        let username = await rendered.getByRole('textbox', {name: /Username/i})
+        let username = await rendered.getByRole('textbox', {name: /Nombre de usuario/i})
         fireEvent.change(username, {target: {value: 'testusername'}})
 
-        let firstName = await rendered.getByRole('textbox', {name: /First Name/i})
-        fireEvent.change(firstName, {target: {value: 'Test'}})
+        let firstName = await rendered.getAllByRole('textbox', {name: /Nombre/i})
+        fireEvent.change(firstName[1], {target: {value: 'Test'}})
 
-        let lastName = await rendered.getByRole('textbox', {name: /Last Name/i})
+        let lastName = await rendered.getByRole('textbox', {name: /Apellido/i})
         fireEvent.change(lastName, {target: {value: 'Last'}})
 
-        let email = await rendered.getByRole('textbox', {name: /Email Address/i})
+        let email = await rendered.getByRole('textbox', {name: /Email/i})
         fireEvent.change(email, {target: {value: 'test@mail.com'}})
 
         let dni = await rendered.getByRole('textbox', {name: /DNI/i})
         fireEvent.change(dni, {target: {value: '12345678A'}})
 
-        let phoneNumber = await rendered.getByRole('textbox', {name: /Phone Number/i})
+        let phoneNumber = await rendered.getByRole('textbox', {name: /Telefono/i})
         fireEvent.change(phoneNumber, {target: {value: '666111222'}})
 
-        let password = await rendered.getByLabelText(/Password/i)
+        let password = await rendered.getByLabelText(/Contraseña/i)
         fireEvent.change(password, {target: {value: 'password1234'}})
 
-        let send = await rendered.getByRole('button', {name: /Sign Up/i})
+        let send = await rendered.getByRole('button', {name: /Registrarse/i})
 
         await act(async () => {
             fireEvent.click(send)
         })
 
-        let successMessage = await rendered.findByText('Success')
+        let successMessage = await rendered.findByText('Éxito')
 
         expect(successMessage).toBeInTheDocument()
     })

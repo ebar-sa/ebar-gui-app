@@ -1,15 +1,15 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import useEmployee from '../../hooks/useEmployee'
 import Copyright from '../../components/Copyright'
-import {Alert, AlertTitle} from '@material-ui/lab'
+import { Alert, AlertTitle } from '@material-ui/lab'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.secondary.main,
     },
     form: {
-        width: '100%', 
+        width: '100%',
         marginTop: theme.spacing(3),
     },
     submit: {
@@ -42,19 +42,19 @@ export default function CreateEmployee(props) {
     const idBar = props.match.params.idBar
     const emailPatt = new RegExp(/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i)
     const phonePatt = new RegExp("^[+]*[(]?[0-9]{1,4}[)]?[-s./0-9]*$")
- 
 
-    const {createemployee, error} = useEmployee()
+
+    const { createemployee, error } = useEmployee()
 
 
     const handleChange = (e) => {
-        setFormData({...formData, [e.target.name]: e.target.value})
+        setFormData({ ...formData, [e.target.name]: e.target.value })
         setFormErrors({})
     }
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        if(handleValidation()){
+        if (handleValidation()) {
             let username = formData.username
             let email = formData.email
             let password = formData.password
@@ -62,16 +62,16 @@ export default function CreateEmployee(props) {
             let lastName = formData.lastName
             let dni = formData.dni
             let phoneNumber = formData.phoneNumber
-        createemployee(idBar, {username, email, roles, password, firstName, lastName, dni, phoneNumber})
-        props.history.push(`/bar/${idBar}/employees`);
-        window.location.reload();
+            createemployee(idBar, { username, email, roles, password, firstName, lastName, dni, phoneNumber })
+            props.history.push(`/bar/${idBar}/employees`);
+            window.location.reload();
         }
     }
 
     function handleValidation() {
         let valid = true
         let objErrors = {}
-        
+
         if (!formData.email || !emailPatt.test(formData.email) || formData.email.length > 50) {
             valid = false
             objErrors["email"] = "Se debe introducir un correo electrónico válido y no mayor de 50 caracteres"
@@ -84,7 +84,7 @@ export default function CreateEmployee(props) {
             valid = false
             objErrors["password"] = "La contraseña debe tener más de 6 caracteres y menos de 40"
         }
-        
+
         if (!formData.lastName) {
             valid = false
             objErrors["lastName"] = "El apellido no puede estar vacío"
@@ -103,18 +103,18 @@ export default function CreateEmployee(props) {
 
     return (
         <Container component="main" maxWidth="xs">
-            <CssBaseline/>
+            <CssBaseline />
             <div className={classes.paper}>
                 <Typography component="h1" variant="h5">
-                    Create Employee
+                    Crear empleado
                 </Typography>
                 {error && (
-                    <Alert severity="error" style={{width: '100%', marginTop: 30}}>
+                    <Alert severity="error" style={{ width: '100%', marginTop: 30 }}>
                         <AlertTitle>Error</AlertTitle>
                         {error}
                     </Alert>
                 )}
-                
+
                 <form className={classes.form} onSubmit={handleSubmit}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
@@ -122,7 +122,7 @@ export default function CreateEmployee(props) {
                                 name={"username"}
                                 id={"username"}
                                 autoComplete={"username"}
-                                label={"Username"}
+                                label={"Nombre de usuario"}
                                 variant={"outlined"}
                                 error={formErrors.username !== null && formErrors.username !== undefined && formErrors.username !== ''}
                                 helperText={formErrors.username}
@@ -134,7 +134,7 @@ export default function CreateEmployee(props) {
                                 name="firstName"
                                 id="firstName"
                                 autoComplete="fname"
-                                label="First Name"
+                                label="Nombre"
                                 variant="outlined"
                                 error={formErrors.firstName !== null && formErrors.firstName !== undefined && formErrors.firstName !== ''}
                                 helperText={formErrors.firstName}
@@ -146,7 +146,7 @@ export default function CreateEmployee(props) {
                                 name="lastName"
                                 id="lastName"
                                 variant="outlined"
-                                label="Last Name"
+                                label="Apellido"
                                 autoComplete="lname"
                                 error={formErrors.lastName !== null && formErrors.lastName !== undefined && formErrors.lastName !== ''}
                                 helperText={formErrors.lastName}
@@ -155,27 +155,27 @@ export default function CreateEmployee(props) {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField required fullWidth
-                               name="email"
-                               id="email"
-                               autoComplete="email"
-                               label="Email Address"
-                               variant="outlined"
-                               placeholder="example@mail.com"
-                               error={formErrors.email !== null && formErrors.email !== undefined && formErrors.email !== ''}
-                               helperText={formErrors.email}
-                               onChange={(e) => handleChange(e)}
+                                name="email"
+                                id="email"
+                                autoComplete="email"
+                                label="Email"
+                                variant="outlined"
+                                placeholder="example@mail.com"
+                                error={formErrors.email !== null && formErrors.email !== undefined && formErrors.email !== ''}
+                                helperText={formErrors.email}
+                                onChange={(e) => handleChange(e)}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField required fullWidth
-                               name="phoneNumber"
-                               id="phoneNumber"
-                               variant="outlined"
-                               label="Phone Number"
-                               autoComplete="phone"
-                               error={formErrors.phoneNumber !== null && formErrors.phoneNumber !== undefined && formErrors.phoneNumber !== ''}
-                               helperText={formErrors.phoneNumber}
-                               onChange={(e) => handleChange(e)}
+                                name="phoneNumber"
+                                id="phoneNumber"
+                                variant="outlined"
+                                label="Telefono"
+                                autoComplete="phone"
+                                error={formErrors.phoneNumber !== null && formErrors.phoneNumber !== undefined && formErrors.phoneNumber !== ''}
+                                helperText={formErrors.phoneNumber}
+                                onChange={(e) => handleChange(e)}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -194,7 +194,7 @@ export default function CreateEmployee(props) {
                                 name="password"
                                 id="password"
                                 variant="outlined"
-                                label="Password"
+                                label="Contraseña"
                                 type="password"
                                 autoComplete="current-password"
                                 error={formErrors.password !== null && formErrors.password !== undefined && formErrors.password !== ''}
@@ -210,13 +210,13 @@ export default function CreateEmployee(props) {
                         color="primary"
                         className={classes.submit}
                     >
-                        Create
+                        Crear
                     </Button>
                     <Button fullWidth variant="contained" color="primary" className={classes.submit} href={`#/bar/${idBar}/employees`}>Volver</Button>
                 </form>
             </div>
             <Box mt={5}>
-                <Copyright/>
+                <Copyright />
             </Box>
         </Container>
     );

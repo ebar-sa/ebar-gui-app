@@ -1,11 +1,13 @@
-import { IconButton, Button, LinearProgress, Snackbar, Container, Typography, TextField, Grid, Dialog, DialogActions, 
-    DialogContent, DialogTitle, DialogContentText } from '@material-ui/core';
+import {
+    IconButton, Button, LinearProgress, Snackbar, Container, Typography, TextField, Grid, Dialog, DialogActions,
+    DialogContent, DialogTitle, DialogContentText
+} from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from "react-router"
 import { makeStyles } from '@material-ui/core/styles';
-import { MuiPickersUtilsProvider ,KeyboardDateTimePicker } from "@material-ui/pickers";
-import {AddCircle, Delete}from "@material-ui/icons";
+import { MuiPickersUtilsProvider, KeyboardDateTimePicker } from "@material-ui/pickers";
+import { AddCircle, Delete } from "@material-ui/icons";
 import useUser from '../../hooks/useUser'
 import VotingDataService from "../../services/votings.service";
 import DateFnsUtils from '@date-io/date-fns';
@@ -41,10 +43,10 @@ function EditVoting(props) {
     const [showContent, setShowContent] = useState(false)
 
     const history = useHistory()
-    const { auth } = useUser()    
+    const { auth } = useUser()
 
     function formatDateToString(date) {
-        if(date === null) {
+        if (date === null) {
             return null
         } else {
             var d = new Date(date),
@@ -68,7 +70,7 @@ function EditVoting(props) {
 
             const dateStr = [day, month, year].join('-');
             const timeStr = [hour, minutes, sec].join(':')
-            return dateStr+' '+timeStr;
+            return dateStr + ' ' + timeStr;
         }
     }
 
@@ -78,7 +80,7 @@ function EditVoting(props) {
         } else {
             const dateSplit = date.split(' ')[0].split('-')
             const hourSplit = date.split(' ')[1].split(':')
-            
+
             const day = dateSplit[0]
             const month = dateSplit[1]
             const anno = dateSplit[2]
@@ -87,7 +89,7 @@ function EditVoting(props) {
             const minutes = hourSplit[1]
             const seconds = hourSplit[2]
 
-            return new Date(anno, month-1, day, hour, minutes, seconds)
+            return new Date(anno, month - 1, day, hour, minutes, seconds)
         }
     }
 
@@ -109,7 +111,7 @@ function EditVoting(props) {
     useEffect(() => {
         VotingDataService.getVoting(votingId, auth.accessToken)
             .then((res) => {
-                if (res && res.id === parseInt(votingId)){
+                if (res && res.id === parseInt(votingId)) {
                     let initAdd = []
                     let initialState = {
                         title: res.title,
@@ -117,33 +119,33 @@ function EditVoting(props) {
                         openingHour: formatStringToDate(res.openingHour),
                         closingHour: formatStringToDate(res.closingHour),
                     }
-                    
-                    for ( let i = 1; i <= res.options.length; i++ ) {
-                        let key = "option"+i
+
+                    for (let i = 1; i <= res.options.length; i++) {
+                        let key = "option" + i
                         initAdd = [...initAdd, i]
-                        initialState = {...initialState, [key]:res.options[i-1].description}
+                        initialState = { ...initialState, [key]: res.options[i - 1].description }
                     }
 
                     setState(
-                       initialState
+                        initialState
                     )
-                    
+
                     setAdd(initAdd)
                     setVoting(res)
                 } else {
                     history.push('/pageNotFound/')
                 }
             })
-    },[auth.accessToken, votingId, history])
+    }, [auth.accessToken, votingId, history])
 
     useEffect(() => {
         const interval = setInterval(() => {
             setNow(new Date())
-            if(formatStringToDate(voting.openingHour) < now){
+            if (formatStringToDate(voting.openingHour) < now) {
                 setShowPublishedVotingAlert(true)
                 setProgressBarHidden(true)
                 setShowVoting(false)
-            }else{
+            } else {
                 setShowVoting(true)
                 setProgressBarHidden(true)
             }
@@ -155,7 +157,7 @@ function EditVoting(props) {
 
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
-          return;
+            return;
         }
 
         setShowPublishedVotingAlert(false)
@@ -187,7 +189,7 @@ function EditVoting(props) {
         })
 
         setErrors(objectErrors);
-        return formIsValid;    
+        return formIsValid;
     }
 
     const handleFormSubmit = (evt) => {
@@ -204,16 +206,16 @@ function EditVoting(props) {
                     let _state = "option" + index
                     return {
                         "description": state[_state],
-                        "votes": 0,   
+                        "votes": 0,
                     }
                 }),
                 "votersUsernames": voting.votersUsernames
             }
 
             VotingDataService.updateVoting(barId, voting.id, object)
-                .then( res => {
+                .then(res => {
                     if (res.status === 200) {
-                        props.history.push({pathname: '/bares/' + barId + '/votings', state: { edit: true}})
+                        props.history.push({ pathname: '/bares/' + barId + '/votings', state: { edit: true } })
                     } else {
                         setShowErrorFormAlert(true)
                     }
@@ -226,13 +228,13 @@ function EditVoting(props) {
     }
 
     const handleChange = (evt) => {
-        setState({...state, [evt.target.name]: evt.target.value})
+        setState({ ...state, [evt.target.name]: evt.target.value })
     }
 
     const handleDelete = (evt) => {
         VotingDataService.deleteVoting(barId, voting.id)
             .then(res => {
-                if(res.status === 200){
+                if (res.status === 200) {
                     props.history.push({ pathname: '/bares/' + barId + '/votings', state: { delete: true } })
                 } else {
                     setShowErrorFormAlert(true)
@@ -244,47 +246,47 @@ function EditVoting(props) {
 
     const handleDateOpenChange = (date) => {
 
-        setState({...state, openingHour: date})
-        
-        if (date === undefined || isNaN(date) || !date){
+        setState({ ...state, openingHour: date })
+
+        if (date === undefined || isNaN(date) || !date) {
             setErrorOpen('Fecha no válida')
         } else if (date < formatDateToString(now)) {
             setErrorOpen('La fecha no puede estar en pasado')
         }
-        else{
+        else {
             setErrorOpen('')
         }
     };
 
     const addInputField = (event) => {
-        if(add.length <=10){
+        if (add.length <= 10) {
             const size = add.length + 1;
             setAdd(prevState => [...prevState, size]);
             event.preventDefault();
-        }else{
-            setShowMaxOptionsAlert(true) 
+        } else {
+            setShowMaxOptionsAlert(true)
         }
     }
 
-    const deleteInputField = (event) => {        
+    const deleteInputField = (event) => {
         if (add.length > 0) {
             setAdd(add.slice(0, -1))
-            let auxKey = "option" + add[add.length -1]
+            let auxKey = "option" + add[add.length - 1]
             delete state[auxKey]
         } else {
             setShowMaxOptionsAlert(true)
         }
     }
 
-    const handleCloseChange = (date) => {   
+    const handleCloseChange = (date) => {
 
-        setState({...state, closingHour: date});
+        setState({ ...state, closingHour: date });
 
-        if (isNaN(date) || date === '' || date === undefined || !date){
+        if (isNaN(date) || date === '' || date === undefined || !date) {
             setErrorClose('Fecha no válida')
-        }else if (date!=='' && date!=null && date < state.openingHour) {
+        } else if (date !== '' && date != null && date < state.openingHour) {
             setErrorClose('La fecha de fin no puede ser anterior a la de inicio')
-        } else if (date !== '' && date != null && date < now){
+        } else if (date !== '' && date != null && date < now) {
             setErrorClose('La fecha de fin no puede estar en pasado')
         }
         else {
@@ -293,196 +295,196 @@ function EditVoting(props) {
     };
 
     return (
-    <div>
-        <LinearProgress hidden={progressBarHidden}/>  
-        { showVoting ?
-        <Container fixed>
-            <div style={{ marginTop: '50px', marginBottom: '100px'}}>
-                <Typography className='h5' variant="h5" gutterBottom>
-                    Edición de votación
+        <div>
+            <LinearProgress hidden={progressBarHidden} />
+            { showVoting ?
+                <Container fixed>
+                    <div style={{ marginTop: '50px', marginBottom: '100px' }}>
+                        <Typography className='h5' variant="h5" gutterBottom>
+                            Edición de votación
                 </Typography>
-                <div style={{marginTop: '60px'}}>
-                    <form onSubmit={(evt) => handleFormSubmit(evt)} className={classes.root}>
-                        <Grid container justify="center" alignItems="center" >
-                            <div>
-                                <TextField data-testid="titleField" className='input-title' value={state.title} id="title" label="Título" name="title" onChange={(e) => handleChange(e)}/>
-                                <p className="p-style">{errors["title"]}</p>
-                            </div>
-                        </Grid>
-
-                        <Grid container justify="center" alignItems="center" >
-                            <div style={{marginTop: '20px'}}>
-                                <TextField data-testid="descriptionField" className='input-description' value={state.description} id="description" label="Descripción" name="description" onChange={(e) => handleChange(e)} multiline rows={4} variant="outlined"/>
-                                <p className="p-style">{errors["description"]}</p>
-                            </div>
-                        </Grid>
-
-                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                            <Grid container justify="center" alignItems="center" >
-                                <div className='input-margin'>
-                                    <KeyboardDateTimePicker
-                                        data-testid="openingField"
-                                        id="opening"
-                                        ampm={false}
-                                        label="Fecha de inicio"
-                                        value={state.openingHour}
-                                        error={errorOpen !== ''}
-                                        onChange={handleDateOpenChange}
-                                        helperText={errorOpen}
-                                        onError={console.log}
-                                        minDate={new Date()}
-                                        minDateMessage="La fecha no puede estar en pasado"
-                                        invalidDateMessage="El formato de la fecha es incorrecto"
-                                        disablePast
-                                        format="dd-MM-yyyy HH:mm:ss" />
-                                </div >
-                            </Grid>
-                            
-                            <Grid container justify="center" alignItems="center"  >
-                                <div className='input-margin'>
-                                    <KeyboardDateTimePicker
-                                        data-testid="closingField"
-                                        id="closing"
-                                        ampm={false}
-                                        label="Fecha de fin"
-                                        value={state.closingHour}
-                                        error={errorClose !== ''}
-                                        onChange={handleCloseChange}
-                                        helperText={errorClose}
-                                        onError={console.log}
-                                        minDate={new Date()}
-                                        minDateMessage="La fecha no puede estar en pasado"
-                                        invalidDateMessage="El formato de la fecha es incorrecto"
-                                        disablePast
-                                        format="dd-MM-yyyy HH:mm:ss" />
-                                </div>
-                            </Grid>
-                        </MuiPickersUtilsProvider>
-
-                        <div className='input-margin'>
-                            <Typography variant="h5" gutterBottom>
-                                Opciones
-                            </Typography>
-                            <div className='buttons-margin'>
-                            <IconButton onClick={(e) => addInputField(e)}>
-                                <AddCircle /> 
-                                <span style={{color: 'black', marginBottom: '4px', marginLeft:'4px', fontSize: '18px'}}>Añadir</span>
-                            </IconButton>
-                            <IconButton onClick={(e) => deleteInputField(e)}>
-                                <Delete />
-                                <span style={{ color: 'black', marginBottom: '4px', marginLeft: '4px', fontSize: '18px' }}>Eliminar</span>
-                            </IconButton>
-                            </div>
-                            {add.map(index => {
-                                return (
-                                    <div key={index}>
-                                        <TextField
-                                            data-testid={"option"+index}
-                                            className='input-title'
-                                            id={"option"+index}
-                                            label="Descripción"
-                                            name={"option"+index}
-                                            value={state["option"+index.toString()] || ''}
-                                            onChange={(e) => handleChange(e)}
-                                            margin="normal" />
-                                        <p className="p-style">{errors["option"+index]}</p>
+                        <div style={{ marginTop: '60px' }}>
+                            <form onSubmit={(evt) => handleFormSubmit(evt)} className={classes.root}>
+                                <Grid container justify="center" alignItems="center" >
+                                    <div>
+                                        <TextField data-testid="titleField" className='input-title' value={state.title} id="title" label="Título" name="title" onChange={(e) => handleChange(e)} />
+                                        <p className="p-style">{errors["title"]}</p>
                                     </div>
-                                );
-                            })}
-                        </div>
-                        
-                        <div >
-                            <Grid container
-                                direction="row"
-                                justify="center"
-                                alignItems="center" spacing={3}>
-                                <Grid item>
+                                </Grid>
+
+                                <Grid container justify="center" alignItems="center" >
+                                    <div style={{ marginTop: '20px' }}>
+                                        <TextField data-testid="descriptionField" className='input-description' value={state.description} id="description" label="Descripción" name="description" onChange={(e) => handleChange(e)} multiline rows={4} variant="outlined" />
+                                        <p className="p-style">{errors["description"]}</p>
+                                    </div>
+                                </Grid>
+
+                                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                    <Grid container justify="center" alignItems="center" >
+                                        <div className='input-margin'>
+                                            <KeyboardDateTimePicker
+                                                data-testid="openingField"
+                                                id="opening"
+                                                ampm={false}
+                                                label="Fecha de inicio"
+                                                value={state.openingHour}
+                                                error={errorOpen !== ''}
+                                                onChange={handleDateOpenChange}
+                                                helperText={errorOpen}
+                                                onError={console.log}
+                                                minDate={new Date()}
+                                                minDateMessage="La fecha no puede estar en pasado"
+                                                invalidDateMessage="El formato de la fecha es incorrecto"
+                                                disablePast
+                                                format="dd-MM-yyyy HH:mm:ss" />
+                                        </div >
+                                    </Grid>
+
+                                    <Grid container justify="center" alignItems="center"  >
+                                        <div className='input-margin'>
+                                            <KeyboardDateTimePicker
+                                                data-testid="closingField"
+                                                id="closing"
+                                                ampm={false}
+                                                label="Fecha de fin"
+                                                value={state.closingHour}
+                                                error={errorClose !== ''}
+                                                onChange={handleCloseChange}
+                                                helperText={errorClose}
+                                                onError={console.log}
+                                                minDate={new Date()}
+                                                minDateMessage="La fecha no puede estar en pasado"
+                                                invalidDateMessage="El formato de la fecha es incorrecto"
+                                                disablePast
+                                                format="dd-MM-yyyy HH:mm:ss" />
+                                        </div>
+                                    </Grid>
+                                </MuiPickersUtilsProvider>
+
+                                <div className='input-margin'>
+                                    <Typography variant="h5" gutterBottom>
+                                        Opciones
+                            </Typography>
+                                    <div className='buttons-margin'>
+                                        <IconButton onClick={(e) => addInputField(e)}>
+                                            <AddCircle />
+                                            <span style={{ color: 'black', marginBottom: '4px', marginLeft: '4px', fontSize: '18px' }}>Añadir</span>
+                                        </IconButton>
+                                        <IconButton onClick={(e) => deleteInputField(e)}>
+                                            <Delete />
+                                            <span style={{ color: 'black', marginBottom: '4px', marginLeft: '4px', fontSize: '18px' }}>Eliminar</span>
+                                        </IconButton>
+                                    </div>
+                                    {add.map(index => {
+                                        return (
+                                            <div key={index}>
+                                                <TextField
+                                                    data-testid={"option" + index}
+                                                    className='input-title'
+                                                    id={"option" + index}
+                                                    label="Descripción"
+                                                    name={"option" + index}
+                                                    value={state["option" + index.toString()] || ''}
+                                                    onChange={(e) => handleChange(e)}
+                                                    margin="normal" />
+                                                <p className="p-style">{errors["option" + index]}</p>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                <div >
+                                    <Grid container
+                                        direction="row"
+                                        justify="center"
+                                        alignItems="center" spacing={3}>
+                                        <Grid item>
+                                            <Button
+                                                type="submit"
+                                                variant="contained"
+                                                color="primary"
+                                                style={{ ...stylesComponent.buttonCrear }}>
+                                                Editar votación
+                                    </Button>
+                                        </Grid>
+                                        <Grid item>
+
+                                            <Button
+                                                onClick={() => setShowContent(true)}
+                                                variant="contained"
+                                                style={{ ...stylesComponent.buttonDiscard }}>
+                                                Descartar
+                                    </Button>
+                                        </Grid>
+                                    </Grid>
+
                                     <Button
-                                        type="submit"
                                         variant="contained"
                                         color="primary"
+                                        onClick={() => history.goBack()}
                                         style={{ ...stylesComponent.buttonCrear }}>
-                                            Editar votación
-                                    </Button> 
-                                </Grid>
-                                <Grid item>
-                                    
-                                    <Button
-                                        onClick={() => setShowContent(true)}
-                                        variant="contained"
-                                        style={{ ...stylesComponent.buttonDiscard }}>
-                                        Descartar
-                                    </Button>
-                                </Grid>
-                            </Grid>
+                                        Volver
+                            </Button>
+                                </div>
 
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => history.goBack()}
-                                style={{ ...stylesComponent.buttonCrear }}>
-                                    Volver
-                            </Button> 
-                        </div>
-                        
-                        <Snackbar open={showMaxOptionsAlert} autoHideDuration={6000} onClose={handleClose}>
-                            <Alert onClose={handleClose} severity="warning">
-                                No puedes crear o eliminar más opciones
+                                <Snackbar open={showMaxOptionsAlert} autoHideDuration={6000} onClose={handleClose}>
+                                    <Alert onClose={handleClose} severity="warning">
+                                        No puedes crear o eliminar más opciones
                                 </Alert>
-                        </Snackbar>
+                                </Snackbar>
 
-                        <Snackbar open={showErrorFormAlert} autoHideDuration={6000} onClose={handleClose}>
-                            <Alert onClose={handleClose} severity="error">
-                                Tienes que rellenar el formulario correctamente
+                                <Snackbar open={showErrorFormAlert} autoHideDuration={6000} onClose={handleClose}>
+                                    <Alert onClose={handleClose} severity="error">
+                                        Tienes que rellenar el formulario correctamente
                             </Alert>
-                        </Snackbar>
+                                </Snackbar>
 
-                        <Dialog open={showContent} onClose={handleCloseDialog} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
-                            <DialogTitle id="alert-dialog-title">{"Eliminar votación"}</DialogTitle>
-                            <DialogContent>
-                                <DialogContentText id="alert-dialog-description">
-                                    ¿Estas seguro de que deseas borrar la votación?
+                                <Dialog open={showContent} onClose={handleCloseDialog} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+                                    <DialogTitle id="alert-dialog-title">{"Eliminar votación"}</DialogTitle>
+                                    <DialogContent>
+                                        <DialogContentText id="alert-dialog-description">
+                                            ¿Estas seguro de que deseas borrar la votación?
                                 </DialogContentText>
-                            </DialogContent>
-                            <DialogActions>
-                                <Button onClick={handleCloseDialog} color="primary">
-                                    Atrás
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={handleCloseDialog} color="primary">
+                                            Atrás
                                 </Button>
-                                <Button onClick={handleDelete} color="primary" autoFocus>
-                                    Aceptar
+                                        <Button onClick={handleDelete} color="primary" autoFocus>
+                                            Aceptar
                                 </Button>
-                            </DialogActions>
-                        </Dialog>
-                    </form>
-                </div>
-            </div>
-        </Container>
-        :
-        <div>
+                                    </DialogActions>
+                                </Dialog>
+                            </form>
+                        </div>
+                    </div>
+                </Container>
+                :
+                <div>
 
-            {showPublishedVotingAlert ? 
-            <Alert icon={false} severity="warning">
-                No puedes editar votaciones ya comenzadas
+                    {showPublishedVotingAlert ?
+                        <Alert icon={false} severity="warning">
+                            No puedes editar votaciones ya comenzadas
             </Alert>
-            :
-            <div></div>}
+                        :
+                        <div></div>}
 
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={() => history.goBack()}
-                style={{ ...stylesComponent.buttonCrear }}>
-                    Volver
-            </Button> 
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => history.goBack()}
+                        style={{ ...stylesComponent.buttonCrear }}>
+                        Volver
+            </Button>
+                </div>
+            }
         </div>
-        }  
-    </div>
     )
 }
 
 const stylesComponent = {
     buttonCrear: {
-        backgroundColor: '#007bff',
+        backgroundColor: '#006e85',
         textTransform: 'none',
         letterSpacing: 'normal',
         fontSize: '15px',

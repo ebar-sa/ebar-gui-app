@@ -107,16 +107,6 @@ export default class EmployeeDetails extends Component {
       },
     }))(TableRow);
 
-    const stylesComponent = {
-      buttonCrear: {
-        color: "primary",
-        textTransform: 'none',
-        letterSpacing: 'normal',
-        fontSize: '20px',
-        fontWeight: '600'
-      }
-    }
-
     const { employeeActual, idBarActual, userActual } = this.state
 
 

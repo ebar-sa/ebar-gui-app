@@ -96,17 +96,6 @@ export default function CreateItemMenu(props) {
         return valid
     }
 
-    const stylesComponent = {
-        buttonCrear: {
-            backgroundColor: '#006e85',
-            textTransform: 'none',
-            letterSpacing: 'normal',
-            fontSize: '15px',
-            fontWeight: '600',
-            textAlign: 'center'
-        }
-    }
-
     const selectFile = (e) => {
         let f = e.target.files.item(0)
         const fr = new FileReader()

@@ -73,7 +73,7 @@ describe('Render subscribe', () => {
     let promise = new Promise((r) => setTimeout(r, 250))
     await act(() => promise)
 
-    expect(mockHistoryPush).toHaveBeenCalledWith('/payments/add-card')
+    expect(mockHistoryPush).toHaveBeenCalledWith({"pathname": "/payments/add-card", "state": {"next": "/payments/subscribe/1"}})
   })
 
   it('Press payment button', async () => {

@@ -339,7 +339,7 @@ export default function Bar(props){
                 <hr className={classes.hrColor} />
 
                 <Grid item container xs={12} >
-                    <ButtonGroup fullWidth={true} color="primary" aria-label="outlined primary button group" className={classes.buttons}>
+                    <ButtonGroup fullWidth={true} color="primary" aria-label="outlined primary button group" orientation={fullScreen? "vertical" : "horizontal"} className={classes.buttons}>
                         {isClient && hasBarTable ? 
                         <Button href={`/#/mesas/detallesMesa/${barTable.id}`}>Tu mesa</Button>
                         :
@@ -352,6 +352,7 @@ export default function Bar(props){
                         }
                         <Button href={`/#/bares/${barId}/menu`}>Carta</Button>
                         <Button href={`/#/bares/${barId}/votings`}>Votaciones</Button>
+                        <Button href={`/#/bar/${barId}/employees`}>Empleados</Button>
                     </ButtonGroup>
                 </Grid>
                 <div className={useStyles.snak}>

@@ -92,7 +92,10 @@ export default function Subscribe({ match }) {
 
   useEffect(() => {
     checkoutService.getCards().then((res) => {
-      if (!res.length) history.push('/payments/add-card')
+      if (!res.length) history.push({
+        pathname: '/payments/add-card',
+        state: { next: "/payments/subscribe/" + match.params.id }
+      })
     })
   })
 

@@ -6,6 +6,7 @@ import { TextField, Button, Container, Grid, Typography } from '@material-ui/cor
 import { useParams } from 'react-router-dom'
 import useUser from '../../hooks/useUser'
 import { useHistory } from 'react-router'
+import BarDataService from "../../services/bar.service"
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -31,10 +32,22 @@ export default function CreateItemMenu(props) {
     const { auth } = useUser()
     const history = useHistory()
     const admin = auth.roles.includes('ROLE_OWNER') || auth.roles.includes('ROLE_EMPLOYEE');
+    const username = auth.username
 
     useEffect(() => {
         if (!admin) history.push('/pageNotFound/')
     }, [admin, history])
+
+    useEffect(() => {
+        BarDataService.getBar(idBar).then(res => {
+            let owner = res.data.owner
+            let emp = res.data.employees.map(a => a.username)
+            console.log('Emp', emp)
+            if (!(owner === username || emp.includes(username))) history.push('/')
+        }).catch(err => {
+            history.push('/pageNotFound/')
+        })
+    }, [idBar, history, username])
 
     const handleSubmit = (evt) => {
         evt.preventDefault();

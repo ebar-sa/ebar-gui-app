@@ -6,6 +6,7 @@ import Button from "@material-ui/core/Button"
 import * as AuthService from '../services/auth'
 import Alert from '@material-ui/lab/Alert'
 import Paper from "@material-ui/core/Paper/Paper"
+import BarDataService from "../services/bar.service"
 
 export default class Menu extends Component {
 
@@ -34,18 +35,20 @@ export default class Menu extends Component {
     this.isLogged();
   }
 
-  isLogged() {
-    const user = AuthService.getCurrentUser()
-    if (user != null) {
-      user.roles.forEach((rol) => {
-        if (rol === 'ROLE_OWNER' || rol === 'ROLE_EMPLOYEE') {
+    isLogged(){
+      const username = AuthService.getCurrentUser().username
+      BarDataService.getBar(this.state.idBar).then(res => {
+        let owner = res.data.owner
+        let emp = res.data.employees.map(a => a.username)
+        if ((owner === username || emp.includes(username))) {
           this.setState({
             isAdmin: true
           })
         }
+      }).catch(err => {
+        this.props.history.push('/pageNotFound/')
       })
     }
-  }
 
   handleClose() {
     this.setState({

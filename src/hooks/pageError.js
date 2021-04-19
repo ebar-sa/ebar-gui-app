@@ -12,10 +12,6 @@ function NotFoundPage() {
             width: '60%',
             display: 'block',
             backgroundColor: '#fafafa'
-        },
-        centerDiv: {
-            margin: 'auto',
-            display: 'block',
         }
     }
     const history = useHistory();
@@ -30,8 +26,8 @@ function NotFoundPage() {
             <img alt="error" style={useStyles.centerImage} src={PageNotFound} />
 
         </div>
-        <div>
-            <Button variant="contained" style={useStyles.centerDiv} color="primary" onClick={routeRedirect}>
+        <div style = {{'textAlign':'center', 'margin': 'auto'}}>
+            <Button variant="contained"  color="primary" onClick={routeRedirect}>
                 Ir al inicio
                 </Button>
         </div>

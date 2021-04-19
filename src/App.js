@@ -156,7 +156,6 @@ export function App() {
             <PrivateRoute exact path={'/bar/:idBar/employees/create'} component={CreateEmployee} />
             <PrivateRoute exact path={'/bar/:idBarActual/employees/update/:userActual'} component={UpdateEmployee} />
             <PrivateRoute exact path={'/bar/:idBar/employees/:user'} component={EmployeeDetails} />
-            <PrivateRoute exact path={'/pageNotFound/'} component={NotFoundPage} />
             <PrivateRoute exact path={'/bares/:idBar/menu/itemMenu'} component={CreateItem} />
             <PrivateRoute exact path={'/bares/:idBar/menu/itemMenu/:idItemMenu'} component={EditItem} />
             <PrivateRoute

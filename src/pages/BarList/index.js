@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from "react";
 import BarDataService from "../../services/bar.service";
+import { useHistory } from 'react-router';
 import Container from "@material-ui/core/Container";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -9,10 +10,15 @@ import Divider from "@material-ui/core/Divider";
 import {makeStyles} from "@material-ui/core/styles";
 import {Link} from "react-router-dom";
 import {Paper} from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
+import Button from "@material-ui/core/Button";
+import AddIcon from '@material-ui/icons/Add';
+import useUser from "../../hooks/useUser";
 
 const useStyles = makeStyles((theme) => ({
     container: {
-        marginTop: "10px"
+        marginTop: "10px",
+        marginBottom: "100px"
     },
     list: {
         textAlign: 'left',
@@ -25,6 +31,8 @@ export default function BarList() {
 
     const classes = useStyles()
     const [bars, setBars] = useState([])
+    const history = useHistory()
+    const { auth } = useUser()
 
     useEffect(() => {
         BarDataService.getAllWithCapacity().then(res => {
@@ -37,7 +45,26 @@ export default function BarList() {
     return (
 
         <Container component="div" maxWidth="sm" className={classes.container}>
-            <Typography component={"h4"} variant={"h4"} align={"center"}>Lista de bares</Typography>
+            <Grid container spacing={1} alignContent="space-between" alignItems="center" justify={"center"}>
+                <Grid item>
+                    <Typography component={"h4"} variant={"h4"} align={"center"}>Lista de bares</Typography>
+                </Grid>
+
+                {auth.roles.includes('ROLE_OWNER') &&
+                <Grid item>
+                    <Button
+                        startIcon={<AddIcon/>}
+                        type="button"
+                        color="primary"
+                        variant="contained"
+                        onClick={() => {
+                            history.push("/bares/create")
+                        }}>
+                        Añadir nuevo bar
+                    </Button>
+                </Grid>
+                }
+            </Grid>
             <Paper className={classes.container}>
                 <List component={"nav"} className={classes.list}>
                     {bars  && bars.map((bar, idx) => (

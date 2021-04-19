@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from "react-router"
 import VotingDataService from "../../services/votings.service";
-import { Icon, Typography, FormControl, RadioGroup, Button, FormControlLabel, Radio, Card, CardContent, Snackbar } from "@material-ui/core"
+import { Icon, Typography, FormControl, RadioGroup, Button, FormControlLabel, Radio, Card, CardContent, Snackbar, TextField } from "@material-ui/core"
 import MuiAlert from '@material-ui/lab/Alert';
 import useUser from '../../hooks/useUser'
 
@@ -11,8 +11,12 @@ function VotingDetailUser(props) {
   const [voteSuccess, setVoteSuccess] = useState(false)
   const [voteFailure, setVoteFailure] = useState(false)
   const [formError, setFormError] = useState(false)
+  const [tableTokenError, setTableTokenError] = useState(false)
+  const [votingHasExpired, setVotingHasExpired] = useState(false)
+  const [now, setNow] = useState(new Date())
   const [voting, setVoting] = useState({})
   const [canVote, setCanVote] = useState(false)
+  const [tableTokenValue, setTableTokenValue] = useState()
   const {auth} = useUser()
   const history = useHistory()
   const barId = props.match.params.idBar
@@ -27,14 +31,18 @@ function VotingDetailUser(props) {
       }
 
       setFormError(false);
+      setVoteFailure(false);
       setVoteSuccess(false);
+      setTableTokenError(false);
     };
 
     const handleSubmit = (event) => {
       if (radioValue === "0") {
         setFormError(true)
+      } else if (!tableTokenValue || tableTokenValue === "") {
+        setTableTokenError(true)
       } else {
-        VotingDataService.vote(voting.id, radioValue, auth.accessToken)
+        VotingDataService.vote(barId ,voting.id, radioValue, auth.accessToken, tableTokenValue)
           .catch((error) => {
             setVoteFailure(true)
           })
@@ -55,21 +63,34 @@ function VotingDetailUser(props) {
       setRadioValue(event.target.value)
     }
 
+    const handleTableTokenChange = (event) => {
+      event.persist()
+      setTableTokenValue(event.target.value)
+    }
+
     const toDateFromString = (dateString) => {
        let aux = dateString.split(/(\d{2,})/)
        
        return new Date(parseInt(aux[5]), parseInt(aux[3])-1, aux[1], aux[7], aux[9], aux[11])
     }
 
-    const votingHasExpired = () => {
-      let res = false
+    useEffect(() => {
+      const interval = setInterval(() => {
 
-      if (voting.closingHourc && toDateFromString(voting.closingHour) < Date.now()) {
-          res = true
+        if(voting && voting !== {}) {
+          let res = false
+
+          if (voting.closingHour && toDateFromString(voting.closingHour) < now) {
+            res = true
+          }
+          setNow(new Date())
+          setVotingHasExpired(res)
+        }
+      }, 1000)
+      return () => {
+        clearInterval(interval)
       }
-    
-      return res
-    }
+    }, [voting, now])
 
     useEffect(() => {
       const votingId = props.match.params.votingId
@@ -77,7 +98,7 @@ function VotingDetailUser(props) {
       VotingDataService.getVoting(votingId, auth.accessToken).then(res => {
         setVoting(res)
 
-        let dateNow = Date.now()
+        let dateNow = new Date()
         let schDate = false
         let sohDate = false
 
@@ -99,7 +120,7 @@ function VotingDetailUser(props) {
 
     return (
         <div>
-        { auth && voting && voting.length !== 0 && !votingHasExpired() ? 
+        { auth && voting && voting.length !== 0 && !votingHasExpired ? 
           <div>
           <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
           <div>
@@ -140,6 +161,7 @@ function VotingDetailUser(props) {
                         </div>
                       </div>}
                     </RadioGroup>
+                    <TextField data-testid="table_token_field" label="Token de tu mesa" variant="outlined" error={tableTokenError} onChange={handleTableTokenChange} />
                   { canVote && auth && voting ?     
                   <Button
                     id="vote_btn"
@@ -170,6 +192,11 @@ function VotingDetailUser(props) {
               Selecciona una opción
             </Alert>
           </Snackbar>
+          <Snackbar open={tableTokenError} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="error">
+              El token no puede estar vacío
+            </Alert>
+          </Snackbar>
           <Snackbar open={voteSuccess} autoHideDuration={6000} onClose={handleClose}>
             <Alert onClose={handleClose} severity="success">
               ¡Ha votado correctamente!
@@ -181,10 +208,15 @@ function VotingDetailUser(props) {
             </Alert>
           </Snackbar>
         </div>
-        : <div id="empty_page">
+        : 
+        <div data-testid="empty_page">
+          <Snackbar open={true} autoHideDuration={6000}>
+            <Alert  severity="error">
+              No puedes entrar en la votación ahora mismo
+            </Alert>
+          </Snackbar>
         </div> }
       </div>
       );
-    }
-
+  }
 export default VotingDetailUser

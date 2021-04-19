@@ -1,14 +1,16 @@
 import React from 'react';
 import { Router } from 'react-router-dom';
-import {act, render, queryByAttribute} from "@testing-library/react";
+import {act, render, queryByAttribute, fireEvent} from "@testing-library/react";
+import Adapter from 'enzyme-adapter-react-16'
+import Enzyme from 'enzyme';
 
 import { createMemoryHistory } from 'history';
 import MockAdapter from 'axios-mock-adapter';
 
 import Context from '../context/UserContext';
 import http from '../http-common';
-import BarTableDetails from '../components/mesa-details.component';
-
+import BarTableDetails from '../components/BarTableDetails.component';
+import BottomBar from '../components/bottom-bar';
 const setAuth = jest.fn()
 const mockAxios = new MockAdapter(http)
 const history = createMemoryHistory()
@@ -68,7 +70,7 @@ const detailsDataTableOcupated = {
     "free": false,
     "seats": 5,
     "bar_id": null,
-    "trabajador_id": null
+    "trabajador_id": null,
     },
     1:{
         "id": 3,
@@ -126,52 +128,44 @@ const detailsDataTableOcupated = {
         ]
     }
 }
-Object.defineProperty(window, "sessionStorage", {
-    value: {
-        getItem : jest.fn( () => null),
-        setItem : jest.fn(() => null) 
-    },
-    writable:true
-}); 
+
+function renderDetailsFormAdmin(auth) {
+    return render(
+        <Context.Provider value={{auth, setAuth}}>
+            <Router history={history} >
+                <BarTableDetails {...{match: {params: {id: 1}}}}/>
+            </Router>
+        </Context.Provider>)
+
+}
 describe('Render test suite', () => {
-    it('Render with a correct BarTable', async () => {
+    beforeEach(() => {
+        Enzyme.configure({adapter: new Adapter()});
+    })
+    it('Render with a correct Free BarTable', async () => {
         mockAxios.onGet().replyOnce(200, detailsDataLibre)
         window.sessionStorage.setItem("user",JSON.stringify(auth));
-        let rendered = render(
-            <Context.Provider value={{auth, setAuth}}>
-                <Router history={history} >
-                    <BarTableDetails {...{match: {params: {id: 1}}}}/>
-                </Router>
-            </Context.Provider>)
-
+        global.innerWidth = 1025;
+        window.dispatchEvent(new Event('resize'));
+        let rendered = renderDetailsFormAdmin(auth);
         let promise = new Promise(r => setTimeout(r, 350));
         await act(() => promise)
-
+            
         let name = await rendered.findByText('Mesa 1')
         let token = await rendered.findByText('jdh-256')
         let estadoMesa = await rendered.findByText('Libre')
-        let mensajeMesaLibre = await rendered.findByText('La Mesa 1 se encuentra libre, ocupe la mesa para comenzar.')
         let botonOcupar = await rendered.findByText('Ocupar Manualmente')
 
         expect(name).toBeInTheDocument()
         expect(token).toBeInTheDocument()
         expect(estadoMesa).toBeInTheDocument()
-        expect(mensajeMesaLibre).toBeInTheDocument()
         expect(botonOcupar).toBeInTheDocument()
         
     })
-});
-
-describe('Render test suite', () => {
-    it('Render with a correct BarTable', async () => {
+    it('Render with a correct Ocupate BarTable', async () => {
         mockAxios.onGet().replyOnce(200, detailsDataTableOcupated)
         window.sessionStorage.setItem("user",JSON.stringify(auth));
-        let rendered = render(
-            <Context.Provider value={{auth, setAuth}}>
-                <Router history={history} >
-                    <BarTableDetails {...{match: {params: {id: 1}}}}/>
-                </Router>
-            </Context.Provider>)
+        let rendered = renderDetailsFormAdmin(auth);
 
         let promise = new Promise(r => setTimeout(r, 350));
         await act(() => promise)
@@ -187,4 +181,48 @@ describe('Render test suite', () => {
         expect(botonDesocupar).toBeInTheDocument()
 
     })
+
+
+    it('Render with a correct Ocupate BarTable with botton', async () => {
+        mockAxios.onGet().replyOnce(200, detailsDataLibre)
+        mockAxios.onGet().replyOnce(200,detailsDataTableOcupated);
+        window.sessionStorage.setItem("user",JSON.stringify(auth));
+        let rendered = renderDetailsFormAdmin(auth);
+
+        let promise = new Promise(r => setTimeout(r, 350));
+        await act(() => promise)
+        
+        let ocupate = await rendered.getByRole('button', {name: /Ocupar Manualmente/i})
+        
+        await act(async () => {
+            fireEvent.click(ocupate)
+        })
+
+        expect(rendered.findByText('Desocupar Manualmente'));
+        expect(rendered.findByText('Volver'));
+
+    })
+    it('Render with a correct Desocupate BarTable with botton', async () => {
+        mockAxios.onGet().replyOnce(200, detailsDataTableOcupated)
+        mockAxios.onGet().replyOnce(200,detailsDataLibre);
+        window.sessionStorage.setItem("user",JSON.stringify(auth));
+        let rendered = renderDetailsFormAdmin(auth);
+
+        let promise = new Promise(r => setTimeout(r, 350));
+        await act(() => promise)
+        
+        let ocupate = await rendered.getByRole('button', {name: /Desocupar Manualmente/i})
+        
+        await act(async () => {
+            fireEvent.click(ocupate)
+        })
+
+        expect(rendered.findByText('Ocupar Manualmente'));
+        expect(rendered.findByText('Volver'));
+
+    })
+
+    
+
+
 });

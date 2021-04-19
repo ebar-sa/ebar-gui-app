@@ -2,24 +2,26 @@ import React, { useEffect, useState } from 'react';
 import VotingDataService from "../../services/votings.service";
 import { makeStyles } from '@material-ui/core/styles';
 import '../../styles/create-voting.css'
-
+import Footer from '../../components/Footer';
 import DateFnsUtils from '@date-io/date-fns';
-import { MuiPickersUtilsProvider ,KeyboardDateTimePicker } from "@material-ui/pickers";
-import {AddCircle, Delete}from "@material-ui/icons";
+import { MuiPickersUtilsProvider, KeyboardDateTimePicker } from "@material-ui/pickers";
+import { AddCircle, Delete, Send, Cancel } from "@material-ui/icons";
 import Alert from '@material-ui/lab/Alert';
-import {TextField, Button, IconButton, Snackbar, Container, Grid, Typography} from '@material-ui/core';
+import { TextField, Button, IconButton, Snackbar, Container, Grid, Typography } from '@material-ui/core';
 import { useHistory } from 'react-router'
 import useUser from '../../hooks/useUser'
+import BarDataService from "../../services/bar.service";
 
 const useStyles = makeStyles((theme) => ({
     root: {
+        flexGrow: 1,
         '& .MuiInputLabel-formControl': {
             top: '-5px',
         },
     },
 }));
 
-export default function CreateVotings(props){
+export default function CreateVotings(props) {
     const classes = useStyles();
     const [state, setState] = useState('')
     const [now, setNow] = useState(new Date())
@@ -36,11 +38,7 @@ export default function CreateVotings(props){
 
     const history = useHistory()
     const { auth } = useUser()
-    const admin = auth.roles.includes('ROLE_OWNER') || auth.roles.includes('ROLE_EMPLOYEE');
-
-    useEffect(() => {
-        if (!admin) history.push('/profile')
-    }, [admin, history])
+    const username = auth.username
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -54,22 +52,33 @@ export default function CreateVotings(props){
         };
     }, [now, openingHour]);
 
+    useEffect(() => {
+        BarDataService.getBar(barId).then(res => {
+            let owner = res.data.owner
+            let emp = res.data.employees.map(a => a.username)
+            console.log('Emp', emp)
+            if (!(owner === username || emp.includes(username))) history.push('/')
+        }).catch(err => {
+            history.push('/pageNotFound')
+        })
+    }, [barId, history, username])
+
     const handleSubmit = (evt) => {
         evt.preventDefault();
 
         if (handleValidation()) {
             const object = {
-            "title": state.title, "description": state.description, "openingHour": formatDate(openingHour),
-            "closingHour": formatDate(closingHour), "timer": 1, "options": add.map(index => {
-                let _state = "option" + index;
-                return { "description": state[_state], "votes": 0 }
-            }), "votersUsernames": []
+                "title": state.title, "description": state.description, "openingHour": formatDate(openingHour),
+                "closingHour": formatDate(closingHour), "timer": 1, "options": add.map(index => {
+                    let _state = "option" + index;
+                    return { "description": state[_state], "votes": 0 }
+                }), "votersUsernames": []
             }
 
             VotingDataService.createVoting(barId, object).then(response => {
-                if(response.status ===201){
-                    props.history.push({ pathname: '/bares/' + barId + '/votings', state:{ data: true }});
-                }else{
+                if (response.status === 201) {
+                    props.history.push({ pathname: '/bares/' + barId + '/votings', state: { data: true } });
+                } else {
                     setOpenSubmitIncorrect(true)
                 }
             }).catch(error => {
@@ -79,14 +88,13 @@ export default function CreateVotings(props){
         } else {
             setOpenVal(true)
         }
-        
-        
+
+
     }
 
     const handleChange = (event) => {
         setState({ ...state, [event.target.name]: event.target.value });
     }
-
     const handleValidation = () => {
         let formIsValid = true;
         let objectErrors = {}
@@ -98,6 +106,11 @@ export default function CreateVotings(props){
         if (!state.description) {
             formIsValid = false;
             objectErrors["description"] = "No puede estar vacío";
+        }
+
+        if (closingHour < openingHour) {
+            formIsValid = false;
+            objectErrors["closing"] = "La fecha de fin no puede ser anterior a la de inicio";
         }
 
         add.forEach(index => {
@@ -116,23 +129,25 @@ export default function CreateVotings(props){
 
     const handleDateOpenChange = (date) => {
         setOpeningHour(date);
-        if (date === undefined || isNaN(date)){
+        if (date === undefined || isNaN(date)) {
             setErrorOpen('Fecha no válida')
+        } else if (date !== '' && date != null && date > closingHour) {
+            setErrorOpen('La fecha de inicio no puede ser posterior a la de fin')
         } else if (date < now) {
             setErrorOpen('La fecha no puede estar en pasado')
         }
-        else{
+        else {
             setErrorOpen('')
         }
     };
 
-    const handleCloseChange = (date) => {   
+    const handleCloseChange = (date) => {
         setClosingHour(date);
-        if (isNaN(date)){
+        if (isNaN(date)) {
             setErrorClose('La fecha no es válida')
-        }else if (date!=='' && date!=null && date < openingHour) {
+        } else if (date !== '' && date != null && date < openingHour) {
             setErrorClose('La fecha de fin no puede ser anterior a la de inicio')
-        } else if (date !== '' && date != null && date < now){
+        } else if (date !== '' && date != null && date < now) {
             setErrorClose('La fecha de fin no puede estar en pasado')
         }
         else {
@@ -141,12 +156,12 @@ export default function CreateVotings(props){
     };
 
     const addInputField = (event) => {
-        if(add.length <=10){
-        const size = add.length + 1;
-        setAdd(prevState => [...prevState, size]);
-        event.preventDefault();
-        }else{
-            setOpen(true) 
+        if (add.length <= 10) {
+            const size = add.length + 1;
+            setAdd(prevState => [...prevState, size]);
+            event.preventDefault();
+        } else {
+            setOpen(true)
         }
     };
 
@@ -168,167 +183,193 @@ export default function CreateVotings(props){
     };
 
     function formatDate(date) {
-        if(date === null){
+        if (date === null) {
             return null
-        }else{
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear(),
-            hour = d.getHours(),
-            minutes = d.getMinutes(),
-            sec = d.getSeconds();
+        } else {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear(),
+                hour = d.getHours(),
+                minutes = d.getMinutes(),
+                sec = d.getSeconds();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        if (hour.toString().length < 2)
-            hour = '0' + hour;
-        if (minutes.toString().length < 2)
-            minutes = '0' + minutes;
-        if (sec.toString().length < 2)
-            sec = '0' + sec;
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+            if (hour.toString().length < 2)
+                hour = '0' + hour;
+            if (minutes.toString().length < 2)
+                minutes = '0' + minutes;
+            if (sec.toString().length < 2)
+                sec = '0' + sec;
 
-        const dateStr = [day, month, year].join('-');
-        const timeStr = [hour, minutes, sec].join(':')
-        return dateStr+' '+timeStr;
+            const dateStr = [day, month, year].join('-');
+            const timeStr = [hour, minutes, sec].join(':')
+            return dateStr + ' ' + timeStr;
         }
     }
 
-    return(
-        <Container fixed>
-            <div style={{ marginTop: '50px', marginBottom: '100px'}}>
-            <Typography className='h5' variant="h5" gutterBottom>
-                Creación de votación
+    return (
+        <div>
+            <Container fixed>
+                <div style={{ marginTop: '50px', marginBottom: '100px' }}>
+                    <Typography className='h5' variant="h5" gutterBottom>
+                        Creación de votación
             </Typography>
-            <div style={{marginTop: '60px'}}>
-                <form onSubmit={(e) => handleSubmit(e)} className={classes.root}>
-                    <Grid container justify="center" alignItems="center" >
-                    <div>
-                    <TextField className='input-title' id="title" label="Título" name="title" onChange={(e) => handleChange(e)}/>
-                    <p className="p-style">{errors["title"]}</p>
-                    </div>
-                    </Grid>
-                    <Grid container justify="center" alignItems="center" >
-                    <div style={{marginTop: '20px'}}>
-                        <TextField className='input-title' id="description" label="Descripción" name="description" onChange={(e) => handleChange(e)} multiline rows={4} variant="outlined"/>
-                        <p className="p-style">{errors["description"]}</p>
-                    </div>
-                    </Grid>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <Grid container justify="center" alignItems="center" >
-                    <div className='input-margin'>
-                    <KeyboardDateTimePicker
-                        id="opening"
-                        ampm={false}
-                        label="Fecha de inicio"
-                        value={openingHour}
-                        error={errorOpen !== ''}
-                        onChange={handleDateOpenChange}
-                        helperText={errorOpen}
-                        onError={console.log}
-                        minDate={new Date()}
-                        minDateMessage="La fecha no puede estar en pasado"
-                        invalidDateMessage="El formato de la fecha es incorrecto"
-                        disablePast
-                        format="dd-MM-yyyy HH:mm:ss"
-                    />
-                    </div >
-                    </Grid>
-                    <Grid container justify="center" alignItems="center"  >
-                    <div className='input-margin'>
-                    <KeyboardDateTimePicker
-                        id="closing"
-                        ampm={false}
-                        label="Fecha de fin"
-                        value={closingHour}
-                        error={errorClose !== ''}
-                        onChange={handleCloseChange}
-                        helperText={errorClose}
-                        onError={console.log}
-                        minDate={new Date()}
-                        minDateMessage="La fecha no puede estar en pasado"
-                        invalidDateMessage="El formato de la fecha es incorrecto"
-                        disablePast
-                        format="dd-MM-yyyy HH:mm:ss"
-                    />
-                    </div>
-                    </Grid>
-                    </MuiPickersUtilsProvider>
-                    <div className='input-margin'>
-                        <Typography variant="h5" gutterBottom>
-                            Opciones
+                    <div style={{ marginTop: '60px' }}>
+                        <form onSubmit={(e) => handleSubmit(e)} className={classes.root}>
+                            <Grid container justify="center" alignItems="center" direction="column">
+                                <TextField className='input-title' id="title" label="Título" name="title" onChange={(e) => handleChange(e)} />
+                                <p className="p-style">{errors["title"]}</p>
+                            </Grid>
+                            <Grid direction="column" style={{ marginTop: '50px' }} container justify="center" alignItems="center" >
+                                <TextField className='input-title' id="description" label="Descripción" name="description" onChange={(e) => handleChange(e)} multiline rows={4} variant="outlined" />
+                                <p className="p-style">{errors["description"]}</p>
+                            </Grid>
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                <Grid container justify="center" alignItems="center" >
+                                    <div className='input-margin'>
+                                        <KeyboardDateTimePicker
+                                            id="opening"
+                                            ampm={false}
+                                            label="Fecha de inicio"
+                                            value={openingHour}
+                                            error={errorOpen !== ''}
+                                            onChange={handleDateOpenChange}
+                                            helperText={errorOpen}
+                                            onError={console.log}
+                                            minDate={new Date()}
+                                            minDateMessage="La fecha no puede estar en pasado"
+                                            invalidDateMessage="El formato de la fecha es incorrecto"
+                                            disablePast
+                                            format="dd-MM-yyyy HH:mm:ss"
+                                        />
+                                        <p className="p-style">{errors["opening"]}</p>
+                                    </div >
+                                </Grid>
+                                <Grid container justify="center" alignItems="center"  >
+                                    <div className='input-margin'>
+                                        <KeyboardDateTimePicker
+                                            id="closing"
+                                            ampm={false}
+                                            label="Fecha de fin"
+                                            value={closingHour}
+                                            error={errorClose !== ''}
+                                            onChange={handleCloseChange}
+                                            helperText={errorClose}
+                                            onError={console.log}
+                                            minDate={new Date()}
+                                            minDateMessage="La fecha no puede estar en pasado"
+                                            invalidDateMessage="El formato de la fecha es incorrecto"
+                                            disablePast
+                                            format="dd-MM-yyyy HH:mm:ss"
+                                        />
+                                        <p className="p-style">{errors["closing"]}</p>
+                                    </div>
+                                </Grid>
+                            </MuiPickersUtilsProvider>
+                            <div className='input-margin'>
+                                <Typography variant="h5" gutterBottom>
+                                    Opciones
                         </Typography>
-                        <div className='buttons-margin'>
-                        <IconButton onClick={(e) => addInputField(e)}>
-                            <AddCircle /> 
-                            <span style={{color: 'black', marginBottom: '4px', marginLeft:'4px', fontSize: '18px'}}>Añadir</span>
-                        </IconButton>
-                        <IconButton onClick={(e) => deleteInputField(e)}>
-                            <Delete />
-                            <span style={{ color: 'black', marginBottom: '4px', marginLeft: '4px', fontSize: '18px' }}>Eliminar</span>
-                        </IconButton>
-                        </div>
-                        {add.map(index => {
-                            return (
-                                <div key={index}>
-                                    <TextField
-                                        className='input-title'
-                                        id={"option"+index}
-                                        label="Descripción"
-                                        name={"option"+index}
-                                        onChange={(e) => handleChange(e)}
-                                        margin="normal"
-                                    />
-                                    <p className="p-style">{errors["option"+index]}</p>
-
+                                <div className='buttons-margin'>
+                                    <IconButton onClick={(e) => addInputField(e)}>
+                                        <AddCircle />
+                                        <span style={{ color: 'black', marginBottom: '4px', marginLeft: '4px', fontSize: '18px' }}>Añadir</span>
+                                    </IconButton>
+                                    <IconButton onClick={(e) => deleteInputField(e)}>
+                                        <Delete />
+                                        <span style={{ color: 'black', marginBottom: '4px', marginLeft: '4px', fontSize: '18px' }}>Eliminar</span>
+                                    </IconButton>
                                 </div>
-                            );
-                        })}
-                    </div>
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        style={{ ...stylesComponent.buttonCrear }}>
-                        Enviar
-                    </Button> 
-                    <div>
-                        <Snackbar open={openSubmitIncorrect} autoHideDuration={6000} onClose={handleClose}>
-                            <Alert onClose={handleClose} severity="error">
-                                Tienes que rellenar el formulario correctamente
+                                {add.map(index => {
+                                    return (
+                                        <div key={index}>
+                                            <TextField
+                                                className='input-title'
+                                                id={"option" + index}
+                                                label="Descripción"
+                                                name={"option" + index}
+                                                onChange={(e) => handleChange(e)}
+                                                margin="normal"
+                                            />
+                                            <p className="p-style">{errors["option" + index]}</p>
+
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                            <div className='submit'>
+                                <Grid container
+                                    direction="row"
+                                    justify="center"
+                                    alignItems="center" spacing={3}>
+                                    <Grid item>
+                                        <Button
+                                            onClick={() => history.goBack()}
+                                            variant="contained"
+                                            style={{ ...stylesComponent.buttonDiscard }}
+                                            startIcon={<Cancel />}>
+                                            Descartar
+                        </Button>
+                                    </Grid >
+                                    <Grid item>
+                                        <Button
+                                            type="submit"
+                                            variant="contained"
+                                            color="primary"
+                                            style={{ ...stylesComponent.buttonCreate }}
+                                            startIcon={<Send />}>
+                                            Crear
+                        </Button>
+                                    </Grid>
+                                </Grid>
+                            </div>
+                            <div>
+                                <Snackbar open={openSubmitIncorrect} autoHideDuration={6000} onClose={handleClose}>
+                                    <Alert onClose={handleClose} severity="error">
+                                        Tienes que rellenar el formulario correctamente
                             </Alert>
-                        </Snackbar>
-                        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                            <Alert onClose={handleClose} severity="warning">
-                                No puedes crear o eliminar más opciones
+                                </Snackbar>
+                                <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                                    <Alert onClose={handleClose} severity="warning">
+                                        No puedes crear o eliminar más opciones
                                 </Alert>
-                        </Snackbar>
-                        <Snackbar open={openVal} autoHideDuration={6000} onClose={handleClose}>
-                            <Alert onClose={handleClose} severity="error">
-                                Tienes que rellenar el formulario correctamente
+                                </Snackbar>
+                                <Snackbar open={openVal} autoHideDuration={6000} onClose={handleClose}>
+                                    <Alert onClose={handleClose} severity="error">
+                                        Tienes que rellenar el formulario correctamente
                                 </Alert>
-                        </Snackbar>
-                        
+                                </Snackbar>
+
+                            </div>
+                        </form>
                     </div>
-                </form>
-            </div>
+                </div>
+            </Container>
+            <Footer />
         </div>
-        </Container>
     )
 }
 
 const stylesComponent = {
-    buttonCrear: {
-        backgroundColor: '#007bff',
+    buttonCreate: {
+        backgroundColor: '#006e85',
         textTransform: 'none',
         letterSpacing: 'normal',
         fontSize: '15px',
         fontWeight: '600',
-        textAlign: 'center',
-        margin: 'auto',
-        display: 'block',
+        marginTop: '30px'
+    },
+    buttonDiscard: {
+        backgroundColor: '#d53249',
+        color: 'white',
+        textTransform: 'none',
+        letterSpacing: 'normal',
+        fontSize: '15px',
+        fontWeight: '600',
         marginTop: '30px'
     }
 }

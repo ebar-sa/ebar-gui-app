@@ -42,7 +42,7 @@ describe("SignUp test suite", () => {
         let firstName = await rendered.findByText("Nombre")
         let lastName = await rendered.findByText("Apellido")
         let email = await rendered.findByText("Email")
-        let phoneNumber = await rendered.findByText("Telefono")
+        let phoneNumber = await rendered.findByText("Teléfono")
         let dni = await rendered.findAllByText('DNI')
         let password = await rendered.findByText("Contraseña")
         let submit = await rendered.findAllByText("Registrarse")
@@ -88,7 +88,7 @@ describe("SignUp test suite", () => {
         fireEvent.change(dni, {target: {value: '12345678A'}})
         expect(dni.value).toBe('12345678A')
 
-        let phoneNumber = await rendered.getByRole('textbox', {name: /Telefono/i})
+        let phoneNumber = await rendered.getByRole('textbox', {name: /Teléfono/i})
         fireEvent.change(phoneNumber, {target: {value: '666111222'}})
         expect(phoneNumber.value).toBe('666111222')
 
@@ -127,7 +127,7 @@ describe("SignUp test suite", () => {
         let dni = await rendered.getByRole('textbox', {name: /DNI/i})
         fireEvent.change(dni, {target: {value: '8A'}})
 
-        let phoneNumber = await rendered.getByRole('textbox', {name: /Telefono/i})
+        let phoneNumber = await rendered.getByRole('textbox', {name: /Teléfono/i})
         fireEvent.change(phoneNumber, {target: {value: '+666111+222'}})
 
         let password = await rendered.getByLabelText(/Contraseña/i)
@@ -185,7 +185,7 @@ describe("SignUp test suite", () => {
         let dni = await rendered.getByRole('textbox', {name: /DNI/i})
         fireEvent.change(dni, {target: {value: '12345678A'}})
 
-        let phoneNumber = await rendered.getByRole('textbox', {name: /Telefono/i})
+        let phoneNumber = await rendered.getByRole('textbox', {name: /Teléfono/i})
         fireEvent.change(phoneNumber, {target: {value: '666111222'}})
 
         let password = await rendered.getByLabelText(/Contraseña/i)

@@ -188,7 +188,7 @@ export default function SignUp() {
                             <TextField required fullWidth
                                 id="phoneNumber"
                                 name="phoneNumber"
-                                label="Telefono"
+                                label="Teléfono"
                                 variant="outlined"
                                 autoComplete="phone"
                                 error={formErrors.phoneNumber !== null && formErrors.phoneNumber !== undefined && formErrors.phoneNumber !== ''}
@@ -235,7 +235,7 @@ export default function SignUp() {
                     <Grid container justify="flex-end">
                         <Grid item>
                             <Link href="#/login" variant="body2">
-                                Inicia sesion
+                                Inicia sesión
                             </Link>
                         </Grid>
                     </Grid>

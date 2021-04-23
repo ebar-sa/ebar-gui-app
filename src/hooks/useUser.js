@@ -23,7 +23,7 @@ export default function useUser() {
 
                 const status = err.response.status
                 if (status === 401) {
-                    setState({ loading: false, error: "Usuario o contraseña incorrectos" })
+                    setState({ loading: false, error: "Usuario o contraseña incorrectos." })
                 } else {
                     history.push("/pageNotFound")
                 }
@@ -41,7 +41,7 @@ export default function useUser() {
                 if (err.response.status === 400) {
                     let errmessage = err.response.data.message
                     if (!errmessage) {
-                        errmessage = "Please check the submitted fields"
+                        errmessage = "Por favor, revise los datos introducidos e inténtelo de nuevo."
                     }
                     setState({ loading: false, error: errmessage })
                 } else {
@@ -61,7 +61,7 @@ export default function useUser() {
                 if (err.response.status === 400) {
                     let errmessage = err.response.data.message
                     if (!errmessage) {
-                        errmessage = "Contraseña incorrecta"
+                        errmessage = "Contraseña incorrecta."
                     }
                     setState({ loading: false, error: errmessage })
                 } else {

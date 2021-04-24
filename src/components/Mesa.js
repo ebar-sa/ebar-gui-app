@@ -16,10 +16,13 @@ const useStyles = makeStyles({
     marginBottom: 12,
   },
   occupied: {
-    backgroundColor: '#ddd',
+    backgroundColor: '#00cca0',
   },
   free: {
     backgroundColor: '#fff',
+  },
+  disabled: {
+    backgroundColor: '#dddddd',
   },
   cardAction: {
     width: '100%',
@@ -28,7 +31,10 @@ const useStyles = makeStyles({
     backgroundColor: '#006e85'
   },
   buttonBorrar: {
-    backgroundColor: '#00cca0'
+    backgroundColor: '#3ef386'
+  },
+  buttonDeshabilitar: {
+    backgroundColor: '#e2e02c'
   },
   snak: {
     marginBottom: '20px',
@@ -37,13 +43,18 @@ const useStyles = makeStyles({
 
 export function Mesa(props) {
   const classes = useStyles()
-  const { id, name, free } = props
+  const { id, name, free, available } = props
   const history = useHistory()
   const [openRemoveCorrect, setOpenRemoveCorrect] = useState(false)
-
+  const [openAvaliableIncorrect, setOpenAvaliableIncorrect] = useState(false)
+  const [openDetailsIncorrect, setOpenDetailsIncorrect] = useState(false)
   const routeRedirect = () => {
-    let path = `/mesas/detallesMesa/${id}`;
-    history.push(path);
+    if (available) {
+      let path = `/mesas/detallesMesa/${id}`;
+      history.push(path);
+    } else {
+      setOpenDetailsIncorrect(true)
+    }
   }
   const isAdmin = props.isAdmin;
   const idBar = props.idBar;
@@ -52,6 +63,8 @@ export function Mesa(props) {
       return;
     }
     setOpenRemoveCorrect(false)
+    setOpenAvaliableIncorrect(false)
+    setOpenDetailsIncorrect(false)
   };
   const removeBarTable = () => {
     MesaDataService.removeBarTable(idBar, id).then(res => {
@@ -59,9 +72,28 @@ export function Mesa(props) {
       setOpenRemoveCorrect(true)
     })
   }
+  const disableBarTable = () => {
+    MesaDataService.disableBarTable(id).then(res => {
+      history.go(0);
+    }, e => {
+      setOpenAvaliableIncorrect(true)
+    })
+  }
+  const enableBarTable = () => {
+    MesaDataService.enableBarTable(id).then(res => {
+      history.go(0);
+    })
+  }
+  const isAvailable = available ? classes.free : classes.disabled
+  const isFreeAndAvailable = free ? isAvailable : classes.occupied
+  const availableOptions = available ?
+      <Button className={classes.buttonDeshabilitar} onClick={() => disableBarTable()}>Deshabilitar
+        Mesa</Button>
+      :
+      <Button className={classes.buttonDeshabilitar} onClick={() => enableBarTable()}>Habilitar Mesa</Button>
   return (
     <div>
-      <Card className={free ? classes.free : classes.occupied} variant="outlined">
+      <Card className={isFreeAndAvailable} variant="outlined">
         <ButtonBase
           className={classes.cardAction}
           onClick={routeRedirect}>
@@ -83,15 +115,28 @@ export function Mesa(props) {
           <ButtonGroup fullWidth={true} aria-label="outlined primary button group" >
             <Button className={classes.buttonEditar} href={`/#/mesas/bar/${idBar}/mesa/${id}/edit`}>Editar Mesa</Button>
             <Button className={classes.buttonBorrar} onClick={() => removeBarTable()}>Eliminar Mesa</Button>
-          </ButtonGroup>
+            {
+              availableOptions
+            }
+              </ButtonGroup>
         </Grid>
         :
-        <p></p>
+        null
       }
       <Snackbar open={openRemoveCorrect} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
           Has borrado correctamente la mesa
          </Alert>
+      </Snackbar>
+      <Snackbar open={openAvaliableIncorrect} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error">
+          No se puede deshabilitar una mesa ocupada
+        </Alert>
+      </Snackbar>
+      <Snackbar open={openDetailsIncorrect} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error">
+          Habilita la mesa para acceder a los detalles
+        </Alert>
       </Snackbar>
     </div>
   )

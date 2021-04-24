@@ -310,6 +310,8 @@ describe('Testing Voting list', () => {
     it('Finish voting correct behaviour', async () => {
         mockAxios.onGet().replyOnce(200, votings)
         mockAxios.onGet().replyOnce(200, barList)
+        mockAxios.onGet().replyOnce(200, votings)
+        mockAxios.onGet().replyOnce(200, barList)
         mockAxios.onPost().replyOnce(200)
         let rendered = renderVotingsUser(admin)
         window.sessionStorage.setItem("user", JSON.stringify(admin));
@@ -327,6 +329,9 @@ describe('Testing Voting list', () => {
         await act(async () => {
             await userEvent.click(screen.getByTestId('accept-finish-button'))
         })
+
+        promise = new Promise(r => setTimeout(r, 250));
+        await act(() => promise)
 
         let finishedAlert = await rendered.queryByTestId('finished-alert')
         expect(finishedAlert).toBeInTheDocument()

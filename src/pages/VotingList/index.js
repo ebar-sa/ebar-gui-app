@@ -75,7 +75,7 @@ function Votings(props) {
                 setEdit(true)
             }
         }
-        const interval = setInterval(() => setTime(Date.now()), 60000);
+        const interval = setInterval(() => setTime(Date.now()), 2000);
         return () => {
             clearInterval(interval);
         };
@@ -101,6 +101,14 @@ function Votings(props) {
                     handleCloseDialog()
                     setLoading(false)
                     setShowFinishedAlert(true)
+                    setLoading(true)
+                        VotingDataService.getVotingsByBarId(barId).then(res2 => {
+                            setLoading(false)
+                            setVotings(res2)
+                        }).catch(err => {
+                            setOpenVal(true)
+                            history.push("/pageNotFound")
+                        })
                 }
             }).catch(err => {
                 history.push("/pageNotFound")

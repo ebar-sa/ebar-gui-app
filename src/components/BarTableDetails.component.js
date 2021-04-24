@@ -1,23 +1,6 @@
 import React, { Component } from 'react'
-import {
-  Typography,
-  CardContent,
-  Grid,
-  CardActions,
-  Card,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  TableRow,
-  Table,
-  TableBody,
-  TableHead,
-  TableCell,
-  ButtonGroup,
-} from '@material-ui/core'
+import {Typography,CardContent,Grid,CardActions,Card,Button,Dialog,DialogActions,DialogContent,DialogContentText,
+  DialogTitle,TableRow,Table,TableBody,TableHead,TableCell,ButtonGroup,LinearProgress} from '@material-ui/core'
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import MesaDataService from '../services/barTable.service'
 import mesaLibre from '../static/images/table/mesaLibre.png'
@@ -39,7 +22,8 @@ export default class BarTableDetails extends Component {
     this.currentWidth = this.currentWidth.bind(this)
     this.refreshBillAndOrder = this.refreshBillAndOrder.bind(this)
     this.timer = 0
-    this.timer2 = 1
+    this.timer2 = 0
+    this.timerLoadinBar = 0
     this.state = {
       mesaActual: {
         id: null,
@@ -67,14 +51,14 @@ export default class BarTableDetails extends Component {
       isPhoneScreen: false,
       showMenuPhone: true,
       showBillPhone: false,
-      sortOptions: [{ id: 'name', desc: true }],
-      openSubmitIncorrect: false,
       width: 0,
       height: 0,
+      progressBarHidden: false,
     }
   }
 
   componentDidMount() {
+    this.timerLoadinBar = setInterval(() => this.setState({progressBarHidden : true}), 1000);
     this.updateDimensions()
     window.addEventListener('resize', this.updateDimensions)
     this.getMesasDetails(this.props.match.params.id)
@@ -85,6 +69,7 @@ export default class BarTableDetails extends Component {
   componentWillUnmount() {
     clearInterval(this.timer)
     clearInterval(this.timer2)
+    clearInterval(this.timerLoadinBar)
     window.removeEventListener('resize', this.updateDimensions)
   }
 
@@ -333,9 +318,10 @@ export default class BarTableDetails extends Component {
         },
       },
     }))(TableRow)
-    const {mesaActual,menuActual,billActual,isAdmin,userName,openDialog,error,showMenuPhone,showBillPhone,isPhoneScreen,} = this.state
+    const {mesaActual,menuActual,billActual,isAdmin,userName,openDialog,error,showMenuPhone,showBillPhone,isPhoneScreen,progressBarHidden} = this.state
     return !error ? (
       <div>
+        <LinearProgress hidden={progressBarHidden} />
         <div>
           {isPhoneScreen ? (
             <div>

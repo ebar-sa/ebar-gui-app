@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import MockAdapter from "axios-mock-adapter";
 import Votings from '../pages/VotingList';
 import http from "../http-common";
@@ -211,6 +211,7 @@ describe('Testing Voting list', () => {
         let title2 = await rendered.findByText('Última canción')
         let title3 = await rendered.findByText('Otra canción')
         let title4 = await rendered.queryByText('Votación sin fin')
+        let finishButton = await rendered.queryAllByTestId('finish-but')
         // let textButtonCreate = await rendered.findByText('Crear votación')
         // let edit = await rendered.findAllByText('Editar')
 
@@ -218,6 +219,8 @@ describe('Testing Voting list', () => {
         expect(title2).toBeInTheDocument()
         expect(title3).toBeInTheDocument()
         expect(title4).toBeInTheDocument()
+        expect(finishButton).toHaveLength(2)
+        
         // expect(textButtonCreate).toBeInTheDocument()
         // expect(edit).toHaveLength(1)
 
@@ -251,10 +254,12 @@ describe('Testing Voting list', () => {
         let date = await rendered.findByText('Fecha fin: 10-10-2021 02:00')
         let description2 = await rendered.findByText('Otra canción a escuchar')
         let date2 = await rendered.findByText('Fecha fin: Indefinida')
+        let finishVoting = await rendered.queryByTestId('finish-but')
         expect(description).toBeInTheDocument()
         expect(date).toBeInTheDocument()
         expect(description2).toBeInTheDocument()
         expect(date2).toBeInTheDocument()
+        expect(finishVoting).not.toBeInTheDocument()
     })
 
     it('Incorrect expand current', async () => {
@@ -302,4 +307,44 @@ describe('Testing Voting list', () => {
 
     })
 
+    it('Finish voting correct behaviour', async () => {
+        mockAxios.onGet().replyOnce(200, votings)
+        mockAxios.onGet().replyOnce(200, barList)
+        mockAxios.onGet().replyOnce(200, votings)
+        mockAxios.onGet().replyOnce(200, barList)
+        mockAxios.onPost().replyOnce(200)
+        let rendered = renderVotingsUser(admin)
+        window.sessionStorage.setItem("user", JSON.stringify(admin));
+
+        let promise = new Promise(r => setTimeout(r, 250));
+        await act(() => promise)
+
+        await act(async () => {
+            await userEvent.click(screen.getAllByTestId('finish-but')[0])
+        })
+
+        let finishDialog = await rendered.queryByTestId('finish-dialog')
+        expect(finishDialog).toBeInTheDocument()
+
+        await act(async () => {
+            await userEvent.click(screen.getByTestId('accept-finish-button'))
+        })
+
+        promise = new Promise(r => setTimeout(r, 250));
+        await act(() => promise)
+
+        let finishedAlert = await rendered.queryByTestId('finished-alert')
+        expect(finishedAlert).toBeInTheDocument()
+
+        await act(async () => {
+            await fireEvent.click(screen.getByTestId('finished-alert').children[0].children[2].children[0])
+        })
+
+        promise = new Promise(r => setTimeout(r, 250));
+        await act(() => promise)
+
+        finishedAlert = await rendered.queryByTestId('finished-alert')
+        expect(finishedAlert).not.toBeInTheDocument()
+    })
 })
+

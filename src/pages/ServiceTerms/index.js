@@ -68,9 +68,12 @@ export default function ServiceTerms() {
                                 En cumplimiento con el deber de información dispuesto en la Ley 34/2002 de Servicios de
                                 la Sociedad de la Información y el Comercio Electrónico (LSSI-CE) de 11 de julio, se
                                 facilitan a continuación los siguientes datos de información general de este sitio web:
+                            </Typography>
+                            <Typography variant="body1" gutterBottom>
                                 La titularidad de este sitio web, https://ebar-gui-sprint3.herokuapp.com, (en adelante,
-                                Sitio Web) la ostenta: Álvaro Frías Balbuena, con NIF: 11111111-A, y cuyos datos de
-                                contacto son:
+                                Sitio Web) la ostenta: EBAR S.L., provista de NIF: A-8008000 e inscrita en el Registro
+                                Mercantil de Sevilla con los siguientes datos registrales: Tomo 0, Hoja 99, Folio 888,
+                                cuyo representante es: Álvaro Ezequiel Martos Suero, y cuyos datos de contacto son:
                             </Typography>
                             <Typography variant="body1" gutterBottom>
                                 Dirección:
@@ -225,8 +228,8 @@ export default function ServiceTerms() {
                             </Typography>
                             <Typography variant="body1" gutterBottom>
                                 El responsable del tratamiento de los datos personales recogidos en eBar es: Álvaro
-                                Frías Balbuena, con NIF: 11111111-A (en adelante, también Responsable del tratamiento).
-                                Sus datos de contacto son los siguientes:
+                                Ezequiel Martos Suero, con NIF: 11111111-A (en adelante, también Responsable del
+                                tratamiento). Sus datos de contacto son los siguientes:
                             </Typography>
                             <Typography variant="body1" gutterBottom>
                                 Dirección:
@@ -346,6 +349,45 @@ export default function ServiceTerms() {
                                 del fin o fines específicos del tratamiento a que se destinarán los datos personales; es
                                 decir, del uso o usos que se dará a la información recopilada.
                             </Typography>
+                            <Typography variant="body1" gutterBottom>
+                                A continuación, se detallan los datos personales que se requieren de los Usuarios y los
+                                fines a los que se destinan y por los cuales son recabados:
+                            </Typography>
+                            <ul>
+                                <li><Typography variant="body1" gutterBottom>
+                                    Nombre de usuario: el nombre de usuario actuará como identificación inequívoca de
+                                    cada usuario en el Sitio Web, por lo que deberá ser único y de obligatoria
+                                    cumplimentación.
+                                </Typography></li>
+                                <li><Typography variant="body1" gutterBottom>
+                                    Nombre: el nombre del titular de la cuenta se usará para su identificación
+                                    personal, por lo que es de obligatoria cumplimentación.
+                                </Typography></li>
+                                <li><Typography variant="body1" gutterBottom>
+                                    Apellido: el apellido o apellidos del titular de la cuenta se usará para su
+                                    identificación personal, por lo que es de obligatoria cumplimentación.
+                                </Typography></li>
+                                <li><Typography variant="body1" gutterBottom>
+                                    Dirección de correo electrónico: la dirección de correo electrónico personal del
+                                    titular de la cuenta se usará para, en el caso que sea requerido, ponerse en
+                                    contacto con la persona registrada con el fin de informarle de aspectos de seguridad
+                                    y privacidad recogidos en este documento, por lo que deberá ser único y de
+                                    obligatoria cumplimentación.
+                                </Typography></li>
+                                <li><Typography variant="body1" gutterBottom>
+                                    Número de teléfono: el número de teléfono personal del titular de la cuenta se
+                                    usará para su identificación personal, por lo que es de obligatoria cumplimentación.
+                                </Typography></li>
+                                <li><Typography variant="body1" gutterBottom>
+                                    DNI o NIF (Opcional): el DNI o NIF de la persona titular de la cuenta se usará
+                                    para su identificación personal, aunque no es de obligatoria cumplimentación.
+                                </Typography></li>
+                                <li><Typography variant="body1" gutterBottom>
+                                    Contraseña: la contraseña del titular de la cuenta se utilizará para verificar su
+                                    identidad al acceder al Sitio Web. Deberá ser segura, privada e intransferible, por
+                                    lo que es de obligatoria cumplimentación.
+                                </Typography></li>
+                            </ul>
                             <Typography component="h3" gutterBottom>
                                 <b>Períodos de retención de los datos personales</b>
                             </Typography>
@@ -423,7 +465,8 @@ export default function ServiceTerms() {
                             </Typography>
                             <ul>
                                 <li><Typography variant="body1" gutterBottom>
-                                    Derecho de acceso: Es el derecho del Usuario a obtener confirmación de si eBar
+                                    <i>Derecho de acceso</i>: Es el derecho del Usuario a obtener confirmación de si
+                                    eBar
                                     está tratando o no sus datos personales y, en caso afirmativo, obtener información
                                     sobre sus datos concretos de carácter personal y del tratamiento que eBar haya
                                     realizado o realice, así como, entre otra, de la información disponible sobre el
@@ -431,12 +474,14 @@ export default function ServiceTerms() {
                                     previstas de los mismos.
                                 </Typography></li>
                                 <li><Typography variant="body1" gutterBottom>
-                                    Derecho de rectificación: Es el derecho del Usuario a que se modifiquen sus datos
+                                    <i>Derecho de rectificación</i>: Es el derecho del Usuario a que se modifiquen sus
+                                    datos
                                     personales que resulten ser inexactos o, teniendo en cuenta los fines del
                                     tratamiento, incompletos.
                                 </Typography></li>
                                 <li><Typography variant="body1" gutterBottom>
-                                    Derecho de supresión ("el derecho al olvido"): Es el derecho del Usuario, siempre
+                                    <i>Derecho de supresión ("el derecho al olvido")</i>: Es el derecho del Usuario,
+                                    siempre
                                     que la legislación vigente no establezca lo contrario, a obtener la supresión de sus
                                     datos personales cuando estos ya no sean necesarios para los fines para los cuales
                                     fueron recogidos o tratados; el Usuario haya retirado su consentimiento al
@@ -452,7 +497,8 @@ export default function ServiceTerms() {
                                     esos datos personales.
                                 </Typography></li>
                                 <li><Typography variant="body1" gutterBottom>
-                                    Derecho a la limitación del tratamiento: Es el derecho del Usuario a limitar el
+                                    <i>Derecho a la limitación del tratamiento</i>: Es el derecho del Usuario a limitar
+                                    el
                                     tratamiento de sus datos personales. El Usuario tiene derecho a obtener la
                                     limitación del tratamiento cuando impugne la exactitud de sus datos personales; el
                                     tratamiento sea ilícito; el Responsable del tratamiento ya no necesite los datos
@@ -460,7 +506,8 @@ export default function ServiceTerms() {
                                     Usuario se haya opuesto al tratamiento.
                                 </Typography></li>
                                 <li><Typography variant="body1" gutterBottom>
-                                    Derecho a la portabilidad de los datos: En caso de que el tratamiento se efectúe
+                                    <i>Derecho a la portabilidad de los datos</i>: En caso de que el tratamiento se
+                                    efectúe
                                     por medios automatizados, el Usuario tendrá derecho a recibir del Responsable del
                                     tratamiento sus datos personales en un formato estructurado, de uso común y lectura
                                     mecánica, y a transmitirlos a otro responsable del tratamiento. Siempre que sea
@@ -468,13 +515,14 @@ export default function ServiceTerms() {
                                     datos a ese otro responsable.
                                 </Typography></li>
                                 <li><Typography variant="body1" gutterBottom>
-                                    Derecho de oposición: Es el derecho del Usuario a que no se lleve a cabo el
+                                    <i>Derecho de oposición</i>: Es el derecho del Usuario a que no se lleve a cabo el
                                     tratamiento de sus datos de carácter personal o se cese el tratamiento de estos por
                                     parte de eBar.
                                 </Typography></li>
                                 <li><Typography variant="body1" gutterBottom>
-                                    Derecho a no ser a no ser objeto de una decisión basada únicamente en el
-                                    tratamiento automatizado, incluida la elaboración de perfiles: Es el derecho del
+                                    <i>Derecho a no ser a no ser objeto de una decisión basada únicamente en el
+                                        tratamiento automatizado, incluida la elaboración de perfiles</i>: Es el derecho
+                                    del
                                     Usuario a no ser objeto de una decisión individualizada basada únicamente en el
                                     tratamiento automatizado de sus datos personales, incluida la elaboración de
                                     perfiles, existente salvo que la legislación vigente establezca lo contrario.
@@ -509,6 +557,11 @@ export default function ServiceTerms() {
                             <Typography variant="body1" gutterBottom>
                                 Esta solicitud y todo otro documento adjunto podrá enviarse al siguiente correo
                                 electrónico: ebar.app.info@gmail.com
+                            </Typography>
+                            <Typography variant="body1" gutterBottom>
+                                Adicionalmente, el Sitio Web permite al Usuario el envío automático de peticiones
+                                dirigidas al Responsable del tratamiento para disfrutar del <i>Derecho de
+                                supresión</i> y del <i>Derecho a la portabilidad de los datos</i>.
                             </Typography>
                             <Typography component="h3" gutterBottom>
                                 <b>Reclamaciones ante la autoridad de control</b>

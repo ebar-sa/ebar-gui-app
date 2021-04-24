@@ -1,6 +1,6 @@
 import React from 'react';
 import { Router } from 'react-router-dom';
-import {act, render} from "@testing-library/react";
+import {act, fireEvent, render} from "@testing-library/react";
 
 import { createMemoryHistory } from 'history';
 import MockAdapter from 'axios-mock-adapter';
@@ -25,7 +25,16 @@ const tableList = [
         "id": 20,
         "name": "mesa1",
         "free": true,
+        "available": true,
         "token": "ihv-57f"
+    },
+
+    {
+        "id": 21,
+        "name": "mesa2",
+        "free": true,
+        "available": false,
+        "token": "ihv-58f"
     }
 ]
 
@@ -49,4 +58,82 @@ describe('Render test suite', () => {
         expect(name1).toBeInTheDocument()
     })
 
+    it('Render with a correct enable BarTable', async () => {
+        mockAxios.onGet().replyOnce(200, tableList)
+        window.sessionStorage.setItem('user',JSON.stringify(auth));
+        let rendered = render(
+            <Context.Provider value={{auth, setAuth}}>
+                <Router history={history} >
+                    <Mesas {...{ match: { params: { idBar: 1 } }, history: { location: { state: {} } } }}/>
+                </Router>
+            </Context.Provider>)
+
+        let promise = new Promise(r => setTimeout(r, 250));
+        await act(() => promise)
+
+        let botonDeshabilitar = await rendered.findByText('Deshabilitar Mesa')
+
+        expect(botonDeshabilitar).toBeInTheDocument()
+    })
+
+    it('Render with a correct disable BarTable', async () => {
+        mockAxios.onGet().replyOnce(200, tableList)
+        window.sessionStorage.setItem('user',JSON.stringify(auth));
+        let rendered = render(
+            <Context.Provider value={{auth, setAuth}}>
+                <Router history={history} >
+                    <Mesas {...{ match: { params: { idBar: 1 } }, history: { location: { state: {} } } }}/>
+                </Router>
+            </Context.Provider>)
+
+        let promise = new Promise(r => setTimeout(r, 250));
+        await act(() => promise)
+
+        let botonHabilitar = await rendered.findByText('Habilitar Mesa')
+
+        expect(botonHabilitar).toBeInTheDocument()
+    })
+
+    it('Render with a correct disable BarTable with button', async () => {
+        mockAxios.onGet().replyOnce(200, tableList)
+        window.sessionStorage.setItem("user",JSON.stringify(auth));
+        let rendered = render(
+            <Context.Provider value={{auth, setAuth}}>
+                <Router history={history} >
+                    <Mesas {...{ match: { params: { idBar: 1 } }, history: { location: { state: {} } } }}/>
+                </Router>
+            </Context.Provider>)
+
+        let promise = new Promise(r => setTimeout(r, 250));
+        await act(() => promise)
+
+        let disable = await rendered.getByRole('button', {name: /Deshabilitar Mesa/i})
+
+        await act(async () => {
+            fireEvent.click(disable)
+        })
+
+        expect(rendered.findByText('Habilitar Mesa'));
+    })
+    it('Render with a correct enable BarTable with button', async () => {
+        mockAxios.onGet().replyOnce(200, tableList)
+        window.sessionStorage.setItem("user",JSON.stringify(auth));
+        let rendered = render(
+            <Context.Provider value={{auth, setAuth}}>
+                <Router history={history} >
+                    <Mesas {...{ match: { params: { idBar: 1 } }, history: { location: { state: {} } } }}/>
+                </Router>
+            </Context.Provider>)
+
+        let promise = new Promise(r => setTimeout(r, 250));
+        await act(() => promise)
+
+        let enable = await rendered.getAllByRole('button', {name: /Habilitar Mesa/i})
+
+        await act(async () => {
+            fireEvent.click(enable[0])
+        })
+
+        expect(rendered.findByText('Deshabilitar Mesa'));
+    })
 });

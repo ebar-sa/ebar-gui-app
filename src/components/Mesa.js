@@ -84,9 +84,15 @@ export function Mesa(props) {
       history.go(0);
     })
   }
+  const isFreeAndAvailable = free ? (available ? classes.free : classes.disabled) : classes.occupied
+  const availableOptions = available ?
+      <Button className={classes.buttonDeshabilitar} onClick={() => disableBarTable()}>Deshabilitar
+        Mesa</Button>
+      :
+      <Button className={classes.buttonDeshabilitar} onClick={() => enableBarTable()}>Habilitar Mesa</Button>
   return (
     <div>
-      <Card className={free ? (available ? classes.free : classes.disabled) : classes.occupied} variant="outlined">
+      <Card className={isFreeAndAvailable} variant="outlined">
         <ButtonBase
           className={classes.cardAction}
           onClick={routeRedirect}>
@@ -108,11 +114,8 @@ export function Mesa(props) {
           <ButtonGroup fullWidth={true} aria-label="outlined primary button group" >
             <Button className={classes.buttonEditar} href={`/#/mesas/bar/${idBar}/mesa/${id}/edit`}>Editar Mesa</Button>
             <Button className={classes.buttonBorrar} onClick={() => removeBarTable()}>Eliminar Mesa</Button>
-            {available ?
-                <Button className={classes.buttonDeshabilitar} onClick={() => disableBarTable()}>Deshabilitar
-                  Mesa</Button>
-                :
-                <Button className={classes.buttonDeshabilitar} onClick={() => enableBarTable()}>Habilitar Mesa</Button>
+            {
+              availableOptions
             }
               </ButtonGroup>
         </Grid>

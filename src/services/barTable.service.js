@@ -30,10 +30,10 @@ class BarTableDataService{
     refreshBillAndOrder(id){
         return http.get(`/tables/tableBillRefresh/${id}`, {headers: authHeader()});
     }
-    disableBarTable(idBar,tableId) {
+    disableBarTable(tableId) {
         return http.get(`/tables/disableTable/${tableId}`, { headers: authHeader()});
     }
-    enableBarTable(idBar,tableId) {
+    enableBarTable(tableId) {
         return http.get(`/tables/enableTable/${tableId}`, { headers: authHeader()});
     }
 }

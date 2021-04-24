@@ -84,7 +84,8 @@ export function Mesa(props) {
       history.go(0);
     })
   }
-  const isFreeAndAvailable = free ? (available ? classes.free : classes.disabled) : classes.occupied
+  const isAvailable = available ? classes.free : classes.disabled
+  const isFreeAndAvailable = free ? isAvailable : classes.occupied
   const availableOptions = available ?
       <Button className={classes.buttonDeshabilitar} onClick={() => disableBarTable()}>Deshabilitar
         Mesa</Button>

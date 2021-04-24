@@ -57,6 +57,10 @@ class VotingDataService {
     deleteVoting = (barId, votingId) => {
         return http.delete('/bar/' + barId + '/voting/' + votingId, { headers: authHeader() })
     }
+
+    finishVoting = (barId, votingId) => {
+        return http.post('/bar/' + barId + '/voting/' + votingId + "/finish", {}, { headers: authHeader() })
+    }
 }
 
 export default new VotingDataService()

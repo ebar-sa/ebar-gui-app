@@ -25,7 +25,6 @@ import mesaOcupada from '../static/images/table/mesaOcupada.png'
 import { getCurrentUser } from '../services/auth'
 import BillDataService from '../services/bill.service'
 import { Redirect } from 'react-router'
-import BottomBar from './bottom-bar'
 
 export default class BarTableDetails extends Component {
   constructor(props) {
@@ -80,7 +79,7 @@ export default class BarTableDetails extends Component {
     window.addEventListener('resize', this.updateDimensions)
     this.getMesasDetails(this.props.match.params.id)
     this.isLogged()
-    this.timer = setInterval(() => this.bannedClientFromTable(), 3000)
+    this.timer = setInterval(() => this.bannedClientFromTable(), 10000)
     this.timer2 = setInterval(() => this.refreshBillAndOrder(), 10000)
   }
   componentWillUnmount() {
@@ -229,7 +228,6 @@ export default class BarTableDetails extends Component {
 
   addToBill(idItemBill) {
     const idBill = this.state.billActual.id
-    console.log(idBill)
     BillDataService.addToBill(idBill, idItemBill)
       .then((res) => {
         this.setState({
@@ -335,40 +333,16 @@ export default class BarTableDetails extends Component {
         },
       },
     }))(TableRow)
-    const {
-      mesaActual,
-      menuActual,
-      billActual,
-      isAdmin,
-      userName,
-      openDialog,
-      error,
-      showMenuPhone,
-      showBillPhone,
-      isPhoneScreen,
-    } = this.state
+    const {mesaActual,menuActual,billActual,isAdmin,userName,openDialog,error,showMenuPhone,showBillPhone,isPhoneScreen,} = this.state
     return !error ? (
       <div>
-        <div className={stylesComponent.colorBar}>
-          <BottomBar props={true} />
-        </div>
         <div>
           {isPhoneScreen ? (
             <div>
               <Grid container>
-                <Grid
-                  item
-                  className={useStyles.cardGrid}
-                  component={Card}
-                  xs={12}
-                  align="center"
-                >
+                <Grid item className={useStyles.cardGrid} component={Card} xs={12} align="center">
                   <CardContent>
-                    <Typography
-                      variant="h5"
-                      className={useStyles.title}
-                      gutterBottom
-                    >
+                    <Typography variant="h5" className={useStyles.title} gutterBottom>
                       <span data-testid="tableId">{mesaActual.name}</span>
                     </Typography>
                     {mesaActual.free ? (
@@ -377,28 +351,16 @@ export default class BarTableDetails extends Component {
                       <img alt="Mesa Ocupada" src={mesaOcupada} />
                     )}
                     {!mesaActual.free ? (
-                      <Typography
-                        variant="h6"
-                        className={useStyles.title}
-                        gutterBottom
-                      >
+                      <Typography variant="h6" className={useStyles.title} gutterBottom>
                         Bienvenido {userName}
                       </Typography>
                     ) : (
-                      <Typography
-                        variant="h5"
-                        className={useStyles.title}
-                        gutterBottom
-                      >
+                      <Typography variant="h5" className={useStyles.title} gutterBottom>
                         Código
                       </Typography>
                     )}
                     {isAdmin ? (
-                      <Typography
-                        variant="h5"
-                        className={useStyles.title}
-                        gutterBottom
-                      >
+                      <Typography  variant="h5"  className={useStyles.title}  gutterBottom>
                         <span data-testid="tokenId">{mesaActual.token}</span>
                       </Typography>
                     ) : (
@@ -410,37 +372,19 @@ export default class BarTableDetails extends Component {
                       <div style={stylesComponent.buttonMovil}>
                         {mesaActual.free ? (
                           <div align="center">
-                            <Button
-                              variant="contained"
-                              color="primary"
-                              onClick={this.changeStateToOcupated}
-                            >
+                            <Button variant="contained" color="primary" onClick={this.changeStateToOcupated}>
                               Ocupar Manualmente
                             </Button>
-                            <Button
-                              style={stylesComponent.buttonVolver}
-                              variant="contained"
-                              color="primary"
-                              onClick={() => this.props.history.goBack()}
-                            >
+                            <Button style={stylesComponent.buttonVolver} variant="contained" color="primary" onClick={() => this.props.history.goBack()}>
                               Volver
                             </Button>
                           </div>
                         ) : (
                           <div align="center">
-                            <Button
-                              variant="contained"
-                              color="secondary"
-                              onClick={this.handleOpen}
-                            >
+                            <Button variant="contained" color="secondary" onClick={this.handleOpen}>
                               Desocupar Manualmente
                             </Button>
-                            <Button
-                              style={stylesComponent.buttonVolver}
-                              variant="contained"
-                              color="primary"
-                              onClick={() => this.props.history.goBack()}
-                            >
+                            <Button style={stylesComponent.buttonVolver} variant="contained" color="primary" onClick={() => this.props.history.goBack()}>
                               Volver
                             </Button>
                           </div>

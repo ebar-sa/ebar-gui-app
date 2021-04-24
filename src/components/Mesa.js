@@ -40,7 +40,7 @@ export function Mesa(props) {
   const { id, name, free } = props
   const history = useHistory()
   const [openRemoveCorrect, setOpenRemoveCorrect] = useState(false)
-
+  const [openRemoveInCorrect, setOpenRemoveInCorrect] = useState(false)
   const routeRedirect = () => {
     let path = `/mesas/detallesMesa/${id}`;
     history.push(path);
@@ -52,11 +52,16 @@ export function Mesa(props) {
       return;
     }
     setOpenRemoveCorrect(false)
+    setOpenRemoveInCorrect(false)
   };
   const removeBarTable = () => {
     MesaDataService.removeBarTable(idBar, id).then(res => {
-      history.go(0);
-      setOpenRemoveCorrect(true)
+      if(res.status === 200){
+        history.go(0);
+        setOpenRemoveCorrect(true)
+      }else{
+        setOpenRemoveInCorrect(true)
+      }
     })
   }
   return (
@@ -82,7 +87,11 @@ export function Mesa(props) {
         <Grid item container xs={12}>
           <ButtonGroup fullWidth={true} aria-label="outlined primary button group" >
             <Button className={classes.buttonEditar} href={`/#/mesas/bar/${idBar}/mesa/${id}/edit`}>Editar Mesa</Button>
+            {free ?
             <Button className={classes.buttonBorrar} onClick={() => removeBarTable()}>Eliminar Mesa</Button>
+            : 
+            null
+            }
           </ButtonGroup>
         </Grid>
         :
@@ -92,6 +101,11 @@ export function Mesa(props) {
         <Alert onClose={handleClose} severity="error">
           Has borrado correctamente la mesa
          </Alert>
+      </Snackbar>
+      <Snackbar open={openRemoveInCorrect} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error">
+          No puedes borrar una mesa que se encuentra ocupada.
+        </Alert>
       </Snackbar>
     </div>
   )

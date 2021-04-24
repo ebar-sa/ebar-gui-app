@@ -21,6 +21,9 @@ const useStyles = makeStyles({
   free: {
     backgroundColor: '#fff',
   },
+  disabled: {
+    backgroundColor: '#ea6e6e',
+  },
   cardAction: {
     width: '100%',
   },
@@ -30,6 +33,12 @@ const useStyles = makeStyles({
   buttonBorrar: {
     backgroundColor: '#00cca0'
   },
+  buttonDeshabilitar: {
+    backgroundColor: '#e2e02c'
+  },
+  buttonHabilitar: {
+    backgroundColor: '#e2e02c'
+  },
   snak: {
     marginBottom: '20px',
   }
@@ -37,7 +46,7 @@ const useStyles = makeStyles({
 
 export function Mesa(props) {
   const classes = useStyles()
-  const { id, name, free } = props
+  const { id, name, free, available } = props
   const history = useHistory()
   const [openRemoveCorrect, setOpenRemoveCorrect] = useState(false)
 
@@ -59,9 +68,19 @@ export function Mesa(props) {
       setOpenRemoveCorrect(true)
     })
   }
+  const disableBarTable = () => {
+    MesaDataService.disableBarTable(id).then(res => {
+      history.go(0);
+    })
+  }
+  const enableBarTable = () => {
+    MesaDataService.enableBarTable(id).then(res => {
+      history.go(0);
+    })
+  }
   return (
     <div>
-      <Card className={free ? classes.free : classes.occupied} variant="outlined">
+      <Card className={free ? (available ? classes.free : classes.disabled) : classes.occupied} variant="outlined">
         <ButtonBase
           className={classes.cardAction}
           onClick={routeRedirect}>
@@ -83,7 +102,13 @@ export function Mesa(props) {
           <ButtonGroup fullWidth={true} aria-label="outlined primary button group" >
             <Button className={classes.buttonEditar} href={`/#/mesas/bar/${idBar}/mesa/${id}/edit`}>Editar Mesa</Button>
             <Button className={classes.buttonBorrar} onClick={() => removeBarTable()}>Eliminar Mesa</Button>
-          </ButtonGroup>
+            {available ?
+                <Button className={classes.buttonDeshabilitar} onClick={() => disableBarTable()}>Deshabilitar
+                  Mesa</Button>
+                :
+                <Button className={classes.buttonHabilitar} onClick={() => enableBarTable()}>Habilitar Mesa</Button>
+            }
+              </ButtonGroup>
         </Grid>
         :
         <p></p>

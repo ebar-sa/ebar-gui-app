@@ -6,7 +6,6 @@ import { useHistory } from 'react-router'
 export default function useUser() {
     const { auth, setAuth } = useContext(Context)
     const [state, setState] = useState({ loading: false, error: false })
-    const [isRegistered, setRegistered] = useState(false)
     const [isUpdate, setUpdate] = useState(false)
     const history = useHistory()
 
@@ -34,10 +33,12 @@ export default function useUser() {
         setState({ loading: true, error: false })
         authService.register({ username, email, roles, password, firstName, lastName, dni, phoneNumber })
             .then(() => {
-                setRegistered(true)
+                history.push({
+                    pathname: '/login',
+                    search: '?registered=true'
+                })
             })
             .catch(err => {
-                setRegistered(false)
                 if (err.response.status === 400) {
                     let errmessage = err.response.data.message
                     if (!errmessage) {
@@ -78,7 +79,6 @@ export default function useUser() {
 
     return {
         isLogged: Boolean(auth),
-        isRegistered,
         isUpdate,
         login,
         signup,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -8,14 +8,19 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControl from '@material-ui/core/FormControl';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormHelperText from '@material-ui/core/FormHelperText';
 
-import { useHistory } from 'react-router'
+import {useHistory} from 'react-router'
 
 import useUser from '../../hooks/useUser'
 import Copyright from '../../components/Copyright'
-import { Alert, AlertTitle } from '@material-ui/lab'
+import {Alert, AlertTitle} from '@material-ui/lab'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -35,6 +40,8 @@ const useStyles = makeStyles((theme) => ({
     submit: {
         margin: theme.spacing(3, 0, 2),
     },
+    formControl: {
+    },
 }));
 
 export default function SignUp() {
@@ -42,6 +49,7 @@ export default function SignUp() {
     const history = useHistory();
 
     const [formData, setFormData] = useState({})
+    const [checkData, setCheckData] = useState({})
     const [formErrors, setFormErrors] = useState({})
 
     const roles = ['ROLE_CLIENT']
@@ -49,7 +57,7 @@ export default function SignUp() {
     const phonePatt = new RegExp("^[+]*[(]?[0-9]{1,4}[)]?[-s./0-9]*$")
     const dniPatt = new RegExp("^[0-9]{8}[A-Z]$")
 
-    const { isLogged, isRegistered, signup, error } = useUser()
+    const {isLogged, signup, error} = useUser()
 
     useEffect(() => {
         if (isLogged) {
@@ -58,7 +66,12 @@ export default function SignUp() {
     }, [isLogged, history])
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value })
+        setFormData({...formData, [e.target.name]: e.target.value})
+        setFormErrors({})
+    }
+
+    const handleCheckChange = (e) => {
+        setCheckData({...checkData, [e.target.name]: e.target.checked})
         setFormErrors({})
     }
 
@@ -72,7 +85,7 @@ export default function SignUp() {
             let lastName = formData.lastName
             let dni = formData.dni
             let phoneNumber = formData.phoneNumber
-            signup({ username, email, roles, password, firstName, lastName, dni, phoneNumber })
+            signup({username, email, roles, password, firstName, lastName, dni, phoneNumber})
         }
     }
 
@@ -107,120 +120,133 @@ export default function SignUp() {
             valid = false
             objErrors["phoneNumber"] = "Se debe introducir un número de teléfono válido"
         }
+        if (!checkData.serviceTerms) {
+            valid = false
+            objErrors["serviceTerms"] = "Obligatorio"
+        }
         setFormErrors(objErrors)
         return valid
     }
 
     return (
         <Container component="main" maxWidth="xs">
-            <CssBaseline />
+            <CssBaseline/>
             <div className={classes.paper}>
                 <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
+                    <LockOutlinedIcon/>
                 </Avatar>
                 <Typography component="h1" variant="h5">
                     Registrarse
                 </Typography>
                 {error && (
-                    <Alert severity="error" style={{ width: '100%', marginTop: 30 }}>
+                    <Alert severity="error" style={{width: '100%', marginTop: 30}}>
                         <AlertTitle>Error</AlertTitle>
                         {error}
-                    </Alert>
-                )}
-                {isRegistered && (
-                    <Alert severity="success" style={{ width: '100%', marginTop: 30 }}>
-                        <AlertTitle>Éxito</AlertTitle>
-                        Te has registrado correctamente. <a href="#/login">Pulsa aquí</a> para iniciar sesión.
                     </Alert>
                 )}
                 <form className={classes.form} onSubmit={handleSubmit}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField fullWidth required autoFocus
-                                id={"username"}
-                                name={"username"}
-                                label={"Nombre de usuario"}
-                                autoComplete={"username"}
-                                variant={"outlined"}
-                                error={formErrors.username !== null && formErrors.username !== undefined && formErrors.username !== ''}
-                                helperText={formErrors.username}
-                                onChange={(e) => handleChange(e)}
+                                       id={"username"}
+                                       name={"username"}
+                                       label={"Nombre de usuario"}
+                                       autoComplete={"username"}
+                                       variant={"outlined"}
+                                       error={formErrors.username !== null && formErrors.username !== undefined && formErrors.username !== ''}
+                                       helperText={formErrors.username}
+                                       onChange={(e) => handleChange(e)}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField required fullWidth
-                                id="firstName"
-                                name="firstName"
-                                label="Nombre"
-                                autoComplete="fname"
-                                variant="outlined"
-                                error={formErrors.firstName !== null && formErrors.firstName !== undefined && formErrors.firstName !== ''}
-                                helperText={formErrors.firstName}
-                                onChange={(e) => handleChange(e)}
+                                       id="firstName"
+                                       name="firstName"
+                                       label="Nombre"
+                                       autoComplete="fname"
+                                       variant="outlined"
+                                       error={formErrors.firstName !== null && formErrors.firstName !== undefined && formErrors.firstName !== ''}
+                                       helperText={formErrors.firstName}
+                                       onChange={(e) => handleChange(e)}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField required fullWidth
-                                id="lastName"
-                                name="lastName"
-                                label="Apellido"
-                                variant="outlined"
-                                autoComplete="lname"
-                                error={formErrors.lastName !== null && formErrors.lastName !== undefined && formErrors.lastName !== ''}
-                                helperText={formErrors.lastName}
-                                onChange={(e) => handleChange(e)}
+                                       id="lastName"
+                                       name="lastName"
+                                       label="Apellido"
+                                       variant="outlined"
+                                       autoComplete="lname"
+                                       error={formErrors.lastName !== null && formErrors.lastName !== undefined && formErrors.lastName !== ''}
+                                       helperText={formErrors.lastName}
+                                       onChange={(e) => handleChange(e)}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField required fullWidth
-                                id="email"
-                                name="email"
-                                label="Email"
-                                autoComplete="email"
-                                variant="outlined"
-                                placeholder="example@mail.com"
-                                error={formErrors.email !== null && formErrors.email !== undefined && formErrors.email !== ''}
-                                helperText={formErrors.email}
-                                onChange={(e) => handleChange(e)}
+                                       id="email"
+                                       name="email"
+                                       label="Email"
+                                       autoComplete="email"
+                                       variant="outlined"
+                                       placeholder="example@mail.com"
+                                       error={formErrors.email !== null && formErrors.email !== undefined && formErrors.email !== ''}
+                                       helperText={formErrors.email}
+                                       onChange={(e) => handleChange(e)}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField required fullWidth
-                                id="phoneNumber"
-                                name="phoneNumber"
-                                label="Teléfono"
-                                variant="outlined"
-                                autoComplete="phone"
-                                error={formErrors.phoneNumber !== null && formErrors.phoneNumber !== undefined && formErrors.phoneNumber !== ''}
-                                helperText={formErrors.phoneNumber}
-                                onChange={(e) => handleChange(e)}
+                                       id="phoneNumber"
+                                       name="phoneNumber"
+                                       label="Teléfono"
+                                       variant="outlined"
+                                       autoComplete="phone"
+                                       error={formErrors.phoneNumber !== null && formErrors.phoneNumber !== undefined && formErrors.phoneNumber !== ''}
+                                       helperText={formErrors.phoneNumber}
+                                       onChange={(e) => handleChange(e)}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField fullWidth
-                                id="dni"
-                                name="dni"
-                                label="DNI"
-                                variant="outlined"
-                                autoComplete="dni"
-                                placeholder="12345678A"
-                                error={formErrors.dni !== null && formErrors.dni !== undefined && formErrors.dni !== ''}
-                                helperText={formErrors.dni}
-                                onChange={(e) => handleChange(e)}
+                                       id="dni"
+                                       name="dni"
+                                       label="DNI"
+                                       variant="outlined"
+                                       autoComplete="dni"
+                                       placeholder="12345678A"
+                                       error={formErrors.dni !== null && formErrors.dni !== undefined && formErrors.dni !== ''}
+                                       helperText={formErrors.dni}
+                                       onChange={(e) => handleChange(e)}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField required fullWidth
-                                id="password"
-                                name="password"
-                                label="Contraseña"
-                                variant="outlined"
-                                type="password"
-                                autoComplete="current-password"
-                                error={formErrors.password !== null && formErrors.password !== undefined && formErrors.password !== ''}
-                                helperText={formErrors.password}
-                                onChange={(e) => handleChange(e)}
+                                       id="password"
+                                       name="password"
+                                       label="Contraseña"
+                                       variant="outlined"
+                                       type="password"
+                                       autoComplete="current-password"
+                                       error={formErrors.password !== null && formErrors.password !== undefined && formErrors.password !== ''}
+                                       helperText={formErrors.password}
+                                       onChange={(e) => handleChange(e)}
                             />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <FormControl error={formErrors.serviceTerms !== null && formErrors.serviceTerms !== undefined && formErrors.serviceTerms !== ''}
+                                         component="fieldset" className={classes.formControl}>
+                                <FormGroup>
+                                    <FormControlLabel
+                                        control={<Checkbox checked={checkData.serviceTerms}
+                                                           onChange={(e) => handleCheckChange(e)} name="serviceTerms"
+                                                           color="primary"/>}
+                                        label={<label>He leído y acepto los <Link href='#/terms' >términos y
+                                            condiciones de uso</Link>.</label>}
+                                    />
+                                </FormGroup>
+                                <FormHelperText>{formErrors.serviceTerms}</FormHelperText>
+                            </FormControl>
                         </Grid>
                     </Grid>
                     <Button
@@ -242,7 +268,7 @@ export default function SignUp() {
                 </form>
             </div>
             <Box mt={5}>
-                <Copyright />
+                <Copyright/>
             </Box>
         </Container>
     );

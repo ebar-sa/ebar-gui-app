@@ -7,6 +7,8 @@ import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import Typography from '@material-ui/core/Typography';
 import {makeStyles} from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -40,7 +42,11 @@ const useStyles = makeStyles((theme) => ({
     submit: {
         margin: theme.spacing(3, 0, 2),
     },
-    formControl: {
+    formControl: {},
+    eye: {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
     },
 }));
 
@@ -51,6 +57,7 @@ export default function SignUp() {
     const [formData, setFormData] = useState({})
     const [checkData, setCheckData] = useState({})
     const [formErrors, setFormErrors] = useState({})
+    const [passwordShown, setPasswordShown] = useState(false);
 
     const roles = ['ROLE_CLIENT']
     const emailPatt = new RegExp(/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i)
@@ -64,6 +71,10 @@ export default function SignUp() {
             history.push('/')
         }
     }, [isLogged, history])
+
+    const togglePasswordVisiblity = () => {
+        setPasswordShown(passwordShown ? false : true);
+    }
 
     const handleChange = (e) => {
         setFormData({...formData, [e.target.name]: e.target.value})
@@ -220,28 +231,33 @@ export default function SignUp() {
                                        onChange={(e) => handleChange(e)}
                             />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs>
                             <TextField required fullWidth
                                        id="password"
                                        name="password"
                                        label="Contraseña"
                                        variant="outlined"
-                                       type="password"
+                                       type={passwordShown ? "text" : "password"}
                                        autoComplete="current-password"
                                        error={formErrors.password !== null && formErrors.password !== undefined && formErrors.password !== ''}
                                        helperText={formErrors.password}
                                        onChange={(e) => handleChange(e)}
                             />
                         </Grid>
+                        <Grid item xs={"auto"} className={classes.eye}>
+                            <i onClick={togglePasswordVisiblity}>{passwordShown ? <VisibilityIcon/> :
+                                <VisibilityOffIcon/>}</i>
+                        </Grid>
                         <Grid item xs={12}>
-                            <FormControl error={formErrors.serviceTerms !== null && formErrors.serviceTerms !== undefined && formErrors.serviceTerms !== ''}
-                                         component="fieldset" className={classes.formControl}>
+                            <FormControl
+                                error={formErrors.serviceTerms !== null && formErrors.serviceTerms !== undefined && formErrors.serviceTerms !== ''}
+                                component="fieldset" className={classes.formControl}>
                                 <FormGroup>
                                     <FormControlLabel
                                         control={<Checkbox checked={checkData.serviceTerms}
                                                            onChange={(e) => handleCheckChange(e)} name="serviceTerms"
                                                            color="primary"/>}
-                                        label={<label>He leído y acepto los <Link href='#/terms' >términos y
+                                        label={<label>He leído y acepto los <Link href='#/terms'>términos y
                                             condiciones de uso</Link>.</label>}
                                     />
                                 </FormGroup>

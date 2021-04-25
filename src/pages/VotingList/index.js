@@ -360,7 +360,7 @@ function Votings(props) {
 
     return (
 
-        <div>
+        <div style={{marginBottom: '30px'}}>
             {loading ?
                 <div className='loading'>
                     <CircularProgress />

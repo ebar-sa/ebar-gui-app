@@ -36,6 +36,13 @@ export default function BarList() {
 
     useEffect(() => {
         BarDataService.getAllWithCapacity().then(res => {
+            res.data.sort(function (a, b) {
+                const splitA = a.capacity.split('/')
+                const splitB = b.capacity.split('/')
+                const freeA = parseFloat(splitA[0])
+                const freeB = parseFloat(splitB[0])
+                return freeB - freeA
+            });   
             setBars(res.data);
         })
             .catch(e => {

@@ -76,10 +76,7 @@ export default function ServiceTerms() {
                                 cuyo representante es: Álvaro Ezequiel Martos Suero, y cuyos datos de contacto son:
                             </Typography>
                             <Typography variant="body1" gutterBottom>
-                                Dirección:
-                            </Typography>
-                            <Typography variant="body1" gutterBottom>
-                                Av. Reina Mercedes S/N
+                                Dirección: Av. Reina Mercedes S/N
                             </Typography>
                             <Typography variant="body1" gutterBottom>
                                 Teléfono de contacto: 611 111 111
@@ -232,10 +229,7 @@ export default function ServiceTerms() {
                                 tratamiento). Sus datos de contacto son los siguientes:
                             </Typography>
                             <Typography variant="body1" gutterBottom>
-                                Dirección:
-                            </Typography>
-                            <Typography variant="body1" gutterBottom>
-                                Av. Reina Mercedes S/N
+                                Dirección: Av. Reina Mercedes S/N
                             </Typography>
                             <Typography variant="body1" gutterBottom>
                                 Teléfono de contacto: 611 111 111
@@ -520,7 +514,7 @@ export default function ServiceTerms() {
                                     parte de eBar.
                                 </Typography></li>
                                 <li><Typography variant="body1" gutterBottom>
-                                    <i>Derecho a no ser a no ser objeto de una decisión basada únicamente en el
+                                    <i>Derecho a no ser objeto de una decisión basada únicamente en el
                                         tratamiento automatizado, incluida la elaboración de perfiles</i>: Es el derecho
                                     del
                                     Usuario a no ser objeto de una decisión individualizada basada únicamente en el
@@ -594,7 +588,7 @@ export default function ServiceTerms() {
                                 cambios o actualizaciones.
                             </Typography>
                             <Typography variant="body1" gutterBottom>
-                                Esta Política de Privacidad fue actualizada el día 24 de abril 2021 para adaptarse al
+                                Esta Política de Privacidad fue actualizada el día 25 de abril 2021 para adaptarse al
                                 Reglamento (UE) 2016/679 del Parlamento Europeo y del Consejo, de 27 de abril de 2016,
                                 relativo a la protección de las personas físicas en lo que respecta al tratamiento de
                                 datos personales y a la libre circulación de estos datos (RGPD) y a la Ley Orgánica
@@ -673,7 +667,7 @@ export default function ServiceTerms() {
                                 correspondan conforme a derecho.
                             </Typography>
                             <Typography variant="body1" gutterBottom>
-                                Ultima modificación: 24 de abril 2021
+                                Ultima modificación: 25 de abril 2021
                             </Typography>
                         </Paper>
                     </Grid>

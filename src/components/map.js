@@ -77,7 +77,8 @@ function Map(props) {
 
         Promise.all(bars)
             .then((resp) => {
-                resp.forEach((bar) => {
+                resp.forEach((bar) => { 
+                    if (bar.capacity.split('/')[0] > 0){
                     Geocode.fromAddress(bar.location).then(
                         (response) => {
                             const { lat, lng } = response.results[0].geometry.location;
@@ -88,6 +89,7 @@ function Map(props) {
                         (err) => {
                             console.log('Existen direcciones no válidas');
                         })
+                    }
                 })
             })
     }, [bars, setError, history])
@@ -112,7 +114,7 @@ function Map(props) {
                     <GoogleMap
                         mapContainerClassName='contain'
                         center={location}
-                        zoom={10}>
+                        zoom={15}>
                         {arr.map(function (v, index) {
                             return <div data-testid={'marker-' + index} key={'div-' + index}>
                                 {typeof v.lat !== "undefined" && obtainDistance(v.lat, v.lng)<200000 && (

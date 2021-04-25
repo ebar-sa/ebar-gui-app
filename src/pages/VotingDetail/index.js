@@ -28,7 +28,6 @@ function VotingDetailUser(props) {
     const computeUserInBar = useCallback(async () => {
       await VotingDataService.userIsValidVoter(barId, auth.username)
           .then(res => {
-            debugger;
             let isValid  = false
 
             if(res && res.status === 200){

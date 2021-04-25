@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import Avatar from '@material-ui/core/Avatar'
 import Button from '@material-ui/core/Button'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -8,14 +8,14 @@ import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import Typography from '@material-ui/core/Typography'
-import { makeStyles } from '@material-ui/core/styles'
+import {makeStyles} from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 
-import { useHistory } from 'react-router'
+import {useHistory, useLocation} from 'react-router'
 
 import useUser from '../../hooks/useUser'
 import Copyright from '../../components/Copyright'
-import { Alert, AlertTitle } from '@material-ui/lab'
+import {Alert, AlertTitle} from '@material-ui/lab'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -44,7 +44,7 @@ export default function Login() {
     const [formData, setFormData] = useState({})
     const [formErrors, setFormErrors] = useState({})
 
-    const { isLogged, login, error } = useUser()
+    const {isLogged, login, error} = useUser()
 
     useEffect(() => {
         if (isLogged) {
@@ -53,7 +53,7 @@ export default function Login() {
     }, [isLogged, history])
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value })
+        setFormData({...formData, [e.target.name]: e.target.value})
         setFormErrors({})
     }
 
@@ -62,7 +62,7 @@ export default function Login() {
         if (handleValidation()) {
             let username = formData.username
             let password = formData.password
-            login({ username, password })
+            login({username, password})
         }
     }
 
@@ -81,45 +81,55 @@ export default function Login() {
         return valid
     }
 
+    function useQuery() {
+        return new URLSearchParams(useLocation().search);
+    }
+
     return (
         <Container component="main" maxWidth="xs">
-            <CssBaseline />
+            <CssBaseline/>
             <div className={classes.paper}>
                 <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon />
+                    <LockOutlinedIcon/>
                 </Avatar>
                 <Typography component="h1" variant="h5">
                     Iniciar sesión
                 </Typography>
                 {error && (
-                    <Alert severity="error" style={{ width: '100%', marginTop: 30 }}>
+                    <Alert severity="error" style={{width: '100%', marginTop: 30}}>
                         <AlertTitle>Error</AlertTitle>
                         {error}
                     </Alert>
                 )}
+                {useQuery().get("registered") && (
+                    <Alert severity="success" style={{width: '100%', marginTop: 30}}>
+                        <AlertTitle>Éxito</AlertTitle>
+                        Te has registrado correctamente. Ya puedes iniciar sesión.
+                    </Alert>
+                )}
                 <form className={classes.form} onSubmit={handleSubmit}>
                     <TextField autoFocus required fullWidth
-                        id="username"
-                        name="username"
-                        label="Nombre de usuario"
-                        variant="outlined"
-                        margin="normal"
-                        autoComplete="username"
-                        error={formErrors.username !== null && formErrors.username !== undefined && formErrors.username !== ''}
-                        helperText={formErrors.username}
-                        onChange={(e) => handleChange(e)}
+                               id="username"
+                               name="username"
+                               label="Nombre de usuario"
+                               variant="outlined"
+                               margin="normal"
+                               autoComplete="username"
+                               error={formErrors.username !== null && formErrors.username !== undefined && formErrors.username !== ''}
+                               helperText={formErrors.username}
+                               onChange={(e) => handleChange(e)}
                     />
                     <TextField required fullWidth
-                        id="password"
-                        name="password"
-                        label="Contraseña"
-                        variant="outlined"
-                        margin="normal"
-                        type="password"
-                        autoComplete="current-password"
-                        error={formErrors.password !== null && formErrors.password !== undefined && formErrors.password !== ''}
-                        helperText={formErrors.password}
-                        onChange={(e) => handleChange(e)}
+                               id="password"
+                               name="password"
+                               label="Contraseña"
+                               variant="outlined"
+                               margin="normal"
+                               type="password"
+                               autoComplete="current-password"
+                               error={formErrors.password !== null && formErrors.password !== undefined && formErrors.password !== ''}
+                               helperText={formErrors.password}
+                               onChange={(e) => handleChange(e)}
                     />
                     <Button
                         type="submit"
@@ -133,14 +143,14 @@ export default function Login() {
                     <Grid container>
                         <Grid item>
                             <Link href="#/signup" variant="body2">
-                                {"Registrarse"}
+                                Registrarse
                             </Link>
                         </Grid>
                     </Grid>
                 </form>
             </div>
             <Box mt={8}>
-                <Copyright />
+                <Copyright/>
             </Box>
         </Container>
     )

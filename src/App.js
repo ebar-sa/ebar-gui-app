@@ -12,6 +12,7 @@ import Votings from './pages/VotingList'
 import VotingDetailUser from './pages/VotingDetail'
 import CreateItem from './pages/Menu/CreateItemMenu'
 import EditItem from './pages/Menu/EditItemMenu'
+import ServiceTerms from "./pages/ServiceTerms";
 
 import BarCreate from "./pages/BarCreate"
 import BarUpdate from "./pages/BarUpdate"
@@ -132,11 +133,12 @@ export function App() {
           <div className={classes.drawerHeader} />
           <Switch>
             <Route exact path={'/'} component={Home} />
-            <PrivateRoute exact path={'/bares'} component={BarList} />
             <Route exact path={'/mesas/:barId'} component={Mesas} />
             <Route exact path={'/login'} component={Login} />
             <Route exact path={'/signup'} component={Signup} />
             <Route exact path={'/profile'} component={Profile} />
+            <Route exact path={'/terms'} component={ServiceTerms} />
+            <PrivateRoute exact path={'/bares'} component={BarList} />
             <PrivateRoute exact path={'/bares/create'} component={BarCreate} />
             <PrivateRoute exact path={'/bares/:barId'} component={Bar} />
             <PrivateRoute exact path={'/bares/:barId/update'} component={BarUpdate} />
@@ -158,27 +160,10 @@ export function App() {
             <PrivateRoute exact path={'/bar/:idBar/employees/:user'} component={EmployeeDetails} />
             <PrivateRoute exact path={'/bares/:idBar/menu/itemMenu'} component={CreateItem} />
             <PrivateRoute exact path={'/bares/:idBar/menu/itemMenu/:idItemMenu'} component={EditItem} />
-            
-            <PrivateRoute
-              exact
-              path={'/payments/subscriptions'}
-              component={Subscriptions}
-            />
-            <PrivateRoute
-              exact
-              path={'/payments/add-card'}
-              component={Checkout}
-            />
-            <PrivateRoute
-              exact
-              path={'/payments/subscribe/:id'}
-              component={Subscribe}
-            />
-            <PrivateRoute
-              exact
-              path={'/payments/cancel/:id'}
-              component={Checkout}
-            />
+            <PrivateRoute exact path={'/payments/subscriptions'} component={Subscriptions} />
+            <PrivateRoute exact path={'/payments/add-card'} component={Checkout} />
+            <PrivateRoute exact path={'/payments/subscribe/:id'} component={Subscribe} />
+            <PrivateRoute exact path={'/payments/cancel/:id'} component={Checkout} />
             <PrivateRoute component={NotFoundPage} />
           </Switch>
         </main>

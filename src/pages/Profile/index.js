@@ -123,7 +123,7 @@ export default function Profile() {
                             <TextField data-testid="username" name="username" fullWidth autoFocus id="username" variant="filled" label="Nombre de usuario" value={auth.username} disabled /><br />
                         </Grid>
                         <Grid item xs={12} >
-                            <TextField fullWidth autoFocus id="dni" variant="filled" label="Dni" value={auth.dni} disabled /><br />
+                            <TextField fullWidth autoFocus id="dni" variant="filled" label="DNI" value={auth.dni} disabled /><br />
                         </Grid>
                         <Grid item xs={12} >
                             <TextField fullWidth autoFocus id="firstName" variant="filled" label="Nombre" value={auth.firstName} disabled /><br />

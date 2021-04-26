@@ -67,7 +67,7 @@ export function EmailDialog({ dialogAction, setDialogAction, auth }) {
         <>
             <Snackbar open={ok} autoHideDuration={6000} onClose={() => setOk(false)}>
                 <Alert onClose={() => setOk(false)} severity="success" data-testid="requestSentAlert">
-                Se ha enviado la solucitud
+                Se ha enviado la solicitud
                 </Alert>
             </Snackbar>
             <Snackbar

@@ -26,6 +26,9 @@ import { getCurrentUser } from '../services/auth'
 import BillDataService from '../services/bill.service'
 import { Redirect } from 'react-router'
 import BottomBar from './bottom-bar'
+import TextField from '@material-ui/core/TextField';
+import { set } from 'date-fns'
+//import '../styles/barTableDetails.css'
 
 export default class BarTableDetails extends Component {
   constructor(props) {
@@ -38,7 +41,7 @@ export default class BarTableDetails extends Component {
     this.handleClose = this.handleClose.bind(this)
     this.handleChangeToken = this.handleChangeToken.bind(this)
     this.currentWidth = this.currentWidth.bind(this)
-    this.textInput = React.createRef();
+    this.handleInputChange = this.handleInputChange.bind(this)
   //  this.refreshBillAndOrder = this.refreshBillAndOrder.bind(this)
     this.timer = 0
     this.timer2 = 1
@@ -61,7 +64,8 @@ export default class BarTableDetails extends Component {
         itemBill: [],
         itemOrder: [],
       },
-      amountActual: 1,
+      amountActual: [],
+      amountDefault: 1,
       userName: '',
       isAdmin: false,
       openDialog: false,
@@ -81,17 +85,18 @@ export default class BarTableDetails extends Component {
     this.updateDimensions()
     window.addEventListener('resize', this.updateDimensions)
     this.getMesasDetails(this.props.match.params.id)
+    console.log("hola")
     this.isLogged()
-  //  this.timer = setInterval(() => this.bannedClientFromTable(), 3000)
+    this.timer = setInterval(() => this.bannedClientFromTable(), 3000)
    // this.timer2 = setInterval(() => this.refreshBillAndOrder(), 10000)
   }
   componentWillUnmount() {
-    //clearInterval(this.timer)
-  //  clearInterval(this.timer2)
+    clearInterval(this.timer)
+    clearInterval(this.timer2)
     window.removeEventListener('resize', this.updateDimensions)
   }
-/*
-  refreshBillAndOrder() {
+
+  /*refreshBillAndOrder() {
     const id = this.props.match.params.id
     MesaDataService.refreshBillAndOrder(id).then((res) => {
       if (res.status === 200) {
@@ -100,8 +105,9 @@ export default class BarTableDetails extends Component {
         })
       }
     })
-  }
-*/
+  }*/
+
+
   bannedClientFromTable() {
     const user = getCurrentUser()
     if (user.roles.includes('ROLE_CLIENT')) {
@@ -168,6 +174,7 @@ export default class BarTableDetails extends Component {
         }
       })
   }
+  
   handleClose() {
     this.setState({
       openDialog: false,
@@ -229,23 +236,13 @@ export default class BarTableDetails extends Component {
       })
   }
 
-  handleInputChange(event) {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value
-    });
-  }
-  
-
   addAmountToOrder(idItem, amount) {
     const idBill = this.state.billActual.id
     BillDataService.addAmountToOrder(idBill, idItem, amount)
       .then((res) => {
         this.setState({
-          billActual: res.data
+          billActual: res.data,
+          amountActual: []
         })
       })
       .catch((e) => {
@@ -281,7 +278,19 @@ export default class BarTableDetails extends Component {
       })
   }
 
+  handleInputChange = (index, event) => {
+      const value = event.target.value.replace(/[^\d]/,'');
+      const setValue = value > 0  ? value : "" ;
+      var amounts = [...this.state.amountActual]; 
+      amounts[index] = setValue; 
+      this.state.amountActual = amounts; 
+      //this.setState({amountActual: amounts})
+  }
+
+  
+
   render() {
+    console.log("a")
     const useStyles = makeStyles((theme) => ({
       card: {
         margin: 16,
@@ -321,11 +330,15 @@ export default class BarTableDetails extends Component {
       free: {
         backgroundColor: '#fff',
       },
+      textField: {
+        width: '5ch',
+      },
       cardGrid: {
         paddingTop: theme.spacing(8),
         paddingBottom: theme.spacing(8),
       },
     }))
+
 
     const stylesComponent = {
       buttonCrear: {
@@ -943,8 +956,8 @@ export default class BarTableDetails extends Component {
                     </TableHead>
                     <TableBody>
                       {menuActual.items &&
-                        menuActual.items.map((row) => (
-                          <StyledTableRow key={row.name}>
+                        menuActual.items.map((row, index) => (
+                          <StyledTableRow key={index}>
                             <StyledTableCell
                               align="center"
                               component="th"
@@ -956,17 +969,18 @@ export default class BarTableDetails extends Component {
                               {row.price} €
                             </StyledTableCell>
                             <StyledTableCell align="center">
-                            <input
-                              id="outlined-number"
-                              label="Number"
-                              defaultValue="1"
+                            
+                            <TextField key={row.id}
+                              id={"filled-number"+index}
+                              label="Cantidad"
                               type="number"
-                              ref={this.textInput}
-                              onChange={(event) =>
+                              size="small"
+                              onChange={(event) => 
                                 event.target.value < 1
-                                    ? (event.target.value = 1)
-                                    : event.target.value
-                            }
+                                ? (event.target.value = "")
+                                : this.state.amountActual[index] = event.target.value 
+                                }
+                              value={this.state.amountActual[index]}
                               InputLabelProps={{
                                 shrink: true,
                               }}
@@ -977,11 +991,11 @@ export default class BarTableDetails extends Component {
                                 size="small"
                                 color="primary"
                                 style={{ ...stylesComponent.buttonCrear }}
-                                onClick={() => this.addAmountToOrder(row.id, this.textInput.current.value)}
+                                onClick={() => this.addAmountToOrder(row.id, this.state.amountActual[index])}
                               >
                                 Añadir
                               </Button>
-                             {console.log(this.textInput)}
+                             
                             </StyledTableCell>
                           </StyledTableRow>
                         ))}

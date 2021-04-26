@@ -43,7 +43,7 @@ export default class BarTableDetails extends Component {
         itemBill: [],
         itemOrder: [],
       },
-      userName: '',
+      name: '',
       isAdmin: false,
       openDialog: false,
       token: '',
@@ -108,7 +108,7 @@ export default class BarTableDetails extends Component {
     })
     if (user.roles.includes('ROLE_CLIENT')) {
       this.setState({
-        userName: user.username,
+        name: user.firstName,
       })
     }
   }
@@ -318,7 +318,7 @@ export default class BarTableDetails extends Component {
         },
       },
     }))(TableRow)
-    const {mesaActual,menuActual,billActual,isAdmin,userName,openDialog,error,showMenuPhone,showBillPhone,isPhoneScreen,progressBarHidden} = this.state
+    const {mesaActual,menuActual,billActual,isAdmin,name,openDialog,error,showMenuPhone,showBillPhone,isPhoneScreen,progressBarHidden} = this.state
     return !error ? (
       <div>
         <LinearProgress hidden={progressBarHidden} />
@@ -336,21 +336,24 @@ export default class BarTableDetails extends Component {
                     ) : (
                       <img alt="Mesa Ocupada" src={mesaOcupada} />
                     )}
-                    {!mesaActual.free ? (
-                      <Typography variant="h6" className={useStyles.title} gutterBottom>
-                        Bienvenido {userName}
-                      </Typography>
-                    ) : (
+                    
+                    {isAdmin ? (
+                      <div>
                       <Typography variant="h5" className={useStyles.title} gutterBottom>
                         Código
                       </Typography>
-                    )}
-                    {isAdmin ? (
                       <Typography  variant="h5"  className={useStyles.title}  gutterBottom>
                         <span data-testid="tokenId">{mesaActual.token}</span>
                       </Typography>
+                      </div>
                     ) : (
-                      <p></p>
+                      !mesaActual.free ? (
+                        <Typography variant="h6" className={useStyles.title} gutterBottom>
+                          Bienvenido {name}
+                        </Typography>
+                      ) : (
+                        null
+                      )
                     )}
                   </CardContent>
                   {isAdmin ? (
@@ -659,7 +662,7 @@ export default class BarTableDetails extends Component {
                       className={useStyles.title}
                       gutterBottom
                     >
-                      Bienvenido {userName}
+                      Bienvenido {name}
                     </Typography>
                   ) : (
                     <Typography

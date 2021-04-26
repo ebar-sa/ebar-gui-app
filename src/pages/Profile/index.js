@@ -13,7 +13,13 @@ import useUser from '../../hooks/useUser'
 import { Redirect } from 'react-router'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import Avatar from '@material-ui/core/Avatar'
-
+import emailjs from 'emailjs-com'
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Snackbar from "@material-ui/core/Snackbar"
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -35,12 +41,79 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+export function EmailDialog({ dialogAction, setDialogAction, auth }) {
+    const [ok, setOk] = useState(false);
+    const [fail, setFail] = useState(false);
+    
+    const handleClose = () => {
+      setDialogAction(null);
+    };
+  
+    const handleSend = () => {
+        const data = {username : auth.username, action : dialogAction}
+            
+        emailjs
+        .send(
+            'service_z3g14gq', 'template_tp5askn', data, 'user_HB6af1O6KYhHM6eG9L61H'
+        )
+        .then(
+            (result) => setOk(true),
+            (error) => setFail(true)            
+        )
+        setDialogAction(null);
+    };
+  
+    return (
+        <>
+            <Snackbar open={ok} autoHideDuration={6000} onClose={() => setOk(false)}>
+                <Alert onClose={() => setOk(false)} severity="success" data-testid="requestSentAlert">
+                Se ha enviado la solucitud
+                </Alert>
+            </Snackbar>
+            <Snackbar
+                open={fail}
+                autoHideDuration={6000}
+                onClose={() => setFail(false)}
+            >
+                <Alert onClose={() => setFail(false)} severity="error" data-testid="requestSentAlertError">
+                Ha ocurrido un error, vuelva a intentarlo más tarde
+                </Alert>
+            </Snackbar>
+            <Dialog
+                open={dialogAction !== null}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                data-testid="acceptOrDeclineDialog"
+            >
+            <DialogTitle id="alert-dialog-title">{"¿Está seguro?"}</DialogTitle>
+            <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+                {dialogAction === "DATOS"
+                ? "La información puede tardar un tiempo en ser enviada"
+                : "La eliminación puede tardar un tiempo en ser completada"}
+            </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+            <Button onClick={handleClose} color="primary">
+                Cancelar
+            </Button>
+            <Button onClick={handleSend} color="primary" autoFocus data-testid="acceptDialog">
+                Aceptar
+            </Button>
+            </DialogActions>
+            </Dialog>
+        </>
+    );
+  }
 
 export default function Profile() {
     const classes = useStyles();
     const { auth, update, isLogged, isUpdate, error } = useUser()
     const [formData, setFormData] = useState({ "email": auth != null ? auth.email : null })
     const [formErrors, setFormErrors] = useState({})
+
+    const [dialogAction, setDialogAction] = React.useState(null);
 
     const emailPatt = new RegExp(/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i)
 
@@ -94,10 +167,16 @@ export default function Profile() {
         return valid
     }
 
-
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
+
+            <EmailDialog
+                auth={auth}
+                dialogAction={dialogAction}
+                setDialogAction={setDialogAction}
+            />
+
             <div className={classes.paper}>
                 <Avatar className={classes.avatar}>
                     <LockOutlinedIcon />
@@ -155,7 +234,7 @@ export default function Profile() {
                                 error={formErrors.password !== null && formErrors.password !== undefined && formErrors.password !== ''}
                                 helperText={formErrors.password}
                                 onChange={(e) => handleChange(e)} /><br />
-                        </Grid>
+                        </Grid>                                                                         
                         <Grid item xs={12} >
                             <TextField fullWidth autoFocus
                                 id="confirmPassword" label="Confirmar contraseña" variant="outlined"
@@ -173,9 +252,32 @@ export default function Profile() {
                         className={classes.submit}
                     >
                         Actualizar
-                    </Button>
-                </form>
+                    </Button>                                                                       
+                </form>                                         
+                <Grid container spacing={2}>                       
+                    <Grid item xs={12} >
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => setDialogAction("DATOS")}
+                            data-testid="requestDataButton"
+                        >
+                            Solicitar datos de la cuenta
+                        </Button>
+                    </Grid>
+                    <Grid item xs={12} >
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => setDialogAction("ELIMINAR")}
+                        >
+                            Solicitar la eliminación de sus datos en la aplicación
+                        </Button>
+                    </Grid>
 
+                </Grid>
             </div>
             <Box mt={5}>
                 <Copyright />

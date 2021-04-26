@@ -1,6 +1,6 @@
 import React from 'react';
 import { Router } from 'react-router-dom';
-import { act, render } from "@testing-library/react";
+import { act, render, fireEvent } from "@testing-library/react";
 
 import { createMemoryHistory } from 'history';
 import MockAdapter from 'axios-mock-adapter';
@@ -8,6 +8,8 @@ import MockAdapter from 'axios-mock-adapter';
 import Context from '../context/UserContext';
 import http from '../http-common';
 import Profile from '../pages/Profile';
+
+import emailjs from 'emailjs-com'
 
 const setAuth = jest.fn()
 const mockAxios = new MockAdapter(http)
@@ -40,4 +42,55 @@ describe('Render test suite', () => {
 
         expect(user).toBeInTheDocument()
     })
+});
+
+describe('Send email', () => {
+    it('Render request data', async () => {
+
+        let rendered = render(
+            <Context.Provider value={{ auth, setAuth }} >
+                <Router history={history} >
+                    <Profile />
+                </Router>
+            </Context.Provider >)
+
+        let request = await rendered.findByText('Solicitar datos de la cuenta')
+        expect(request).toBeInTheDocument()
+    })
+
+    it('Click request data', async () => {
+
+        jest.mock('emailjs-com', () => {
+            return {
+                send : () => new Promise({
+                    status : 200,
+                    text : "OK"
+                })
+            };
+        });
+        
+        let rendered = render(
+            <Context.Provider value={{ auth, setAuth }} >
+                <Router history={history} >
+                    <Profile />
+                </Router>
+            </Context.Provider >)
+
+        let sendRequest = await rendered.queryByTestId("requestDataButton")
+        await act(async () => {
+            await fireEvent.click(sendRequest)
+        })
+
+        let dialog = await rendered.queryByTestId("acceptOrDeclineDialog")
+        expect(dialog).toBeInTheDocument()
+
+        let accept = await rendered.queryByTestId("acceptDialog")
+        await act(async () => {
+            await fireEvent.click(accept)
+        })
+        
+
+        
+    })
+
 });

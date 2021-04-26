@@ -16,7 +16,7 @@ import {
   TableBody,
   TableHead,
   TableCell,
-  ButtonGroup,
+  ButtonGroup
 } from '@material-ui/core'
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import MesaDataService from '../services/barTable.service'
@@ -38,7 +38,8 @@ export default class BarTableDetails extends Component {
     this.handleClose = this.handleClose.bind(this)
     this.handleChangeToken = this.handleChangeToken.bind(this)
     this.currentWidth = this.currentWidth.bind(this)
-    this.refreshBillAndOrder = this.refreshBillAndOrder.bind(this)
+    this.textInput = React.createRef();
+  //  this.refreshBillAndOrder = this.refreshBillAndOrder.bind(this)
     this.timer = 0
     this.timer2 = 1
     this.state = {
@@ -60,6 +61,7 @@ export default class BarTableDetails extends Component {
         itemBill: [],
         itemOrder: [],
       },
+      amountActual: 1,
       userName: '',
       isAdmin: false,
       openDialog: false,
@@ -80,15 +82,15 @@ export default class BarTableDetails extends Component {
     window.addEventListener('resize', this.updateDimensions)
     this.getMesasDetails(this.props.match.params.id)
     this.isLogged()
-    this.timer = setInterval(() => this.bannedClientFromTable(), 3000)
-    this.timer2 = setInterval(() => this.refreshBillAndOrder(), 10000)
+  //  this.timer = setInterval(() => this.bannedClientFromTable(), 3000)
+   // this.timer2 = setInterval(() => this.refreshBillAndOrder(), 10000)
   }
   componentWillUnmount() {
-    clearInterval(this.timer)
-    clearInterval(this.timer2)
+    //clearInterval(this.timer)
+  //  clearInterval(this.timer2)
     window.removeEventListener('resize', this.updateDimensions)
   }
-
+/*
   refreshBillAndOrder() {
     const id = this.props.match.params.id
     MesaDataService.refreshBillAndOrder(id).then((res) => {
@@ -99,7 +101,7 @@ export default class BarTableDetails extends Component {
       }
     })
   }
-
+*/
   bannedClientFromTable() {
     const user = getCurrentUser()
     if (user.roles.includes('ROLE_CLIENT')) {
@@ -227,10 +229,48 @@ export default class BarTableDetails extends Component {
       })
   }
 
+  handleInputChange(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    });
+  }
+  
+
+  addAmountToOrder(idItem, amount) {
+    const idBill = this.state.billActual.id
+    BillDataService.addAmountToOrder(idBill, idItem, amount)
+      .then((res) => {
+        this.setState({
+          billActual: res.data
+        })
+      })
+      .catch((e) => {
+        console.log(e)
+      })
+  }
+
   addToBill(idItemBill) {
     const idBill = this.state.billActual.id
     console.log(idBill)
     BillDataService.addToBill(idBill, idItemBill)
+      .then((res) => {
+        this.setState({
+          billActual: res.data,
+        })
+      })
+      .catch((e) => {
+        console.log(e)
+      })
+  }
+
+  addAllToBill(idItemBill) {
+    const idBill = this.state.billActual.id
+    console.log(idBill)
+    BillDataService.addAllToBill(idBill, idItemBill)
       .then((res) => {
         this.setState({
           billActual: res.data,
@@ -586,6 +626,7 @@ export default class BarTableDetails extends Component {
                                   </StyledTableCell>
                                   <StyledTableCell align="center">
                                     {isAdmin ? (
+                                      <div>
                                       <Button
                                         variant="contained"
                                         size="small"
@@ -596,8 +637,21 @@ export default class BarTableDetails extends Component {
                                         onClick={() => this.addToBill(row.id)}
                                       >
                                         Entregado
+                                      </Button>                 
+                                   
+                                    <Button
+                                      variant="contained"
+                                      size="small"
+                                      color="primary"
+                                      style={{
+                                        ...stylesComponent.buttonCrear,
+                                      }}
+                                      onClick={() => this.addAllToBill(row.id)}
+                                      >
+                                      Entregar todo
                                       </Button>
-                                    ) : (
+                                      </div>
+                                      ): (
                                       <p>-</p>
                                     )}
                                   </StyledTableCell>
@@ -902,15 +956,32 @@ export default class BarTableDetails extends Component {
                               {row.price} €
                             </StyledTableCell>
                             <StyledTableCell align="center">
+                            <input
+                              id="outlined-number"
+                              label="Number"
+                              defaultValue="1"
+                              type="number"
+                              ref={this.textInput}
+                              onChange={(event) =>
+                                event.target.value < 1
+                                    ? (event.target.value = 1)
+                                    : event.target.value
+                            }
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
+                              variant="outlined"
+                            />
                               <Button
                                 variant="contained"
                                 size="small"
                                 color="primary"
                                 style={{ ...stylesComponent.buttonCrear }}
-                                onClick={() => this.addToOrder(row.id)}
+                                onClick={() => this.addAmountToOrder(row.id, this.textInput.current.value)}
                               >
                                 Añadir
                               </Button>
+                             {console.log(this.textInput)}
                             </StyledTableCell>
                           </StyledTableRow>
                         ))}
@@ -996,6 +1067,7 @@ export default class BarTableDetails extends Component {
                               </StyledTableCell>
                               <StyledTableCell align="center">
                                 {isAdmin ? (
+                                  <div>
                                   <Button
                                     variant="contained"
                                     size="small"
@@ -1005,7 +1077,20 @@ export default class BarTableDetails extends Component {
                                   >
                                     Entregado
                                   </Button>
-                                ) : (
+                                
+                                  <Button
+                                    variant="contained"
+                                    size="small"
+                                    color="primary"
+                                    style={{
+                                      ...stylesComponent.buttonCrear,
+                                    }}
+                                    onClick={() => this.addAllToBill(row.id)}
+                                    >
+                                    Entregar todo
+                                    </Button>
+                                    </div>
+                                    ) : (
                                   <p>-</p>
                                 )}
                               </StyledTableCell>

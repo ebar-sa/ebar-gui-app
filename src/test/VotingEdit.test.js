@@ -156,7 +156,6 @@ describe('Testing render component correctly', () => {
 
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
-        screen.debug()
         let alreadyBegunAlert = await rendered.findByText('No puedes editar votaciones ya comenzadas')
         expect(alreadyBegunAlert).toBeInTheDocument()
         

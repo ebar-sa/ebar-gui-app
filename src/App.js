@@ -46,6 +46,7 @@ import CreateEmployee from './pages/EmployeeCreate'
 import UpdateEmployee from './pages/EmployeeUpdate'
 import EmployeeDetails from './components/employee-details.component'
 import Checkout from './pages/Checkout'
+import BillCheckout from './pages/BillCheckout'
 import Subscribe from './pages/Subscribe'
 
 const drawerWidth = 240
@@ -160,6 +161,7 @@ export function App() {
             <PrivateRoute exact path={'/bar/:idBar/employees/:user'} component={EmployeeDetails} />
             <PrivateRoute exact path={'/bares/:idBar/menu/itemMenu'} component={CreateItem} />
             <PrivateRoute exact path={'/bares/:idBar/menu/itemMenu/:idItemMenu'} component={EditItem} />
+            <PrivateRoute exact path={'/payments/bill'} component={BillCheckout} />
             <PrivateRoute exact path={'/payments/subscriptions'} component={Subscriptions} />
             <PrivateRoute exact path={'/payments/add-card'} component={Checkout} />
             <PrivateRoute exact path={'/payments/subscribe/:id'} component={Subscribe} />

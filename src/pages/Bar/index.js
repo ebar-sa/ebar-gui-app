@@ -361,7 +361,9 @@ export default function Bar(props) {
                         }
                         <Button href={`/#/bares/${barId}/menu`}>Carta</Button>
                         <Button href={`/#/bares/${barId}/votings`}>Votaciones</Button>
+                        {isOwner &&
                         <Button href={`/#/bar/${barId}/employees`}>Empleados</Button>
+                        }
                     </ButtonGroup>
                 </Grid>
                 <div className={useStyles.snak}>

@@ -108,7 +108,7 @@ export default function CreateVotings(props) {
             objectErrors["description"] = "No puede estar vacío";
         }
 
-        if (closingHour < openingHour) {
+        if (closingHour!==null && closingHour < openingHour) {
             formIsValid = false;
             objectErrors["closing"] = "La fecha de fin no puede ser anterior a la de inicio";
         }
@@ -212,7 +212,7 @@ export default function CreateVotings(props) {
     }
 
     return (
-        <div>
+        <div style={{paddingBottom: '30px'}}>
             <Container fixed>
                 <div style={{ marginTop: '50px', marginBottom: '100px' }}>
                     <Typography className='h5' variant="h5" gutterBottom>

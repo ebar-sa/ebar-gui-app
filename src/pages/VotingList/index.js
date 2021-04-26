@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { List, ListItem, ListItemText, Collapse, Button, Snackbar, Typography } from '@material-ui/core';
+import { List, ListItem, ListItemText, Collapse, Button, Snackbar, Typography, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 import { ExpandLess, ExpandMore, Add, ArrowRightSharp } from '@material-ui/icons';
 import VotingDataService from "../../services/votings.service";
 import { Link } from "react-router-dom";
@@ -28,6 +28,9 @@ function Votings(props) {
     const [loading, setLoading] = useState(false)
     const [owner, setOwner] = useState()
     const [employees, setEmployees] = useState([])
+    const [showFinishDialog, setShowFinishDialog] = useState(false)
+    const [showFinishedAlert, setShowFinishedAlert] = useState(false)
+    const [finishVotingId, setFinishVotingId] = useState(0)
 
     const handleClick = (id) => {
         setExpanded({
@@ -72,7 +75,7 @@ function Votings(props) {
                 setEdit(true)
             }
         }
-        const interval = setInterval(() => setTime(Date.now()), 60000);
+        const interval = setInterval(() => setTime(Date.now()), 2000);
         return () => {
             clearInterval(interval);
         };
@@ -87,6 +90,39 @@ function Votings(props) {
         setOpenVal(false)
         setDel(false)
         setEdit(false)
+        setShowFinishedAlert(false)
+    };
+
+    const handleFinishVoting = (event, reason) => {
+        setLoading(true)
+        VotingDataService.finishVoting(barId, finishVotingId)
+            .then(res => {
+                if (res.status === 200 ){
+                    handleCloseDialog()
+                    setLoading(false)
+                    setShowFinishedAlert(true)
+                    setLoading(true)
+                        VotingDataService.getVotingsByBarId(barId).then(res2 => {
+                            setLoading(false)
+                            setVotings(res2)
+                        }).catch(err => {
+                            setOpenVal(true)
+                            history.push("/pageNotFound")
+                        })
+                }
+            }).catch(err => {
+                history.push("/pageNotFound")
+            })
+    }
+
+    const handleFinishClick = (id) => {
+       setShowFinishDialog(true)
+       setFinishVotingId(id)
+    };
+
+    const handleCloseDialog = () => {
+        setShowFinishDialog(false);
+        setFinishVotingId(0)
     };
 
     const formatDate = (date) => {
@@ -149,6 +185,10 @@ function Votings(props) {
                     Acceder
                 </Button>
             </Link>
+        } else if ((owner === username || employees.includes(username)) && next === false) {
+            return <Button variant="contained" onClick={() => handleFinishClick(x.id)} size='small' color="primary" style={{ ...stylesComponent.buttonDiscard }} data-testid="finish-but" >
+                    Finalizar
+                </Button>
         } else if (!(owner === username || employees.includes(username)) && x.votersUsernames.includes(username)) {
             return <div className='div-voting'>Ya has votado</div>
         }
@@ -320,7 +360,7 @@ function Votings(props) {
 
     return (
 
-        <div>
+        <div style={{marginBottom: '30px'}}>
             {loading ?
                 <div className='loading'>
                     <CircularProgress />
@@ -372,7 +412,7 @@ function Votings(props) {
                                 Votación eliminada con éxito!
                             </Alert>
                         </Snackbar >
-                        < Snackbar open={edit} autoHideDuration={6000} onClose={handleClose} >
+                        < Snackbar open={edit} autoHideDuration={6000} onClose={handleClose} data-testid='edited-alert'>
                             <Alert onClose={handleClose} severity="success">
                                 Votación editada con éxito!
                             </Alert>
@@ -382,6 +422,27 @@ function Votings(props) {
                                 Error obteniendo las votaciones
                             </Alert>
                         </Snackbar>
+                        <Snackbar open={showFinishedAlert} autoHideDuration={6000} onClose={handleClose} data-testid='finished-alert'>
+                            <Alert onClose={handleClose} severity="success" >
+                                Se ha finalizado la votación correctamente
+                            </Alert>
+                        </Snackbar>
+                        <Dialog open={showFinishDialog} onClose={handleCloseDialog} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" data-testid='finish-dialog'>
+                            <DialogTitle id="alert-dialog-title">{"Eliminar votación"}</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText id="alert-dialog-description">
+                                    ¿Estas seguro de que deseas finalizar la votación? No se podrá reiniciar luego
+                                </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleCloseDialog} color="primary">
+                                    Atrás
+                                </Button>
+                                <Button onClick={handleFinishVoting} color="primary" data-testid="accept-finish-button" autoFocus>
+                                    Aceptar
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
                     </div>
                     <Footer />
                 </div>
@@ -406,6 +467,15 @@ const stylesComponent = {
         letterSpacing: 'normal',
         fontSize: '15px',
         fontWeight: '600'
+    },
+    buttonDiscard: {
+        backgroundColor: '#d53249',
+        color: 'white',
+        textTransform: 'none',
+        letterSpacing: 'normal',
+        fontSize: '15px',
+        fontWeight: '600',
+        marginRight: '15px'
     },
     listdetail: {
         backgroundColor: 'rgba(215, 211, 211, 0.3)',

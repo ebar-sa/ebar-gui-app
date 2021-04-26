@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from "react-router"
 import VotingDataService from "../../services/votings.service";
-import { Icon, Typography, FormControl, RadioGroup, Button, FormControlLabel, Radio, Card, CardContent, Snackbar, TextField } from "@material-ui/core"
+import { Icon, Typography, FormControl, RadioGroup, Button, FormControlLabel, Radio, Card, CardContent, Snackbar } from "@material-ui/core"
 import MuiAlert from '@material-ui/lab/Alert';
 import useUser from '../../hooks/useUser'
 
@@ -16,7 +16,7 @@ function VotingDetailUser(props) {
   const [now, setNow] = useState(new Date())
   const [voting, setVoting] = useState({})
   const [canVote, setCanVote] = useState(false)
-  const [tableTokenValue, setTableTokenValue] = useState()
+  const [userIsValidInBar, setUserIsValidInBar] = useState()
   const {auth} = useUser()
   const history = useHistory()
   const barId = props.match.params.idBar
@@ -24,6 +24,22 @@ function VotingDetailUser(props) {
     function Alert(propss) {
       return <MuiAlert elevation={6} variant="filled" {...propss} />;
     }
+
+    const computeUserInBar = useCallback(async () => {
+      await VotingDataService.userIsValidVoter(barId, auth.username)
+          .then(res => {
+            let isValid  = false
+
+            if(res && res.status === 200){
+              isValid = res.data
+            }
+
+            setUserIsValidInBar(isValid)
+          }).catch(err => {
+            console.log(err)
+            setUserIsValidInBar(false)
+          })
+    }, [barId, auth.username])
 
     const handleClose = (event, reason) => {
       if (reason === 'clickaway') {
@@ -39,10 +55,8 @@ function VotingDetailUser(props) {
     const handleSubmit = (event) => {
       if (radioValue === "0") {
         setFormError(true)
-      } else if (!tableTokenValue || tableTokenValue === "") {
-        setTableTokenError(true)
       } else {
-        VotingDataService.vote(barId ,voting.id, radioValue, auth.accessToken, tableTokenValue)
+        VotingDataService.vote(barId ,voting.id, radioValue, auth.accessToken)
           .catch((error) => {
             setVoteFailure(true)
           })
@@ -63,11 +77,6 @@ function VotingDetailUser(props) {
       setRadioValue(event.target.value)
     }
 
-    const handleTableTokenChange = (event) => {
-      event.persist()
-      setTableTokenValue(event.target.value)
-    }
-
     const toDateFromString = (dateString) => {
        let aux = dateString.split(/(\d{2,})/)
        
@@ -75,6 +84,7 @@ function VotingDetailUser(props) {
     }
 
     useEffect(() => {
+
       const interval = setInterval(() => {
 
         if(voting && voting !== {}) {
@@ -91,6 +101,17 @@ function VotingDetailUser(props) {
         clearInterval(interval)
       }
     }, [voting, now])
+
+    useEffect(() => {
+
+      computeUserInBar()
+      const interval = setInterval(() => {
+        computeUserInBar()
+      }, 10000)
+      return () => {
+        clearInterval(interval)
+      }
+    }, [barId, auth.username, computeUserInBar])
 
     useEffect(() => {
       const votingId = props.match.params.votingId
@@ -120,7 +141,7 @@ function VotingDetailUser(props) {
 
     return (
         <div>
-        { auth && voting && voting.length !== 0 && !votingHasExpired ? 
+        { voting && voting.length !== 0 && !votingHasExpired ? 
           <div>
           <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
           <div>
@@ -159,10 +180,9 @@ function VotingDetailUser(props) {
                         <div style={{float:"right"}}>
                         <Typography> Sin opciones disponibles</Typography>
                         </div>
-                      </div>}
+                      </div> }
                     </RadioGroup>
-                    <TextField data-testid="table_token_field" label="Token de tu mesa" variant="outlined" error={tableTokenError} onChange={handleTableTokenChange} />
-                  { canVote && auth && voting ?     
+                  { canVote && userIsValidInBar  ?     
                   <Button
                     id="vote_btn"
                     onClick = {handleSubmit}

@@ -84,7 +84,6 @@ export default class BarTableDetails extends Component {
     this.updateDimensions()
     window.addEventListener('resize', this.updateDimensions)
     this.getMesasDetails(this.props.match.params.id)
-    console.log("hola")
     this.isLogged()
     this.timer = setInterval(() => this.bannedClientFromTable(), 3000)
    // this.timer2 = setInterval(() => this.refreshBillAndOrder(), 10000)
@@ -208,7 +207,6 @@ export default class BarTableDetails extends Component {
   }
   changeStateToOcupated() {
     const id = this.props.match.params.id
-    console.log('He entrado aqui con el id ', id)
     MesaDataService.updateBarTableStateToBusy(id)
       .then((res) => {
         if (res.status === 200) {
@@ -251,7 +249,6 @@ export default class BarTableDetails extends Component {
 
   addToBill(idItemBill) {
     const idBill = this.state.billActual.id
-    console.log(idBill)
     BillDataService.addToBill(idBill, idItemBill)
       .then((res) => {
         this.setState({
@@ -265,7 +262,6 @@ export default class BarTableDetails extends Component {
 
   addAllToBill(idItemBill) {
     const idBill = this.state.billActual.id
-    console.log(idBill)
     BillDataService.addAllToBill(idBill, idItemBill)
       .then((res) => {
         this.setState({
@@ -286,10 +282,7 @@ export default class BarTableDetails extends Component {
       this.setState({amountActual: amounts})
   }
 
-  
-
   render() {
-    console.log("a")
     const useStyles = makeStyles((theme) => ({
       card: {
         margin: 16,
@@ -975,10 +968,11 @@ export default class BarTableDetails extends Component {
                               type="number"
                               size="small"
                               onChange={(event) => 
-                                event.target.value < 1
+                                event.target.value < 1 || event.target.value === 'e'
                                 ? (event.target.value = "")
+                                // eslint-disable-next-line 
                                 : this.state.amountActual[index] = event.target.value 
-                                }
+                                } 
                               value={this.state.amountActual[index]}
                               InputLabelProps={{
                                 shrink: true,

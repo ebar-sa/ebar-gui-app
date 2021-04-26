@@ -146,6 +146,11 @@ export function Mesa(props) {
           Habilita la mesa para acceder a los detalles
         </Alert>
       </Snackbar>
+      <Snackbar open={openRemoveInCorrect} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error">
+          No puedes borrar una mesa que se encuentra ocupada.
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

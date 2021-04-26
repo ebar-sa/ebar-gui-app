@@ -136,9 +136,6 @@ export function Mesa(props) {
           Has borrado correctamente la mesa
          </Alert>
       </Snackbar>
-      <Snackbar open={openRemoveInCorrect} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error">
-          No puedes borrar una mesa que se encuentra ocupada.
       <Snackbar open={openAvaliableIncorrect} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
           No se puede deshabilitar una mesa ocupada
@@ -150,7 +147,7 @@ export function Mesa(props) {
         </Alert>
       </Snackbar>
     </div>
-  )
+  );
 }
 
 export default Mesa

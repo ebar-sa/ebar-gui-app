@@ -46,8 +46,10 @@ export function Mesa(props) {
   const { id, name, free, available } = props
   const history = useHistory()
   const [openRemoveCorrect, setOpenRemoveCorrect] = useState(false)
+  const [openRemoveInCorrect, setOpenRemoveInCorrect] = useState(false)
   const [openAvaliableIncorrect, setOpenAvaliableIncorrect] = useState(false)
   const [openDetailsIncorrect, setOpenDetailsIncorrect] = useState(false)
+
   const routeRedirect = () => {
     if (available) {
       let path = `/mesas/detallesMesa/${id}`;
@@ -63,13 +65,19 @@ export function Mesa(props) {
       return;
     }
     setOpenRemoveCorrect(false)
+    setOpenRemoveInCorrect(false)
     setOpenAvaliableIncorrect(false)
     setOpenDetailsIncorrect(false)
+
   };
   const removeBarTable = () => {
     MesaDataService.removeBarTable(idBar, id).then(res => {
-      history.go(0);
-      setOpenRemoveCorrect(true)
+      if(res.status === 200){
+        history.go(0);
+        setOpenRemoveCorrect(true)
+      }else{
+        setOpenRemoveInCorrect(true)
+      }
     })
   }
   const disableBarTable = () => {
@@ -118,7 +126,7 @@ export function Mesa(props) {
             {
               availableOptions
             }
-              </ButtonGroup>
+          </ButtonGroup>
         </Grid>
         :
         null
@@ -138,8 +146,13 @@ export function Mesa(props) {
           Habilita la mesa para acceder a los detalles
         </Alert>
       </Snackbar>
+      <Snackbar open={openRemoveInCorrect} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error">
+          No puedes borrar una mesa que se encuentra ocupada.
+        </Alert>
+      </Snackbar>
     </div>
-  )
+  );
 }
 
 export default Mesa

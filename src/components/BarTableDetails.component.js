@@ -27,7 +27,6 @@ import BillDataService from '../services/bill.service'
 import { Redirect } from 'react-router'
 import BottomBar from './bottom-bar'
 import TextField from '@material-ui/core/TextField';
-import { set } from 'date-fns'
 //import '../styles/barTableDetails.css'
 
 export default class BarTableDetails extends Component {
@@ -283,8 +282,8 @@ export default class BarTableDetails extends Component {
       const setValue = value > 0  ? value : "" ;
       var amounts = [...this.state.amountActual]; 
       amounts[index] = setValue; 
-      this.state.amountActual = amounts; 
-      //this.setState({amountActual: amounts})
+      //this.state.amountActual = amounts; 
+      this.setState({amountActual: amounts})
   }
 
   

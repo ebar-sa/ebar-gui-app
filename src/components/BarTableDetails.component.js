@@ -45,6 +45,9 @@ export default class BarTableDetails extends Component {
     this.timer = 0
     this.timer2 = 1
     this.state = {
+       symbolsArr :
+         ["e", "E", "+", "-", ".", ",", "+", ""]
+       ,
       mesaActual: {
         id: null,
         name: '',
@@ -64,7 +67,7 @@ export default class BarTableDetails extends Component {
         itemOrder: [],
       },
       amountActual: [],
-      amountDefault: 1,
+      amountDefault: null,
       userName: '',
       isAdmin: false,
       openDialog: false,
@@ -157,6 +160,7 @@ export default class BarTableDetails extends Component {
             mesaActual: res.data[0],
             menuActual: res.data[1],
             billActual: res.data[2],
+            amountActual: []
           })
         } else if (res.status === 204) {
           this.props.history.push('/#/')
@@ -353,6 +357,8 @@ export default class BarTableDetails extends Component {
         margin: '15px 0px 50px 0px',
       },
     }
+
+    
 
     let total = this.state.billActual.itemBill.reduce(
       (accumulator, currentValue) =>
@@ -967,11 +973,13 @@ export default class BarTableDetails extends Component {
                               label="Cantidad"
                               type="number"
                               size="small"
+                              pattern="[0-9]"
+                              onKeyDown={e => this.state.symbolsArr.includes(e.key) && e.preventDefault()}
                               onChange={(event) => 
-                                event.target.value < 1 || event.target.value === 'e'
+                                event.target.value < 1 || event.target.value === "" || event.target.value === null
                                 ? (event.target.value = "")
                                 // eslint-disable-next-line 
-                                : this.state.amountActual[index] = event.target.value 
+                                : this.state.amountActual[index] = event.target.value
                                 } 
                               value={this.state.amountActual[index]}
                               InputLabelProps={{
@@ -984,11 +992,11 @@ export default class BarTableDetails extends Component {
                                 size="small"
                                 color="primary"
                                 style={{ ...stylesComponent.buttonCrear }}
-                                onClick={() => this.addAmountToOrder(row.id, this.state.amountActual[index])}
+                                onClick={() => this.addAmountToOrder(row.id, this.state.amountActual[index])} 
+                                
                               >
                                 Añadir
                               </Button>
-                             
                             </StyledTableCell>
                           </StyledTableRow>
                         ))}

@@ -46,7 +46,7 @@ export default class BarTableDetails extends Component {
     this.timer2 = 1
     this.state = {
        symbolsArr :
-         ["e", "E", "+", "-", ".", ",", "+", ""]
+         ["e", "E", "+", "-", ".", ",", "+", "", "´", "`"]
        ,
       mesaActual: {
         id: null,
@@ -973,11 +973,10 @@ export default class BarTableDetails extends Component {
                               label="Cantidad"
                               type="number"
                               size="small"
-                              pattern="[0-9]"
                               onKeyDown={e => this.state.symbolsArr.includes(e.key) && e.preventDefault()}
                               onChange={(event) => 
-                                event.target.value < 1 || event.target.value === "" || event.target.value === null
-                                ? (event.target.value = "")
+                                event.target.value < 1
+                                ? ((this.state.amountActual[index] = 0) || (event.target.value = ""))
                                 // eslint-disable-next-line 
                                 : this.state.amountActual[index] = event.target.value
                                 } 
@@ -992,8 +991,12 @@ export default class BarTableDetails extends Component {
                                 size="small"
                                 color="primary"
                                 style={{ ...stylesComponent.buttonCrear }}
-                                onClick={() => this.addAmountToOrder(row.id, this.state.amountActual[index])} 
-                                
+                                onClick={() => {
+                                  if(!(this.state.amountActual[index] === undefined || this.state.amountActual[index] === "" 
+                                  || this.state.amountActual[index] === 0)){
+                                    this.addAmountToOrder(row.id, this.state.amountActual[index])
+                                  }
+                                }}                               
                               >
                                 Añadir
                               </Button>

@@ -241,7 +241,7 @@ export default class BarTableDetails extends Component {
       .then((res) => {
         this.setState({
           billActual: res.data,
-          amountActual: []
+          amountActual: [1,1,1,1,1,1,1]
         })
       })
       .catch((e) => {

@@ -241,7 +241,7 @@ export default class BarTableDetails extends Component {
       .then((res) => {
         this.setState({
           billActual: res.data,
-          amountActual: [1,1,1,1,1,1,1]
+          amountActual: []
         })
       })
       .catch((e) => {
@@ -964,7 +964,7 @@ export default class BarTableDetails extends Component {
                               size="small"
                               onKeyDown={e => this.state.symbolsArr.includes(e.key) && e.preventDefault()}
                               onChange={(event) => 
-                                event.target.value < 1
+                                event.target.value < 1 || event.target.value>10000
                                 // eslint-disable-next-line 
                                 ? ((this.state.amountActual[index] = 0) || (event.target.value = ""))
                                 // eslint-disable-next-line 

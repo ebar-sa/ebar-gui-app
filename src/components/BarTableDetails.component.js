@@ -27,7 +27,6 @@ import BillDataService from '../services/bill.service'
 import { Redirect } from 'react-router'
 import BottomBar from './bottom-bar'
 import TextField from '@material-ui/core/TextField';
-//import '../styles/barTableDetails.css'
 
 export default class BarTableDetails extends Component {
   constructor(props) {
@@ -40,7 +39,6 @@ export default class BarTableDetails extends Component {
     this.handleClose = this.handleClose.bind(this)
     this.handleChangeToken = this.handleChangeToken.bind(this)
     this.currentWidth = this.currentWidth.bind(this)
-    this.handleInputChange = this.handleInputChange.bind(this)
   //  this.refreshBillAndOrder = this.refreshBillAndOrder.bind(this)
     this.timer = 0
     this.timer2 = 1
@@ -275,15 +273,6 @@ export default class BarTableDetails extends Component {
       .catch((e) => {
         console.log(e)
       })
-  }
-
-  handleInputChange = (index, event) => {
-      const value = event.target.value.replace(/[^\d]/,'');
-      const setValue = value > 0  ? value : "" ;
-      var amounts = [...this.state.amountActual]; 
-      amounts[index] = setValue; 
-      //this.state.amountActual = amounts; 
-      this.setState({amountActual: amounts})
   }
 
   render() {
@@ -976,6 +965,7 @@ export default class BarTableDetails extends Component {
                               onKeyDown={e => this.state.symbolsArr.includes(e.key) && e.preventDefault()}
                               onChange={(event) => 
                                 event.target.value < 1
+                                // eslint-disable-next-line 
                                 ? ((this.state.amountActual[index] = 0) || (event.target.value = ""))
                                 // eslint-disable-next-line 
                                 : this.state.amountActual[index] = event.target.value

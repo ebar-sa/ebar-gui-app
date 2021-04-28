@@ -264,12 +264,27 @@ export default class BarTableDetails extends Component {
 
   addAllToBill(idItemBill) {
     const idBill = this.state.billActual.id
+    console.log("all" + idItemBill)
     BillDataService.addAllToBill(idBill, idItemBill)
       .then((res) => {
         this.setState({
           billActual: res.data,
         })
       })
+      .catch((e) => {
+        console.log(e)
+      })
+  }
+
+  deleteBill(idItemBill) {
+    const idBill = this.state.billActual.id
+    console.log(idItemBill)
+    BillDataService.deleteBill(idBill, idItemBill)
+    .then((res) => {
+      this.setState({
+        
+      })
+    })
       .catch((e) => {
         console.log(e)
       })
@@ -1046,6 +1061,15 @@ export default class BarTableDetails extends Component {
                               Entregado
                             </Typography>
                           </StyledTableCell>
+                          <StyledTableCell align="center">
+                            <Typography
+                              variant="h6"
+                              className={useStyles.title}
+                              gutterBottom
+                            >
+                              Eliminar pedido
+                            </Typography>
+                          </StyledTableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -1096,6 +1120,25 @@ export default class BarTableDetails extends Component {
                                     onClick={() => this.addAllToBill(row.id)}
                                     >
                                     Entregar todo
+                                    </Button>
+                                    </div>
+                                    ) : (
+                                  <p>-</p>
+                                )}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {isAdmin ? (
+                                  <div>
+                                    <Button
+                                    variant="contained"
+                                    size="small"
+                                    color="primary"
+                                    style={{
+                                      ...stylesComponent.buttonCrear,
+                                    }}
+                                    onClick={() => this.deleteBill(row.id)}
+                                    >
+                                    Eliminar
                                     </Button>
                                     </div>
                                     ) : (

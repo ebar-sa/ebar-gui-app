@@ -20,6 +20,9 @@ class BillDataService {
     addAmountToOrder(idBill, idItem, amount) {
         return http.get(`/bill/addAmountToOrder/${idBill}/${idItem}/${amount}`,{headers: authHeader()});
     }
+    deleteBill(idBill,idItemBill) { 
+        return http.delete(`/bill/delete/${idBill}/${idItemBill}`, {headers: authHeader()}); 
+    } 
 }
 
 export default new BillDataService()

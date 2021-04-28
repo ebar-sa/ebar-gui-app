@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import DeleteIcon from '@material-ui/icons/Delete';
 import {
   Typography,
   CardContent,
@@ -278,12 +279,11 @@ export default class BarTableDetails extends Component {
 
   deleteBill(idItemBill) {
     const idBill = this.state.billActual.id
-    console.log(idItemBill)
     BillDataService.deleteBill(idBill, idItemBill)
     .then((res) => {
       this.setState({
+        billActual: res.data
       })
-    window.location.reload();
     })
       .catch((e) => {
         console.log(e)
@@ -330,9 +330,7 @@ export default class BarTableDetails extends Component {
       free: {
         backgroundColor: '#fff',
       },
-      textField: {
-        width: '5ch',
-      },
+
       cardGrid: {
         paddingTop: theme.spacing(8),
         paddingBottom: theme.spacing(8),
@@ -347,9 +345,17 @@ export default class BarTableDetails extends Component {
         letterSpacing: 'normal',
         fontSize: '15px',
         fontWeight: '600',
+        marginLeft: '5px',
+      },
+      textField: {
+        width: 80,
       },
       buttonMovil: {
         margin: '0 auto',
+      },
+      buttonMovilBill: {
+        margin: '5px 5px 5px 5px',
+        width: 20
       },
       buttonVolver: {
         marginLeft: '10px',
@@ -612,6 +618,14 @@ export default class BarTableDetails extends Component {
                                   <span>Entregado</span>
                                 </Typography>
                               </StyledTableCell>
+                              <StyledTableCell align="center">
+                                <Typography
+                                  className={useStyles.title}
+                                  gutterBottom
+                                >
+                                  Eliminar
+                                </Typography>
+                              </StyledTableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
@@ -651,7 +665,7 @@ export default class BarTableDetails extends Component {
                                         }}
                                         onClick={() => this.addToBill(row.id)}
                                       >
-                                        Entregado
+                                      +
                                       </Button>                 
                                    
                                     <Button
@@ -663,13 +677,32 @@ export default class BarTableDetails extends Component {
                                       }}
                                       onClick={() => this.addAllToBill(row.id)}
                                       >
-                                      Entregar todo
+                                      Todo
                                       </Button>
                                       </div>
                                       ): (
                                       <p>-</p>
                                     )}
                                   </StyledTableCell>
+                                  <StyledTableCell align="center">
+                                {isAdmin ? (
+                                  <div>
+                                    <Button
+                                    variant="contained"
+                                    size="small"
+                                    color="primary"
+                                    style={{
+                                      ...stylesComponent.buttonMovilBill,
+                                    }}
+                                    onClick={() => this.deleteBill(row.id)}
+                                    >
+                                    <DeleteIcon />
+                                    </Button>
+                                    </div>
+                                    ) : (
+                                  <p>-</p>
+                                )}
+                              </StyledTableCell>
                                 </StyledTableRow>
                               ))}
                           </TableBody>
@@ -975,6 +1008,7 @@ export default class BarTableDetails extends Component {
                             <TextField key={row.id}
                               id={"filled-number"+index}
                               label="Cantidad"
+                              style={{ ...stylesComponent.textField }}
                               type="number"
                               size="small"
                               onKeyDown={e => this.state.symbolsArr.includes(e.key) && e.preventDefault()}

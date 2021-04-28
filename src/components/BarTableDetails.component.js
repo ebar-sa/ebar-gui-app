@@ -282,8 +282,8 @@ export default class BarTableDetails extends Component {
     BillDataService.deleteBill(idBill, idItemBill)
     .then((res) => {
       this.setState({
-        
       })
+    window.location.reload();
     })
       .catch((e) => {
         console.log(e)

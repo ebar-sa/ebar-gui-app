@@ -21,7 +21,7 @@ class BillDataService {
         return http.get(`/bill/addAmountToOrder/${idBill}/${idItem}/${amount}`,{headers: authHeader()});
     }
     deleteBill(idBill,idItemBill) { 
-        return http.delete(`/bill/delete/${idBill}/${idItemBill}`, {headers: authHeader()}); 
+        return http.delete(`/bill/deleteOrder/${idBill}/${idItemBill}`, {headers: authHeader()}); 
     } 
 }
 

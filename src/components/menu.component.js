@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import MenuDataService from '../services/menu.service'
 import { withStyles, makeStyles } from '@material-ui/core/styles'
-import { Typography, CardContent, Grid, Card, Snackbar, TableRow, Table, TableBody, TableHead, TableCell } from '@material-ui/core'
+import { Typography, CardContent, Grid, Card, Snackbar, TableRow, Table, TableBody, TableHead, TableCell, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions} from '@material-ui/core'
 import Button from "@material-ui/core/Button"
 import * as AuthService from '../services/auth'
 import Alert from '@material-ui/lab/Alert'
@@ -15,6 +15,9 @@ export default class Menu extends Component {
     this.getMenuDetails = this.getMenuDetails.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
     this.isLogged = this.isLogged.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleShowModal = this.handleShowModal.bind(this);
+    this.handleCloseModal = this.handleCloseModal.bind(this);
     this.state = {
       menuActual: {
         id: null,
@@ -22,9 +25,11 @@ export default class Menu extends Component {
       },
       idBar: this.props.match.params.idBar,
       isAdmin: false,
-      alerta: false
+      alerta: false,
+      showModal: false,
+      item: [],
     };
-    this.handleClose = this.handleClose.bind(this);
+
   }
 
   componentDidMount() {
@@ -53,6 +58,19 @@ export default class Menu extends Component {
   handleClose() {
     this.setState({
       alerta: false
+    })
+  }
+
+  handleShowModal(row){
+    this.setState({
+      showModal: true,
+      item: row
+    })
+  }
+
+  handleCloseModal() {
+    this.setState ({
+       showModal: false
     })
   }
 
@@ -114,7 +132,7 @@ export default class Menu extends Component {
       },
     })
 
-    const { menuActual, idBar, isAdmin, alerta } = this.state
+    const { menuActual, idBar, isAdmin, alerta, showModal,item } = this.state
 
     const StyledTableRow = withStyles((theme) => ({
       root: {
@@ -164,6 +182,7 @@ export default class Menu extends Component {
     const logo = require('../img/no-image.png');
 
     return (
+      <>
       <div style={{ "marginBottom": "45px" }}>
         <Grid container spacing={0} justify="center" style={{ "display": "grid" }} >
           <Grid item component={Card} xs>
@@ -178,11 +197,11 @@ export default class Menu extends Component {
                       </Typography>
 
               <div style={{ "textAlign": "center" }}>
-                {isAdmin ?
-                  <Button variant="contained" color="primary" style={{ ...stylesComponent.buttonCreate }} href={`/#/bares/${idBar}/menu/itemMenu`}>Crear</Button>
-                  :
-                  <div></div>
-                }
+              {isAdmin ?
+                <Button variant="contained" color="primary" style={{ ...stylesComponent.buttonCreate }} href={`/#/bares/${idBar}/menu/itemMenu`}>Crear</Button>
+                :
+                <div></div>
+              }
               </div>
             </CardContent>
             <CardContent>
@@ -206,9 +225,12 @@ export default class Menu extends Component {
                   <TableBody>
                     {menuActual.items && menuActual.items.map((row) => (
                       <StyledTableRow key={row.name}>
+                        
                         <StyledTableCell>{row.category}</StyledTableCell>
                         <StyledTableCell component="th" scope="row">
-                          <span data-testid="nombreItem"> {row.name} </span>
+                          <Button data-testid="nombreItem" type="button" onClick={() => this.handleShowModal(row)}> 
+                            {row.name} 
+                          </Button>
                         </StyledTableCell>
                         <StyledTableCell>
                           <span data-testid="descriptionItem">{row.description}</span>
@@ -240,7 +262,7 @@ export default class Menu extends Component {
                           :
                           <p></p>
                         }
-                      </StyledTableRow>
+                      </StyledTableRow>            
                     ))}
                   </TableBody>
                 </Table>
@@ -259,7 +281,41 @@ export default class Menu extends Component {
             </CardContent>
           </Grid>
         </Grid>
+        <Dialog
+          open={showModal}
+          onClose={this.handleCloseModal}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+        <DialogTitle align="center" id="alert-dialog-title">
+          {item.name}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText align="center" id="alert-dialog-description">
+          {(item.image != null) ? <img alt="" src={"data:" + item.image.type + ";base64," + item.image.data}
+            style={{
+              "width": "100px",
+              "height": "100px"
+            }} /> :
+            <img alt="" src={logo.default}
+              style={{
+                "width": "100px",
+                "height": "100px"
+          }} />}
+          <Typography variant="h5" className={useStyles.title} gutterBottom>Categoría: {item.category}</Typography>
+          <Typography variant="h5" className={useStyles.title} gutterBottom>Descripción: {item.description}</Typography>
+          <Typography variant="h5" className={useStyles.title} gutterBottom>Cantidad: {item.rationType}</Typography>
+          <Typography variant="h5" className={useStyles.title} gutterBottom>Precio: {item.price} €</Typography>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.handleCloseModal} color="secondary">
+            Cerrar
+          </Button>
+        </DialogActions>
+      </Dialog>
       </div>
+      </>
     );
 
   }

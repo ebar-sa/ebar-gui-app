@@ -1,6 +1,6 @@
 import React from 'react';
 import { Router } from 'react-router-dom';
-import {act, render, queryByAttribute, fireEvent} from "@testing-library/react";
+import {act, render, fireEvent} from "@testing-library/react";
 import Adapter from 'enzyme-adapter-react-16'
 import Enzyme from 'enzyme';
 
@@ -10,7 +10,6 @@ import MockAdapter from 'axios-mock-adapter';
 import Context from '../context/UserContext';
 import http from '../http-common';
 import BarTableDetails from '../components/BarTableDetails.component';
-import BottomBar from '../components/bottom-bar';
 const setAuth = jest.fn()
 const mockAxios = new MockAdapter(http)
 const history = createMemoryHistory()
@@ -138,6 +137,7 @@ function renderDetailsFormAdmin(auth) {
         </Context.Provider>)
 
 }
+
 describe('Render test suite', () => {
     beforeEach(() => {
         Enzyme.configure({adapter: new Adapter()});
@@ -222,7 +222,18 @@ describe('Render test suite', () => {
 
     })
 
-    
+    it('Render form with correct text admin', async () => {
+        let rendered = renderDetailsFormAdmin(auth)
+        mockAxios.onGet().replyOnce(200, detailsDataTableOcupated)
+
+        let name = await rendered.findByText('Ensaladilla')
+        let price = await rendered.findByText('2.5 €')
+
+
+        expect(name).toBeInTheDocument()
+        expect(price).toBeInTheDocument()
+
+    })
 
 
 });

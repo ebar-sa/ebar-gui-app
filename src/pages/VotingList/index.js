@@ -545,7 +545,8 @@ function Votings(props) {
                         </Dialog>
                         <Dialog open={showContent} onClose={handleCloseDialog}
                                 aria-labelledby="alert-dialog-title"
-                                aria-describedby="alert-dialog-description">
+                                aria-describedby="alert-dialog-description"
+                                data-testid='delete-dialog'>
                             <DialogTitle id="alert-dialog-title">{"Eliminar votación"}</DialogTitle>
                             <DialogContent>
                                 <DialogContentText id="alert-dialog-description">
@@ -556,7 +557,7 @@ function Votings(props) {
                                 <Button onClick={handleCloseDialog} color="primary">
                                     Atrás
                                 </Button>
-                                <Button onClick={handleDelete} color="primary" autoFocus>
+                                <Button onClick={handleDelete} color="primary" autoFocus data-testid="accept-delete-button">
                                     Aceptar
                                 </Button>
                             </DialogActions>

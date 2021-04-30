@@ -5,7 +5,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
@@ -21,8 +20,8 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import {useHistory} from 'react-router'
 
 import useUser from '../../hooks/useUser'
-import Copyright from '../../components/Copyright'
 import {Alert, AlertTitle} from '@material-ui/lab'
+import Footer from "../../components/Footer";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -30,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        marginBottom: '10px'
     },
     avatar: {
         margin: theme.spacing(1),
@@ -140,152 +140,153 @@ export default function SignUp() {
     }
 
     return (
-        <Container component="main" maxWidth="xs">
-            <CssBaseline/>
-            <div className={classes.paper}>
-                <Avatar className={classes.avatar}>
-                    <LockOutlinedIcon/>
-                </Avatar>
-                <Typography component="h1" variant="h5">
-                    Registrarse
-                </Typography>
-                {error && (
-                    <Alert severity="error" style={{width: '100%', marginTop: 30}}>
-                        <AlertTitle>Error</AlertTitle>
-                        {error}
-                    </Alert>
-                )}
-                <form className={classes.form} onSubmit={handleSubmit}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <TextField fullWidth required autoFocus
-                                       id={"username"}
-                                       name={"username"}
-                                       label={"Nombre de usuario"}
-                                       autoComplete={"username"}
-                                       variant={"outlined"}
-                                       error={formErrors.username !== null && formErrors.username !== undefined && formErrors.username !== ''}
-                                       helperText={formErrors.username}
-                                       onChange={(e) => handleChange(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField required fullWidth
-                                       id="firstName"
-                                       name="firstName"
-                                       label="Nombre"
-                                       autoComplete="fname"
-                                       variant="outlined"
-                                       error={formErrors.firstName !== null && formErrors.firstName !== undefined && formErrors.firstName !== ''}
-                                       helperText={formErrors.firstName}
-                                       onChange={(e) => handleChange(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField required fullWidth
-                                       id="lastName"
-                                       name="lastName"
-                                       label="Apellido"
-                                       variant="outlined"
-                                       autoComplete="lname"
-                                       error={formErrors.lastName !== null && formErrors.lastName !== undefined && formErrors.lastName !== ''}
-                                       helperText={formErrors.lastName}
-                                       onChange={(e) => handleChange(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField required fullWidth
-                                       id="email"
-                                       name="email"
-                                       label="Email"
-                                       autoComplete="email"
-                                       variant="outlined"
-                                       placeholder="example@mail.com"
-                                       error={formErrors.email !== null && formErrors.email !== undefined && formErrors.email !== ''}
-                                       helperText={formErrors.email}
-                                       onChange={(e) => handleChange(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField required fullWidth
-                                       id="phoneNumber"
-                                       name="phoneNumber"
-                                       label="Teléfono"
-                                       variant="outlined"
-                                       autoComplete="phone"
-                                       error={formErrors.phoneNumber !== null && formErrors.phoneNumber !== undefined && formErrors.phoneNumber !== ''}
-                                       helperText={formErrors.phoneNumber}
-                                       onChange={(e) => handleChange(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField fullWidth
-                                       id="dni"
-                                       name="dni"
-                                       label="DNI"
-                                       variant="outlined"
-                                       autoComplete="dni"
-                                       placeholder="12345678A"
-                                       error={formErrors.dni !== null && formErrors.dni !== undefined && formErrors.dni !== ''}
-                                       helperText={formErrors.dni}
-                                       onChange={(e) => handleChange(e)}
-                            />
-                        </Grid>
-                        <Grid item xs>
-                            <TextField required fullWidth
-                                       id="password"
-                                       name="password"
-                                       label="Contraseña"
-                                       variant="outlined"
-                                       type={passwordShown ? "text" : "password"}
-                                       autoComplete="current-password"
-                                       error={formErrors.password !== null && formErrors.password !== undefined && formErrors.password !== ''}
-                                       helperText={formErrors.password}
-                                       onChange={(e) => handleChange(e)}
-                            />
-                        </Grid>
-                        <Grid item xs={"auto"} className={classes.eye}>
-                            <i onClick={togglePasswordVisiblity}>{passwordShown ? <VisibilityIcon/> :
-                                <VisibilityOffIcon/>}</i>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <FormControl
-                                error={formErrors.serviceTerms !== null && formErrors.serviceTerms !== undefined && formErrors.serviceTerms !== ''}
-                                component="fieldset" className={classes.formControl}>
-                                <FormGroup>
-                                    <FormControlLabel
-                                        control={<Checkbox checked={checkData.serviceTerms}
-                                                           onChange={(e) => handleCheckChange(e)} name="serviceTerms"
-                                                           color="primary"/>}
-                                        label={<label>He leído y acepto los <Link href='#/terms'>términos y
-                                            condiciones de uso</Link>.</label>}
-                                    />
-                                </FormGroup>
-                                <FormHelperText>{formErrors.serviceTerms}</FormHelperText>
-                            </FormControl>
-                        </Grid>
-                    </Grid>
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                    >
+        <div>
+            <Container component="main" maxWidth="xs">
+                <CssBaseline/>
+                <div className={classes.paper}>
+                    <Avatar className={classes.avatar}>
+                        <LockOutlinedIcon/>
+                    </Avatar>
+                    <Typography component="h1" variant="h5">
                         Registrarse
-                    </Button>
-                    <Grid container justify="flex-end">
-                        <Grid item>
-                            <Link href="#/login" variant="body2">
-                                Inicia sesión
-                            </Link>
+                    </Typography>
+                    {error && (
+                        <Alert severity="error" style={{width: '100%', marginTop: 30}}>
+                            <AlertTitle>Error</AlertTitle>
+                            {error}
+                        </Alert>
+                    )}
+                    <form className={classes.form} onSubmit={handleSubmit}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField fullWidth required autoFocus
+                                           id={"username"}
+                                           name={"username"}
+                                           label={"Nombre de usuario"}
+                                           autoComplete={"username"}
+                                           variant={"outlined"}
+                                           error={formErrors.username !== null && formErrors.username !== undefined && formErrors.username !== ''}
+                                           helperText={formErrors.username}
+                                           onChange={(e) => handleChange(e)}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField required fullWidth
+                                           id="firstName"
+                                           name="firstName"
+                                           label="Nombre"
+                                           autoComplete="fname"
+                                           variant="outlined"
+                                           error={formErrors.firstName !== null && formErrors.firstName !== undefined && formErrors.firstName !== ''}
+                                           helperText={formErrors.firstName}
+                                           onChange={(e) => handleChange(e)}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField required fullWidth
+                                           id="lastName"
+                                           name="lastName"
+                                           label="Apellido"
+                                           variant="outlined"
+                                           autoComplete="lname"
+                                           error={formErrors.lastName !== null && formErrors.lastName !== undefined && formErrors.lastName !== ''}
+                                           helperText={formErrors.lastName}
+                                           onChange={(e) => handleChange(e)}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField required fullWidth
+                                           id="email"
+                                           name="email"
+                                           label="Email"
+                                           autoComplete="email"
+                                           variant="outlined"
+                                           placeholder="example@mail.com"
+                                           error={formErrors.email !== null && formErrors.email !== undefined && formErrors.email !== ''}
+                                           helperText={formErrors.email}
+                                           onChange={(e) => handleChange(e)}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField required fullWidth
+                                           id="phoneNumber"
+                                           name="phoneNumber"
+                                           label="Teléfono"
+                                           variant="outlined"
+                                           autoComplete="phone"
+                                           error={formErrors.phoneNumber !== null && formErrors.phoneNumber !== undefined && formErrors.phoneNumber !== ''}
+                                           helperText={formErrors.phoneNumber}
+                                           onChange={(e) => handleChange(e)}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={6}>
+                                <TextField fullWidth
+                                           id="dni"
+                                           name="dni"
+                                           label="DNI"
+                                           variant="outlined"
+                                           autoComplete="dni"
+                                           placeholder="12345678A"
+                                           error={formErrors.dni !== null && formErrors.dni !== undefined && formErrors.dni !== ''}
+                                           helperText={formErrors.dni}
+                                           onChange={(e) => handleChange(e)}
+                                />
+                            </Grid>
+                            <Grid item xs>
+                                <TextField required fullWidth
+                                           id="password"
+                                           name="password"
+                                           label="Contraseña"
+                                           variant="outlined"
+                                           type={passwordShown ? "text" : "password"}
+                                           autoComplete="current-password"
+                                           error={formErrors.password !== null && formErrors.password !== undefined && formErrors.password !== ''}
+                                           helperText={formErrors.password}
+                                           onChange={(e) => handleChange(e)}
+                                />
+                            </Grid>
+                            <Grid item xs={"auto"} className={classes.eye}>
+                                <i onClick={togglePasswordVisiblity}>{passwordShown ? <VisibilityIcon/> :
+                                    <VisibilityOffIcon/>}</i>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControl
+                                    error={formErrors.serviceTerms !== null && formErrors.serviceTerms !== undefined && formErrors.serviceTerms !== ''}
+                                    component="fieldset" className={classes.formControl}>
+                                    <FormGroup>
+                                        <FormControlLabel
+                                            control={<Checkbox checked={checkData.serviceTerms}
+                                                               onChange={(e) => handleCheckChange(e)}
+                                                               name="serviceTerms"
+                                                               color="primary"/>}
+                                            label={<label>He leído y acepto los <Link href='#/terms'>términos y
+                                                condiciones de uso</Link>.</label>}
+                                        />
+                                    </FormGroup>
+                                    <FormHelperText>{formErrors.serviceTerms}</FormHelperText>
+                                </FormControl>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </form>
-            </div>
-            <Box mt={5}>
-                <Copyright/>
-            </Box>
-        </Container>
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            className={classes.submit}
+                        >
+                            Registrarse
+                        </Button>
+                        <Grid container justify="flex-end">
+                            <Grid item>
+                                <Link href="#/login" variant="body2">
+                                    Inicia sesión
+                                </Link>
+                            </Grid>
+                        </Grid>
+                    </form>
+                </div>
+            </Container>
+            <Footer/>
+        </div>
     );
 }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import DeleteIcon from '@material-ui/icons/Delete';
 import Alert from '@material-ui/lab/Alert';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 import {
   Typography,
   CardContent,
@@ -631,15 +632,7 @@ export default class BarTableDetails extends Component {
                               </StyledTableCell>
                               <StyledTableCell align="center">
                                 <Typography className={useStyles.title}>
-                                  <span>Entregado</span>
-                                </Typography>
-                              </StyledTableCell>
-                              <StyledTableCell align="center">
-                                <Typography
-                                  className={useStyles.title}
-                                  gutterBottom
-                                >
-                                  Eliminar
+                                  <span>Acciones</span>
                                 </Typography>
                               </StyledTableCell>
                             </TableRow>
@@ -681,10 +674,10 @@ export default class BarTableDetails extends Component {
                                         }}
                                         onClick={() => this.addToBill(row.id)}
                                       >
-                                      +
+                                      <AddCircleIcon/>
                                       </Button>                 
                                    
-                                    <Button
+                                      <Button
                                       variant="contained"
                                       size="small"
                                       color="primary"
@@ -695,15 +688,8 @@ export default class BarTableDetails extends Component {
                                       >
                                       Todo
                                       </Button>
-                                      </div>
-                                      ): (
-                                      <p>-</p>
-                                    )}
-                                  </StyledTableCell>
-                                  <StyledTableCell align="center">
-                                {isAdmin ? (
-                                  <div>
-                                    <Button
+
+                                      <Button
                                     variant="contained"
                                     size="small"
                                     color="primary"
@@ -714,11 +700,14 @@ export default class BarTableDetails extends Component {
                                     >
                                     <DeleteIcon />
                                     </Button>
-                                    </div>
-                                    ) : (
-                                  <p>-</p>
-                                )}
-                              </StyledTableCell>
+                                    
+                                      </div>
+                                      ): (
+                                      <p>-</p>
+                                    )}
+                                  </StyledTableCell>
+
+                                 
                                 </StyledTableRow>
                               ))}
                           </TableBody>
@@ -1000,8 +989,18 @@ export default class BarTableDetails extends Component {
                             className={useStyles.title}
                             gutterBottom
                           >
+                            Cantidad
+                          </Typography>
+                          </StyledTableCell>
+                          <StyledTableCell align="center">
+                          <Typography
+                            variant="h6"
+                            className={useStyles.title}
+                            gutterBottom
+                          >
                             Añadir
                           </Typography>
+                          
                         </StyledTableCell>
                       </TableRow>
                     </TableHead>
@@ -1041,7 +1040,10 @@ export default class BarTableDetails extends Component {
                               }}
                               variant="outlined"
                             />
-                              <Button
+                              
+                            </StyledTableCell>
+                            <StyledTableCell>
+                            <Button
                                 variant="contained"
                                 size="small"
                                 color="primary"
@@ -1059,8 +1061,7 @@ export default class BarTableDetails extends Component {
                               >
                                 Añadir
                               </Button>
-              
-                            </StyledTableCell>
+                              </StyledTableCell>
                           </StyledTableRow>
                         ))}
                     </TableBody>

@@ -457,8 +457,6 @@ describe('Render test suite', () => {
         promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
 
-        rendered.debug()
-
         let pageTitle = await rendered.findByText('Lista de bares disponibles')
         let title1 = await rendered.queryByText('Burger Food Porn')
         let title2 = await rendered.queryByText('Bar Casa Paco')

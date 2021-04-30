@@ -341,7 +341,6 @@ export default class BarTableDetails extends Component {
       free: {
         backgroundColor: '#fff',
       },
-
       cardGrid: {
         paddingTop: theme.spacing(8),
         paddingBottom: theme.spacing(8),
@@ -357,6 +356,13 @@ export default class BarTableDetails extends Component {
         fontSize: '15px',
         fontWeight: '600',
         marginLeft: '5px',
+      },
+      buttonAñadir: {
+        backgroundColor: '#006e85',
+        textTransform: 'none',
+        letterSpacing: 'normal',
+        fontSize: '15px',
+        fontWeight: '600',
       },
       textField: {
         width: 80,
@@ -983,7 +989,7 @@ export default class BarTableDetails extends Component {
                             Precio
                           </Typography>
                         </StyledTableCell>
-                        <StyledTableCell align="center">
+                        <StyledTableCell align="right">
                           <Typography
                             variant="h6"
                             className={useStyles.title}
@@ -992,13 +998,13 @@ export default class BarTableDetails extends Component {
                             Cantidad
                           </Typography>
                           </StyledTableCell>
-                          <StyledTableCell align="center">
+                          <StyledTableCell align="left">
                           <Typography
                             variant="h6"
                             className={useStyles.title}
                             gutterBottom
                           >
-                            Añadir
+                             Añadir
                           </Typography>
                           
                         </StyledTableCell>
@@ -1018,7 +1024,7 @@ export default class BarTableDetails extends Component {
                             <StyledTableCell align="center">
                               {row.price} €
                             </StyledTableCell>
-                            <StyledTableCell align="center">
+                            <StyledTableCell align="right">
                             
                             <TextField key={row.id}
                               id={"filled-number"+index}
@@ -1042,12 +1048,12 @@ export default class BarTableDetails extends Component {
                             />
                               
                             </StyledTableCell>
-                            <StyledTableCell>
+                            <StyledTableCell align="left">
                             <Button
                                 variant="contained"
                                 size="small"
                                 color="primary"
-                                style={{ ...stylesComponent.buttonCrear }}
+                                style={{ ...stylesComponent.buttonAñadir }}
                                 onClick={() => {
                                   if(this.state.amountActual[index] === undefined || this.state.amountActual[index] === "" 
                                   || this.state.amountActual[index] === 0){
@@ -1061,7 +1067,7 @@ export default class BarTableDetails extends Component {
                               >
                                 Añadir
                               </Button>
-                              </StyledTableCell>
+                            </StyledTableCell>
                           </StyledTableRow>
                         ))}
                     </TableBody>

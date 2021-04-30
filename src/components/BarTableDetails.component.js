@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import DeleteIcon from '@material-ui/icons/Delete';
+import Alert from '@material-ui/lab/Alert';
 import {
   Typography,
   CardContent,
@@ -17,7 +18,8 @@ import {
   TableBody,
   TableHead,
   TableCell,
-  ButtonGroup
+  ButtonGroup,
+  Snackbar
 } from '@material-ui/core'
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import MesaDataService from '../services/barTable.service'
@@ -79,6 +81,7 @@ export default class BarTableDetails extends Component {
       openSubmitIncorrect: false,
       width: 0,
       height: 0,
+      showModalInputZero: false,
     }
   }
 
@@ -179,11 +182,14 @@ export default class BarTableDetails extends Component {
   handleClose() {
     this.setState({
       openDialog: false,
+      showModalInputZero: false,
+      amountActual: []
     })
   }
   handleOpen() {
     this.setState({
       openDialog: true,
+      amountActual: []
     })
   }
   handleChangeToken(event) {
@@ -229,6 +235,7 @@ export default class BarTableDetails extends Component {
       .then((res) => {
         this.setState({
           billActual: res.data,
+          amountActual: []
         })
       })
       .catch((e) => {
@@ -256,6 +263,7 @@ export default class BarTableDetails extends Component {
       .then((res) => {
         this.setState({
           billActual: res.data,
+          amountActual: []
         })
       })
       .catch((e) => {
@@ -270,6 +278,7 @@ export default class BarTableDetails extends Component {
       .then((res) => {
         this.setState({
           billActual: res.data,
+          amountActual: []
         })
       })
       .catch((e) => {
@@ -282,7 +291,8 @@ export default class BarTableDetails extends Component {
     BillDataService.deleteBill(idBill, idItemBill)
     .then((res) => {
       this.setState({
-        billActual: res.data
+        billActual: res.data,
+        amountActual: []
       })
     })
       .catch((e) => {
@@ -407,12 +417,18 @@ export default class BarTableDetails extends Component {
       showMenuPhone,
       showBillPhone,
       isPhoneScreen,
+      showModalInputZero
     } = this.state
     return !error ? (
       <div>
         <div className={stylesComponent.colorBar}>
           <BottomBar props={true} />
         </div>
+        <Snackbar open={showModalInputZero} autoHideDuration={6000} onClose={this.handleClose}>
+        <Alert onClose={this.handleClose} severity="warning">
+          Introduce una cantidad
+         </Alert>
+        </Snackbar>
         <div>
           {isPhoneScreen ? (
             <div>
@@ -1031,14 +1047,19 @@ export default class BarTableDetails extends Component {
                                 color="primary"
                                 style={{ ...stylesComponent.buttonCrear }}
                                 onClick={() => {
-                                  if(!(this.state.amountActual[index] === undefined || this.state.amountActual[index] === "" 
-                                  || this.state.amountActual[index] === 0)){
+                                  if(this.state.amountActual[index] === undefined || this.state.amountActual[index] === "" 
+                                  || this.state.amountActual[index] === 0){
+                                    this.setState({
+                                      showModalInputZero: true
+                                    })
+                                  }else{
                                     this.addAmountToOrder(row.id, this.state.amountActual[index])
                                   }
                                 }}                               
                               >
                                 Añadir
                               </Button>
+              
                             </StyledTableCell>
                           </StyledTableRow>
                         ))}

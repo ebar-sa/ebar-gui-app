@@ -45,16 +45,15 @@ const error = false
 
 const barList = [
     {
-        "id": 1,
-        "name": "Burger Food Porn",
-        "capacity": "7/11",
-        "location": "Calle Salesianos, #13, 06011 Badajoz"
-    },
-    {
         "id": 2,
         "name": "Bar Casa Luna",
         "capacity": "2/14",
-        "location": "Calle Este, 18, 41409 Écija, Sevilla"
+        "location": "Calle Este, 18, 41409 Écija, Sevilla",
+        "coords": {
+            "latitude": 37.589470,
+            "longitude": -4.982660,
+        },
+        "distance": 5000
     }
 ]
 
@@ -152,8 +151,6 @@ describe('Render test map', () => {
         
         let name = screen.getByTestId("map")
         expect(name).toBeInTheDocument()
-        let marker = screen.getByTestId("marker-0")
-        expect(marker).toBeInTheDocument()
     })
 
 });

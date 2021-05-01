@@ -392,26 +392,21 @@ export default function ServiceTerms() {
                                     Los datos personales son recabados y gestionados por eBar con la finalidad de poder
                                     facilitar, agilizar y cumplir los compromisos establecidos entre el Sitio Web y el
                                     Usuario o el mantenimiento de la relación que se establezca en los formularios que
-                                    este
-                                    último rellene o para atender una solicitud o consulta.
+                                    este último rellene o para atender una solicitud o consulta.
                                 </Typography>
                                 <Typography variant="body1" gutterBottom>
                                     En el momento en que se obtengan los datos personales, se informará al Usuario
-                                    acerca
-                                    del fin o fines específicos del tratamiento a que se destinarán los datos
-                                    personales; es
-                                    decir, del uso o usos que se dará a la información recopilada.
+                                    acerca del fin o fines específicos del tratamiento a que se destinarán los datos
+                                    personales; es decir, del uso o usos que se dará a la información recopilada.
                                 </Typography>
                                 <Typography variant="body1" gutterBottom>
                                     A continuación, se detallan los datos personales que se requieren de los Usuarios y
-                                    los
-                                    fines a los que se destinan y por los cuales son recabados:
+                                    los fines a los que se destinan y por los cuales son recabados:
                                 </Typography>
                                 <ul>
                                     <li><Typography variant="body1" gutterBottom>
                                         Nombre de usuario: el nombre de usuario actuará como identificación inequívoca
-                                        de
-                                        cada usuario en el Sitio Web, por lo que deberá ser único y de obligatoria
+                                        de cada usuario en el Sitio Web, por lo que deberá ser único y de obligatoria
                                         cumplimentación.
                                     </Typography></li>
                                     <li><Typography variant="body1" gutterBottom>
@@ -441,12 +436,25 @@ export default function ServiceTerms() {
                                     </Typography></li>
                                     <li><Typography variant="body1" gutterBottom>
                                         Contraseña: la contraseña del titular de la cuenta se utilizará para verificar
-                                        su
-                                        identidad al acceder al Sitio Web. Deberá ser segura, privada e intransferible,
-                                        por
-                                        lo que es de obligatoria cumplimentación.
+                                        su identidad al acceder al Sitio Web. Deberá ser segura, privada e
+                                        intransferible, por lo que es de obligatoria cumplimentación.
                                     </Typography></li>
                                 </ul>
+                                <Typography variant="body1" gutterBottom>
+                                    En algunas secciones del Sitio Web se podrá requerir el pago de cantidades
+                                    específicas tanto a eBar como a terceros para hacer uso de los servicios
+                                    proporcionados. Para ello, eBar deberá recoger y procesar los métodos de pago que el
+                                    Usuario proporcione y hacer llegar esta información a los servicios externos
+                                    correspondientes. Es por eso que al hacer uso de dichos servicios el Usuario está
+                                    aceptando sus términos y condiciones.
+                                </Typography>
+                                <Typography variant="body1" gutterBottom>
+                                    Asimismo, el Sitio Web podrá requerir al Usuario información sobre su ubicación para
+                                    que pueda disfrutar de ciertos servicios. Para ello, eBar deberá recoger y procesar
+                                    la información de la ubicación del Usuario y comunicarse con el servicio de mapas
+                                    externo al Sitio Web. Al usar el Sitio Web, el Usuario acepta los términos y
+                                    condiciones del sistema de mapas y geolocalización.
+                                </Typography>
                                 <Typography component="h3" gutterBottom>
                                     <b>Períodos de retención de los datos personales</b>
                                 </Typography>
@@ -467,7 +475,9 @@ export default function ServiceTerms() {
                                     <b>Destinatarios de los datos personales</b>
                                 </Typography>
                                 <Typography variant="body1" gutterBottom>
-                                    Los datos personales del Usuario no serán compartidos con terceros.
+                                    Los datos personales del Usuario no serán compartidos con terceros ajenos a los
+                                    servicios prestados por el Sitio Web. Se recomienda al Usuario leer los términos y
+                                    condiciones de los servicios de terceros que se incluyan en el Sitio Web.
                                 </Typography>
                                 <Typography variant="body1" gutterBottom>
                                     En cualquier caso, en el momento en que se obtengan los datos personales, se
@@ -513,18 +523,17 @@ export default function ServiceTerms() {
                                 </Typography>
                                 <Typography variant="body1" gutterBottom>
                                     Sin embargo, debido a que eBar no puede garantizar la inexpugnabilidad de internet
-                                    ni la
-                                    ausencia total de hackers u otros que accedan de modo fraudulento a los datos
+                                    ni la ausencia total de hackers u otros que accedan de modo fraudulento a los datos
                                     personales, el Responsable del tratamiento se compromete a comunicar al Usuario sin
                                     dilación indebida cuando ocurra una violación de la seguridad de los datos
-                                    personales
-                                    que sea probable que entrañe un alto riesgo para los derechos y libertades de las
+                                    personales que sea probable que entrañe un alto riesgo para los derechos y
+                                    libertades de las
                                     personas físicas. Siguiendo lo establecido en el artículo 4 del RGPD, se entiende
-                                    por
-                                    violación de la seguridad de los datos personales toda violación de la seguridad que
+                                    por violación de la seguridad de los datos personales toda violación de la seguridad
+                                    que
                                     ocasione la destrucción, pérdida o alteración accidental o ilícita de datos
-                                    personales
-                                    transmitidos, conservados o tratados de otra forma, o la comunicación o acceso no
+                                    personales transmitidos, conservados o tratados de otra forma, o la comunicación o
+                                    acceso no
                                     autorizados a dichos datos.
                                 </Typography>
                                 <Typography variant="body1" gutterBottom>
@@ -700,7 +709,7 @@ export default function ServiceTerms() {
                                     cambios o actualizaciones.
                                 </Typography>
                                 <Typography variant="body1" gutterBottom>
-                                    Esta Política de Privacidad fue actualizada el día 25 de abril 2021 para adaptarse
+                                    Esta Política de Privacidad fue actualizada el día 1 de mayo 2021 para adaptarse
                                     al
                                     Reglamento (UE) 2016/679 del Parlamento Europeo y del Consejo, de 27 de abril de
                                     2016,
@@ -800,7 +809,7 @@ export default function ServiceTerms() {
                                     correspondan conforme a derecho.
                                 </Typography>
                                 <Typography variant="body1" gutterBottom>
-                                    Ultima modificación: 25 de abril 2021
+                                    Ultima modificación: 1 de mayo 2021
                                 </Typography>
                             </Paper>
                         </Grid>

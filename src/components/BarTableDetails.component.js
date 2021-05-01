@@ -1,6 +1,30 @@
 import React, { Component } from 'react'
-import {Typography,CardContent,Grid,CardActions,Card,Button,Dialog,DialogActions,DialogContent,DialogContentText,
-  DialogTitle,TableRow,Table,TableBody,TableHead,TableCell,ButtonGroup,LinearProgress} from '@material-ui/core'
+
+import DeleteIcon from '@material-ui/icons/Delete';
+import Alert from '@material-ui/lab/Alert';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import {
+  Typography,
+  CardContent,
+  Grid,
+  CardActions,
+  Card,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TableRow,
+  Table,
+  TableBody,
+  TableHead,
+  TableCell,
+  ButtonGroup,
+  Snackbar,
+  LinearProgress
+} from '@material-ui/core'
+
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import MesaDataService from '../services/barTable.service'
 import mesaLibre from '../static/images/table/mesaLibre.png'
@@ -8,6 +32,9 @@ import mesaOcupada from '../static/images/table/mesaOcupada.png'
 import { getCurrentUser } from '../services/auth'
 import BillDataService from '../services/bill.service'
 import { Redirect } from 'react-router'
+import BottomBar from './bottom-bar'
+import TextField from '@material-ui/core/TextField';
+
 
 export default class BarTableDetails extends Component {
   constructor(props) {
@@ -20,11 +47,14 @@ export default class BarTableDetails extends Component {
     this.handleClose = this.handleClose.bind(this)
     this.handleChangeToken = this.handleChangeToken.bind(this)
     this.currentWidth = this.currentWidth.bind(this)
-    this.refreshBillAndOrder = this.refreshBillAndOrder.bind(this)
+  //  this.refreshBillAndOrder = this.refreshBillAndOrder.bind(this)
     this.timer = 0
     this.timer2 = 0
     this.timerLoadinBar = 0
     this.state = {
+       symbolsArr :
+         ["e", "E", "+", "-", ".", ",", "+", "", "´", "`"]
+       ,
       mesaActual: {
         id: null,
         name: '',
@@ -43,6 +73,9 @@ export default class BarTableDetails extends Component {
         itemBill: [],
         itemOrder: [],
       },
+
+      amountActual: [],
+      amountDefault: null,
       name: '',
       isAdmin: false,
       openDialog: false,
@@ -53,6 +86,7 @@ export default class BarTableDetails extends Component {
       showBillPhone: false,
       width: 0,
       height: 0,
+      showModalInputZero: false,
       progressBarHidden: false,
     }
   }
@@ -64,7 +98,8 @@ export default class BarTableDetails extends Component {
     this.getMesasDetails(this.props.match.params.id)
     this.isLogged()
     this.timer = setInterval(() => this.bannedClientFromTable(), 10000)
-    this.timer2 = setInterval(() => this.refreshBillAndOrder(), 10000)
+   // this.timer2 = setInterval(() => this.refreshBillAndOrder(), 10000)
+
   }
   componentWillUnmount() {
     clearInterval(this.timer)
@@ -73,7 +108,7 @@ export default class BarTableDetails extends Component {
     window.removeEventListener('resize', this.updateDimensions)
   }
 
-  refreshBillAndOrder() {
+  /*refreshBillAndOrder() {
     const id = this.props.match.params.id
     MesaDataService.refreshBillAndOrder(id).then((res) => {
       if (res.status === 200) {
@@ -82,7 +117,8 @@ export default class BarTableDetails extends Component {
         })
       }
     })
-  }
+  }*/
+
 
   bannedClientFromTable() {
     const user = getCurrentUser()
@@ -135,6 +171,7 @@ export default class BarTableDetails extends Component {
             mesaActual: res.data[0],
             menuActual: res.data[1],
             billActual: res.data[2],
+            amountActual: []
           })
         } else if (res.status === 204) {
           this.props.history.push('/#/')
@@ -150,14 +187,18 @@ export default class BarTableDetails extends Component {
         }
       })
   }
+  
   handleClose() {
     this.setState({
       openDialog: false,
+      showModalInputZero: false,
+      amountActual: []
     })
   }
   handleOpen() {
     this.setState({
       openDialog: true,
+      amountActual: []
     })
   }
   handleChangeToken(event) {
@@ -184,7 +225,6 @@ export default class BarTableDetails extends Component {
   }
   changeStateToOcupated() {
     const id = this.props.match.params.id
-    console.log('He entrado aqui con el id ', id)
     MesaDataService.updateBarTableStateToBusy(id)
       .then((res) => {
         if (res.status === 200) {
@@ -204,6 +244,21 @@ export default class BarTableDetails extends Component {
       .then((res) => {
         this.setState({
           billActual: res.data,
+          amountActual: []
+        })
+      })
+      .catch((e) => {
+        console.log(e)
+      })
+  }
+
+  addAmountToOrder(idItem, amount) {
+    const idBill = this.state.billActual.id
+    BillDataService.addAmountToOrder(idBill, idItem, amount)
+      .then((res) => {
+        this.setState({
+          billActual: res.data,
+          amountActual: []
         })
       })
       .catch((e) => {
@@ -217,8 +272,38 @@ export default class BarTableDetails extends Component {
       .then((res) => {
         this.setState({
           billActual: res.data,
+          amountActual: []
         })
       })
+      .catch((e) => {
+        console.log(e)
+      })
+  }
+
+  addAllToBill(idItemBill) {
+    const idBill = this.state.billActual.id
+    console.log("all" + idItemBill)
+    BillDataService.addAllToBill(idBill, idItemBill)
+      .then((res) => {
+        this.setState({
+          billActual: res.data,
+          amountActual: []
+        })
+      })
+      .catch((e) => {
+        console.log(e)
+      })
+  }
+
+  deleteBill(idItemBill) {
+    const idBill = this.state.billActual.id
+    BillDataService.deleteBill(idBill, idItemBill)
+    .then((res) => {
+      this.setState({
+        billActual: res.data,
+        amountActual: []
+      })
+    })
       .catch((e) => {
         console.log(e)
       })
@@ -270,6 +355,7 @@ export default class BarTableDetails extends Component {
       },
     }))
 
+
     const stylesComponent = {
       buttonCrear: {
         backgroundColor: '#006e85',
@@ -277,9 +363,24 @@ export default class BarTableDetails extends Component {
         letterSpacing: 'normal',
         fontSize: '15px',
         fontWeight: '600',
+        marginLeft: '5px',
+      },
+      buttonAñadir: {
+        backgroundColor: '#006e85',
+        textTransform: 'none',
+        letterSpacing: 'normal',
+        fontSize: '15px',
+        fontWeight: '600',
+      },
+      textField: {
+        width: 80,
       },
       buttonMovil: {
         margin: '0 auto',
+      },
+      buttonMovilBill: {
+        margin: '5px 5px 5px 5px',
+        width: 20
       },
       buttonVolver: {
         marginLeft: '10px',
@@ -291,6 +392,8 @@ export default class BarTableDetails extends Component {
         margin: '15px 0px 50px 0px',
       },
     }
+
+    
 
     let total = this.state.billActual.itemBill.reduce(
       (accumulator, currentValue) =>
@@ -318,10 +421,33 @@ export default class BarTableDetails extends Component {
         },
       },
     }))(TableRow)
-    const {mesaActual,menuActual,billActual,isAdmin,name,openDialog,error,showMenuPhone,showBillPhone,isPhoneScreen,progressBarHidden} = this.state
+
+    const {
+      mesaActual,
+      menuActual,
+      billActual,
+      isAdmin,
+      name,
+      openDialog,
+      error,
+      showMenuPhone,
+      showBillPhone,
+      isPhoneScreen,
+      showModalInputZero,
+      progressBarHidden
+    } = this.state
     return !error ? (
       <div>
-        <LinearProgress hidden={progressBarHidden} />
+    <LinearProgress hidden={progressBarHidden} />
+        <div className={stylesComponent.colorBar}>
+          <BottomBar props={true} />
+        </div>
+        <Snackbar open={showModalInputZero} autoHideDuration={6000} onClose={this.handleClose}>
+        <Alert onClose={this.handleClose} severity="warning">
+          Introduce una cantidad
+         </Alert>
+        </Snackbar>
+        
         <div>
           {isPhoneScreen ? (
             <div>
@@ -487,7 +613,7 @@ export default class BarTableDetails extends Component {
                               </StyledTableCell>
                               <StyledTableCell align="center">
                                 <Typography className={useStyles.title}>
-                                  <span>Entregado</span>
+                                  <span>Acciones</span>
                                 </Typography>
                               </StyledTableCell>
                             </TableRow>
@@ -519,6 +645,7 @@ export default class BarTableDetails extends Component {
                                   </StyledTableCell>
                                   <StyledTableCell align="center">
                                     {isAdmin ? (
+                                      <div>
                                       <Button
                                         variant="contained"
                                         size="small"
@@ -528,12 +655,40 @@ export default class BarTableDetails extends Component {
                                         }}
                                         onClick={() => this.addToBill(row.id)}
                                       >
-                                        Entregado
+                                      <AddCircleIcon/>
+                                      </Button>                 
+                                   
+                                      <Button
+                                      variant="contained"
+                                      size="small"
+                                      color="primary"
+                                      style={{
+                                        ...stylesComponent.buttonCrear,
+                                      }}
+                                      onClick={() => this.addAllToBill(row.id)}
+                                      >
+                                      Todo
                                       </Button>
-                                    ) : (
+
+                                      <Button
+                                    variant="contained"
+                                    size="small"
+                                    color="primary"
+                                    style={{
+                                      ...stylesComponent.buttonMovilBill,
+                                    }}
+                                    onClick={() => this.deleteBill(row.id)}
+                                    >
+                                    <DeleteIcon />
+                                    </Button>
+                                    
+                                      </div>
+                                      ): (
                                       <p>-</p>
                                     )}
                                   </StyledTableCell>
+
+                                 
                                 </StyledTableRow>
                               ))}
                           </TableBody>
@@ -809,21 +964,31 @@ export default class BarTableDetails extends Component {
                             Precio
                           </Typography>
                         </StyledTableCell>
-                        <StyledTableCell align="center">
+                        <StyledTableCell align="right">
                           <Typography
                             variant="h6"
                             className={useStyles.title}
                             gutterBottom
                           >
-                            Añadir
+                            Cantidad
                           </Typography>
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                          <Typography
+                            variant="h6"
+                            className={useStyles.title}
+                            gutterBottom
+                          >
+                             Añadir
+                          </Typography>
+                          
                         </StyledTableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {menuActual.items &&
-                        menuActual.items.map((row) => (
-                          <StyledTableRow key={row.name}>
+                        menuActual.items.map((row, index) => (
+                          <StyledTableRow key={index}>
                             <StyledTableCell
                               align="center"
                               component="th"
@@ -834,13 +999,46 @@ export default class BarTableDetails extends Component {
                             <StyledTableCell align="center">
                               {row.price} €
                             </StyledTableCell>
-                            <StyledTableCell align="center">
-                              <Button
+                            <StyledTableCell align="right">
+                            
+                            <TextField key={row.id}
+                              id={"filled-number"+index}
+                              label="Cantidad"
+                              style={{ ...stylesComponent.textField }}
+                              type="number"
+                              size="small"
+                              onKeyDown={e => this.state.symbolsArr.includes(e.key) && e.preventDefault()}
+                              onChange={(event) => 
+                                event.target.value < 1 || event.target.value>10000
+                                // eslint-disable-next-line 
+                                ? ((this.state.amountActual[index] = 0) || (event.target.value = ""))
+                                // eslint-disable-next-line 
+                                : this.state.amountActual[index] = event.target.value
+                                } 
+                              value={this.state.amountActual[index]}
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
+                              variant="outlined"
+                            />
+                              
+                            </StyledTableCell>
+                            <StyledTableCell align="left">
+                            <Button
                                 variant="contained"
                                 size="small"
                                 color="primary"
-                                style={{ ...stylesComponent.buttonCrear }}
-                                onClick={() => this.addToOrder(row.id)}
+                                style={{ ...stylesComponent.buttonAñadir }}
+                                onClick={() => {
+                                  if(this.state.amountActual[index] === undefined || this.state.amountActual[index] === "" 
+                                  || this.state.amountActual[index] === 0){
+                                    this.setState({
+                                      showModalInputZero: true
+                                    })
+                                  }else{
+                                    this.addAmountToOrder(row.id, this.state.amountActual[index])
+                                  }
+                                }}                               
                               >
                                 Añadir
                               </Button>
@@ -900,6 +1098,15 @@ export default class BarTableDetails extends Component {
                               Entregado
                             </Typography>
                           </StyledTableCell>
+                          <StyledTableCell align="center">
+                            <Typography
+                              variant="h6"
+                              className={useStyles.title}
+                              gutterBottom
+                            >
+                              Eliminar pedido
+                            </Typography>
+                          </StyledTableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -929,6 +1136,7 @@ export default class BarTableDetails extends Component {
                               </StyledTableCell>
                               <StyledTableCell align="center">
                                 {isAdmin ? (
+                                  <div>
                                   <Button
                                     variant="contained"
                                     size="small"
@@ -938,7 +1146,39 @@ export default class BarTableDetails extends Component {
                                   >
                                     Entregado
                                   </Button>
-                                ) : (
+                                
+                                  <Button
+                                    variant="contained"
+                                    size="small"
+                                    color="primary"
+                                    style={{
+                                      ...stylesComponent.buttonCrear,
+                                    }}
+                                    onClick={() => this.addAllToBill(row.id)}
+                                    >
+                                    Entregar todo
+                                    </Button>
+                                    </div>
+                                    ) : (
+                                  <p>-</p>
+                                )}
+                              </StyledTableCell>
+                              <StyledTableCell align="center">
+                                {isAdmin ? (
+                                  <div>
+                                    <Button
+                                    variant="contained"
+                                    size="small"
+                                    color="primary"
+                                    style={{
+                                      ...stylesComponent.buttonCrear,
+                                    }}
+                                    onClick={() => this.deleteBill(row.id)}
+                                    >
+                                    Eliminar
+                                    </Button>
+                                    </div>
+                                    ) : (
                                   <p>-</p>
                                 )}
                               </StyledTableCell>

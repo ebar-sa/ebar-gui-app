@@ -76,7 +76,6 @@ export default class BarTableDetails extends Component {
 
       amountActual: [],
       amountDefault: null,
-      userName: '',
       name: '',
       isAdmin: false,
       openDialog: false,
@@ -428,7 +427,6 @@ export default class BarTableDetails extends Component {
       menuActual,
       billActual,
       isAdmin,
-      userName,
       name,
       openDialog,
       error,

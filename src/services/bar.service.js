@@ -10,6 +10,10 @@ class BarDataService {
         return http.post("/bar/capacity", location, {headers: authHeader()})
     }
 
+    getBarsMap(object) {
+        return http.post("/bar/map", object, { headers: authHeader() })
+    }
+
     getBar(id) {
         return http.get("/bar/" + id, {headers: authHeader()})
     }

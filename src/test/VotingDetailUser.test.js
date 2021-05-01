@@ -1,6 +1,6 @@
 import React from 'react';
 import { Router } from 'react-router-dom';
-import {act, findByTitle, fireEvent, render} from "@testing-library/react";
+import {act, fireEvent, render} from "@testing-library/react";
 
 import { createMemoryHistory } from 'history';
 import MockAdapter from 'axios-mock-adapter';
@@ -110,7 +110,7 @@ describe('Render test suite', () => {
         let option1 = await rendered.findByText('si')
         let option2 = await rendered.findByText('no')
         let votingDescription = await rendered.findByText('testing description')
-        let votingBtn = await rendered.findByText('Enviar votación')
+        let votingBtn = await rendered.findByText('Votar')
         let cannotVoteBtn = rendered.queryByText("No puedes votar ahora mismo")
         let errorSnackBar = rendered.queryByText("Selecciona una opción")
 
@@ -197,7 +197,7 @@ describe('Alert test suite', () => {
         let option1 = await rendered.findByText('si')
         let option2 = await rendered.findByText('no')
         let votingDescription = await rendered.findByText('testing description')
-        let voteBtn = await rendered.findByText("Enviar votación")
+        let voteBtn = await rendered.findByText("Votar")
         
         expect(option1).toBeInTheDocument() 
         expect(option2).toBeInTheDocument()
@@ -224,7 +224,7 @@ describe('Alert test suite', () => {
         let option1 = await rendered.findByText('si')
         let option2 = await rendered.findByText('no')
         let votingDescription = await rendered.findByText('testing description')
-        let votingBtn = await rendered.findByText('Enviar votación')
+        let votingBtn = await rendered.findByText('Votar')
         let cannotVoteBtn = rendered.queryByText("No puedes votar ahora mismo")
 
         expect(option1).toBeInTheDocument() 
@@ -269,7 +269,7 @@ describe('Behaviour tests suite', () => {
         let option1 = await rendered.findByText('si')
         let option2 = await rendered.findByText('no')
         let votingDescription = await rendered.findByText('testing description')
-        let votingBtn = await rendered.findByText('Enviar votación')
+        let votingBtn = await rendered.findByText('Votar')
         let cannotVoteBtn = rendered.queryByText("No puedes votar ahora mismo")
     
         expect(option1).toBeInTheDocument() 
@@ -296,7 +296,7 @@ describe('Behaviour tests suite', () => {
         let option1 = await rendered.findByText('si')
         let option2 = await rendered.findByText('no')
         let votingDescription = await rendered.findByText('testing description')
-        let votingBtn = await rendered.findByText('Enviar votación')
+        let votingBtn = await rendered.findByText('Votar')
         let cannotVoteBtn = rendered.queryByText("No puedes votar ahora mismo")
 
         expect(option1).toBeInTheDocument() 
@@ -330,7 +330,7 @@ describe('Behaviour tests suite', () => {
         let option1 = await rendered.findByText('si')
         let option2 = await rendered.findByText('no')
         let votingDescription = await rendered.findByText('testing description')
-        let votingBtn = await rendered.findByText('Enviar votación')
+        let votingBtn = await rendered.findByText('Votar')
         let cannotVoteBtn = rendered.queryByText("No puedes votar ahora mismo")
 
         expect(option1).toBeInTheDocument() 

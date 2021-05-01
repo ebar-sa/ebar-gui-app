@@ -1,17 +1,17 @@
 import React from 'react';
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import {act, fireEvent, render, screen} from "@testing-library/react";
 import MockAdapter from "axios-mock-adapter";
 import Votings from '../pages/VotingList';
 import http from "../http-common";
-import { Router } from 'react-router-dom';
-import { createMemoryHistory } from 'history';
+import {Router} from 'react-router-dom';
+import {createMemoryHistory} from 'history';
 import Context from '../context/UserContext';
 import userEvent from '@testing-library/user-event'
 
 // Hide warning
 console.error = () => {
     //empty function necessary
- }
+}
 
 const votings = [
     {
@@ -140,27 +140,18 @@ const admin = {
 }
 
 const barList = {
-        "id": 1,
-        "name": "Burger Food Porn",
-        "capacity": "7/11",
-        "owner":"test-admin",
-        "employees": [{}]
-    }
-
-function renderVotingsUser(auth){
-    return render(
-        <Context.Provider value={{ auth, setAuth }}>
-            <Router history={history} >
-                <Votings {...{ match: { params: { idBar: 1 } }, history: { location: { state: {} } } }} />
-            </Router>
-        </Context.Provider>)
+    "id": 1,
+    "name": "Burger Food Porn",
+    "capacity": "7/11",
+    "owner": "test-admin",
+    "employees": [{}]
 }
 
-function renderVotingsAdmin(auth) {
+function renderVotingsUser(auth) {
     return render(
-        <Context.Provider value={{ auth, setAuth }}>
-            <Router history={history} >
-                <Votings {...{ match: { params: { idBar: 1 } }, history: { location: { state: {} } } }} />
+        <Context.Provider value={{auth, setAuth}}>
+            <Router history={history}>
+                <Votings {...{match: {params: {idBar: 1}}, history: {location: {state: {}}}}} />
             </Router>
         </Context.Provider>)
 }
@@ -177,7 +168,7 @@ describe('Testing Voting list', () => {
     it('Render with correct text user', async () => {
         mockAxios.onGet().replyOnce(200, votings)
         let rendered = renderVotingsUser(client)
-        
+
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
 
@@ -202,7 +193,7 @@ describe('Testing Voting list', () => {
         mockAxios.onGet().replyOnce(200, votings)
         mockAxios.onGet().replyOnce(200, barList)
         window.sessionStorage.setItem("user", JSON.stringify(admin));
-        let rendered = renderVotingsAdmin(admin)
+        let rendered = renderVotingsUser(admin)
 
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
@@ -212,20 +203,13 @@ describe('Testing Voting list', () => {
         let title3 = await rendered.findByText('Otra canción')
         let title4 = await rendered.queryByText('Votación sin fin')
         let finishButton = await rendered.queryAllByTestId('finish-but')
-        // let textButtonCreate = await rendered.findByText('Crear votación')
-        // let edit = await rendered.findAllByText('Editar')
 
         expect(title1).toBeInTheDocument()
         expect(title2).toBeInTheDocument()
         expect(title3).toBeInTheDocument()
         expect(title4).toBeInTheDocument()
         expect(finishButton).toHaveLength(2)
-        
-        // expect(textButtonCreate).toBeInTheDocument()
-        // expect(edit).toHaveLength(1)
-
     })
-
 
 
     it('Render with incorrect text', async () => {
@@ -244,7 +228,7 @@ describe('Testing Voting list', () => {
     it('Correct expand current', async () => {
         mockAxios.onGet().replyOnce(200, votings)
         let rendered = renderVotingsUser(client)
-        
+
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
 
@@ -296,7 +280,7 @@ describe('Testing Voting list', () => {
     it('Incorrect expand past', async () => {
         mockAxios.onGet().replyOnce(200, votings)
         let rendered = renderVotingsUser(client)
-        
+
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
 

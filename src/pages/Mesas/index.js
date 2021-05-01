@@ -51,7 +51,7 @@ export default function Mesas(props) {
             <Mesa {...table} isAdmin={isAdmin} idBar={id} />
           </Grid>
         ))}
-        {isAdmin ? (
+        {isAdmin ?
           <Grid item container xs={12}>
             <ButtonGroup
               fullWidth={true}
@@ -60,11 +60,12 @@ export default function Mesas(props) {
               className={classes.buttons}
             >
               <Button href={`/#/mesas/${id}/create`}>Crear Mesa</Button>
+              <Button href={`/#/bares/${barId}`}>Volver</Button>
             </ButtonGroup>
           </Grid>
-        ) : (
-          <p></p>
-        )}
+         :
+          null
+        }
       </Grid>
     </div>
   )

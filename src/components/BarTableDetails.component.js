@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+
 import DeleteIcon from '@material-ui/icons/Delete';
 import Alert from '@material-ui/lab/Alert';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
@@ -20,8 +21,10 @@ import {
   TableHead,
   TableCell,
   ButtonGroup,
-  Snackbar
+  Snackbar,
+  LinearProgress
 } from '@material-ui/core'
+
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import MesaDataService from '../services/barTable.service'
 import mesaLibre from '../static/images/table/mesaLibre.png'
@@ -31,6 +34,7 @@ import BillDataService from '../services/bill.service'
 import { Redirect } from 'react-router'
 import BottomBar from './bottom-bar'
 import TextField from '@material-ui/core/TextField';
+
 
 export default class BarTableDetails extends Component {
   constructor(props) {
@@ -45,7 +49,8 @@ export default class BarTableDetails extends Component {
     this.currentWidth = this.currentWidth.bind(this)
   //  this.refreshBillAndOrder = this.refreshBillAndOrder.bind(this)
     this.timer = 0
-    this.timer2 = 1
+    this.timer2 = 0
+    this.timerLoadinBar = 0
     this.state = {
        symbolsArr :
          ["e", "E", "+", "-", ".", ",", "+", "", "´", "`"]
@@ -68,9 +73,11 @@ export default class BarTableDetails extends Component {
         itemBill: [],
         itemOrder: [],
       },
+
       amountActual: [],
       amountDefault: null,
       userName: '',
+      name: '',
       isAdmin: false,
       openDialog: false,
       token: '',
@@ -78,25 +85,27 @@ export default class BarTableDetails extends Component {
       isPhoneScreen: false,
       showMenuPhone: true,
       showBillPhone: false,
-      sortOptions: [{ id: 'name', desc: true }],
-      openSubmitIncorrect: false,
       width: 0,
       height: 0,
       showModalInputZero: false,
+      progressBarHidden: false,
     }
   }
 
   componentDidMount() {
+    this.timerLoadinBar = setInterval(() => this.setState({progressBarHidden : true}), 1000);
     this.updateDimensions()
     window.addEventListener('resize', this.updateDimensions)
     this.getMesasDetails(this.props.match.params.id)
     this.isLogged()
-    this.timer = setInterval(() => this.bannedClientFromTable(), 3000)
+    this.timer = setInterval(() => this.bannedClientFromTable(), 10000)
    // this.timer2 = setInterval(() => this.refreshBillAndOrder(), 10000)
+
   }
   componentWillUnmount() {
     clearInterval(this.timer)
     clearInterval(this.timer2)
+    clearInterval(this.timerLoadinBar)
     window.removeEventListener('resize', this.updateDimensions)
   }
 
@@ -136,7 +145,7 @@ export default class BarTableDetails extends Component {
     })
     if (user.roles.includes('ROLE_CLIENT')) {
       this.setState({
-        userName: user.username,
+        name: user.firstName,
       })
     }
   }
@@ -413,21 +422,25 @@ export default class BarTableDetails extends Component {
         },
       },
     }))(TableRow)
+
     const {
       mesaActual,
       menuActual,
       billActual,
       isAdmin,
       userName,
+      name,
       openDialog,
       error,
       showMenuPhone,
       showBillPhone,
       isPhoneScreen,
-      showModalInputZero
+      showModalInputZero,
+      progressBarHidden
     } = this.state
     return !error ? (
       <div>
+    <LinearProgress hidden={progressBarHidden} />
         <div className={stylesComponent.colorBar}>
           <BottomBar props={true} />
         </div>
@@ -436,23 +449,14 @@ export default class BarTableDetails extends Component {
           Introduce una cantidad
          </Alert>
         </Snackbar>
+        
         <div>
           {isPhoneScreen ? (
             <div>
               <Grid container>
-                <Grid
-                  item
-                  className={useStyles.cardGrid}
-                  component={Card}
-                  xs={12}
-                  align="center"
-                >
+                <Grid item className={useStyles.cardGrid} component={Card} xs={12} align="center">
                   <CardContent>
-                    <Typography
-                      variant="h5"
-                      className={useStyles.title}
-                      gutterBottom
-                    >
+                    <Typography variant="h5" className={useStyles.title} gutterBottom>
                       <span data-testid="tableId">{mesaActual.name}</span>
                     </Typography>
                     {mesaActual.free ? (
@@ -460,33 +464,24 @@ export default class BarTableDetails extends Component {
                     ) : (
                       <img alt="Mesa Ocupada" src={mesaOcupada} />
                     )}
-                    {!mesaActual.free ? (
-                      <Typography
-                        variant="h6"
-                        className={useStyles.title}
-                        gutterBottom
-                      >
-                        Bienvenido {userName}
-                      </Typography>
-                    ) : (
-                      <Typography
-                        variant="h5"
-                        className={useStyles.title}
-                        gutterBottom
-                      >
+                    
+                    {isAdmin ? (
+                      <div>
+                      <Typography variant="h5" className={useStyles.title} gutterBottom>
                         Código
                       </Typography>
-                    )}
-                    {isAdmin ? (
-                      <Typography
-                        variant="h5"
-                        className={useStyles.title}
-                        gutterBottom
-                      >
+                      <Typography  variant="h5"  className={useStyles.title}  gutterBottom>
                         <span data-testid="tokenId">{mesaActual.token}</span>
                       </Typography>
+                      </div>
                     ) : (
-                      <p></p>
+                      !mesaActual.free ? (
+                        <Typography variant="h6" className={useStyles.title} gutterBottom>
+                          Bienvenido {name}
+                        </Typography>
+                      ) : (
+                        null
+                      )
                     )}
                   </CardContent>
                   {isAdmin ? (
@@ -494,37 +489,19 @@ export default class BarTableDetails extends Component {
                       <div style={stylesComponent.buttonMovil}>
                         {mesaActual.free ? (
                           <div align="center">
-                            <Button
-                              variant="contained"
-                              color="primary"
-                              onClick={this.changeStateToOcupated}
-                            >
+                            <Button variant="contained" color="primary" onClick={this.changeStateToOcupated}>
                               Ocupar Manualmente
                             </Button>
-                            <Button
-                              style={stylesComponent.buttonVolver}
-                              variant="contained"
-                              color="primary"
-                              onClick={() => this.props.history.goBack()}
-                            >
+                            <Button style={stylesComponent.buttonVolver} variant="contained" color="primary" onClick={() => this.props.history.goBack()}>
                               Volver
                             </Button>
                           </div>
                         ) : (
                           <div align="center">
-                            <Button
-                              variant="contained"
-                              color="secondary"
-                              onClick={this.handleOpen}
-                            >
+                            <Button variant="contained" color="secondary" onClick={this.handleOpen}>
                               Desocupar Manualmente
                             </Button>
-                            <Button
-                              style={stylesComponent.buttonVolver}
-                              variant="contained"
-                              color="primary"
-                              onClick={() => this.props.history.goBack()}
-                            >
+                            <Button style={stylesComponent.buttonVolver} variant="contained" color="primary" onClick={() => this.props.history.goBack()}>
                               Volver
                             </Button>
                           </div>
@@ -842,7 +819,7 @@ export default class BarTableDetails extends Component {
                       className={useStyles.title}
                       gutterBottom
                     >
-                      Bienvenido {userName}
+                      Bienvenido {name}
                     </Typography>
                   ) : (
                     <Typography

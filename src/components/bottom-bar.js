@@ -27,8 +27,9 @@ export default function SimpleBottomNavigation(props) {
     const history = useHistory()
     const { auth } = useUser()
     useEffect( () => {
-        if(auth != null){
-            if(auth !== undefined ){
+        if(auth ===undefined || auth === null){
+        }else{
+            if(auth.roles.includes("ROLE_CLIENT")){
                 MesaDataService.getBarTableClient(auth.username).then((res) => {
                     if (res.status === 200){
                         setBarTable(res.data)

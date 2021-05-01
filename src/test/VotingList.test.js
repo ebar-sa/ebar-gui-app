@@ -1,17 +1,17 @@
 import React from 'react';
-import { act, render, screen } from "@testing-library/react";
+import {act, fireEvent, render, screen} from "@testing-library/react";
 import MockAdapter from "axios-mock-adapter";
 import Votings from '../pages/VotingList';
 import http from "../http-common";
-import { Router } from 'react-router-dom';
-import { createMemoryHistory } from 'history';
+import {Router} from 'react-router-dom';
+import {createMemoryHistory} from 'history';
 import Context from '../context/UserContext';
 import userEvent from '@testing-library/user-event'
 
 // Hide warning
 console.error = () => {
     //empty function necessary
- }
+}
 
 const votings = [
     {
@@ -140,27 +140,18 @@ const admin = {
 }
 
 const barList = {
-        "id": 1,
-        "name": "Burger Food Porn",
-        "capacity": "7/11",
-        "owner":"test-admin",
-        "employees": [{}]
-    }
-
-function renderVotingsUser(auth){
-    return render(
-        <Context.Provider value={{ auth, setAuth }}>
-            <Router history={history} >
-                <Votings {...{ match: { params: { idBar: 1 } }, history: { location: { state: {} } } }} />
-            </Router>
-        </Context.Provider>)
+    "id": 1,
+    "name": "Burger Food Porn",
+    "capacity": "7/11",
+    "owner": "test-admin",
+    "employees": [{}]
 }
 
-function renderVotingsAdmin(auth) {
+function renderVotingsUser(auth) {
     return render(
-        <Context.Provider value={{ auth, setAuth }}>
-            <Router history={history} >
-                <Votings {...{ match: { params: { idBar: 1 } }, history: { location: { state: {} } } }} />
+        <Context.Provider value={{auth, setAuth}}>
+            <Router history={history}>
+                <Votings {...{match: {params: {idBar: 1}}, history: {location: {state: {}}}}} />
             </Router>
         </Context.Provider>)
 }
@@ -177,7 +168,7 @@ describe('Testing Voting list', () => {
     it('Render with correct text user', async () => {
         mockAxios.onGet().replyOnce(200, votings)
         let rendered = renderVotingsUser(client)
-        
+
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
 
@@ -202,7 +193,7 @@ describe('Testing Voting list', () => {
         mockAxios.onGet().replyOnce(200, votings)
         mockAxios.onGet().replyOnce(200, barList)
         window.sessionStorage.setItem("user", JSON.stringify(admin));
-        let rendered = renderVotingsAdmin(admin)
+        let rendered = renderVotingsUser(admin)
 
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
@@ -211,18 +202,14 @@ describe('Testing Voting list', () => {
         let title2 = await rendered.findByText('Última canción')
         let title3 = await rendered.findByText('Otra canción')
         let title4 = await rendered.queryByText('Votación sin fin')
-        // let textButtonCreate = await rendered.findByText('Crear votación')
-        // let edit = await rendered.findAllByText('Editar')
+        let finishButton = await rendered.queryAllByTestId('finish-but')
 
         expect(title1).toBeInTheDocument()
         expect(title2).toBeInTheDocument()
         expect(title3).toBeInTheDocument()
         expect(title4).toBeInTheDocument()
-        // expect(textButtonCreate).toBeInTheDocument()
-        // expect(edit).toHaveLength(1)
-
+        expect(finishButton).toHaveLength(2)
     })
-
 
 
     it('Render with incorrect text', async () => {
@@ -241,7 +228,7 @@ describe('Testing Voting list', () => {
     it('Correct expand current', async () => {
         mockAxios.onGet().replyOnce(200, votings)
         let rendered = renderVotingsUser(client)
-        
+
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
 
@@ -251,10 +238,12 @@ describe('Testing Voting list', () => {
         let date = await rendered.findByText('Fecha fin: 10-10-2021 02:00')
         let description2 = await rendered.findByText('Otra canción a escuchar')
         let date2 = await rendered.findByText('Fecha fin: Indefinida')
+        let finishVoting = await rendered.queryByTestId('finish-but')
         expect(description).toBeInTheDocument()
         expect(date).toBeInTheDocument()
         expect(description2).toBeInTheDocument()
         expect(date2).toBeInTheDocument()
+        expect(finishVoting).not.toBeInTheDocument()
     })
 
     it('Incorrect expand current', async () => {
@@ -291,7 +280,7 @@ describe('Testing Voting list', () => {
     it('Incorrect expand past', async () => {
         mockAxios.onGet().replyOnce(200, votings)
         let rendered = renderVotingsUser(client)
-        
+
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
 
@@ -302,4 +291,44 @@ describe('Testing Voting list', () => {
 
     })
 
+    it('Finish voting correct behaviour', async () => {
+        mockAxios.onGet().replyOnce(200, votings)
+        mockAxios.onGet().replyOnce(200, barList)
+        mockAxios.onGet().replyOnce(200, votings)
+        mockAxios.onGet().replyOnce(200, barList)
+        mockAxios.onPost().replyOnce(200)
+        let rendered = renderVotingsUser(admin)
+        window.sessionStorage.setItem("user", JSON.stringify(admin));
+
+        let promise = new Promise(r => setTimeout(r, 250));
+        await act(() => promise)
+
+        await act(async () => {
+            await userEvent.click(screen.getAllByTestId('finish-but')[0])
+        })
+
+        let finishDialog = await rendered.queryByTestId('finish-dialog')
+        expect(finishDialog).toBeInTheDocument()
+
+        await act(async () => {
+            await userEvent.click(screen.getByTestId('accept-finish-button'))
+        })
+
+        promise = new Promise(r => setTimeout(r, 250));
+        await act(() => promise)
+
+        let finishedAlert = await rendered.queryByTestId('finished-alert')
+        expect(finishedAlert).toBeInTheDocument()
+
+        await act(async () => {
+            await fireEvent.click(screen.getByTestId('finished-alert').children[0].children[2].children[0])
+        })
+
+        promise = new Promise(r => setTimeout(r, 250));
+        await act(() => promise)
+
+        finishedAlert = await rendered.queryByTestId('finished-alert')
+        expect(finishedAlert).not.toBeInTheDocument()
+    })
 })
+

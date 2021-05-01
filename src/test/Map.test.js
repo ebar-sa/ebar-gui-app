@@ -122,7 +122,6 @@ describe('Render test map', () => {
     it('Render map with a correct list of bars', async () => {
         
         mockAxios.onPost().replyOnce(200, barList)
-        mockAxios.onGet().replyOnce(200, barList)
 
         const mockGeolocationOK = {
             getCurrentPosition: jest.fn()

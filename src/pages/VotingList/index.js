@@ -245,7 +245,7 @@ function Votings(props) {
                     Editar
                 </Button>
             </Link>
-        } else if (!(owner === username || employees.includes(username)) && !x.votersUsernames.includes(username)) {
+        } else if (!(owner === username || employees.includes(username)) && !x.votersUsernames.includes(username) && next === false && finished === false) {
             return <Link to={'/bares/' + barId + '/votings/voting/' + x.id}>
                 <Button variant="contained" size='small' color="primary" style={{...stylesComponent.buttonAcceder}}
                         data-testid="but">
@@ -557,7 +557,8 @@ function Votings(props) {
                                 <Button onClick={handleCloseDialog} color="primary">
                                     Atrás
                                 </Button>
-                                <Button onClick={handleDelete} color="primary" autoFocus data-testid="accept-delete-button">
+                                <Button onClick={handleDelete} color="primary" autoFocus
+                                        data-testid="accept-delete-button">
                                     Aceptar
                                 </Button>
                             </DialogActions>

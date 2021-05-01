@@ -49,9 +49,9 @@ const barList = [
         "name": "Bar Casa Luna",
         "capacity": "2/14",
         "location": "Calle Este, 18, 41409 Écija, Sevilla",
-        "coords": {
-            "latitude": 37.589470,
-            "longitude": -4.982660,
+        "coord": {
+            "lat": "37.589470",
+            "lng": "-4.982660",
         },
         "distance": 5000
     }
@@ -121,14 +121,15 @@ describe('Render test map', () => {
 
     it('Render map with a correct list of bars', async () => {
         
+        mockAxios.onPost().replyOnce(200, barList)
         mockAxios.onGet().replyOnce(200, barList)
 
         const mockGeolocationOK = {
             getCurrentPosition: jest.fn()
                 .mockImplementationOnce(success => Promise.resolve(success({
                     coords: {
-                        latitude: 37.589470,
-                        longitude: -4.982660,
+                        lat: "37.589470",
+                        lng: "-4.982660",
                     },
                 })), err => {
                     console.log('Error', err)
@@ -145,12 +146,14 @@ describe('Render test map', () => {
                 </Router>
             </Context.Provider>)
 
-        let promise = new Promise(r => setTimeout(r, 3500));
+        let promise = new Promise(r => setTimeout(r, 4500));
         await act(() => promise)
 
         
-        let name = screen.getByTestId("map")
+        let name = screen.getByTestId('map')
         expect(name).toBeInTheDocument()
+        let marker = screen.getByTestId("marker-0")
+        expect(marker).toBeInTheDocument()
     })
 
 });

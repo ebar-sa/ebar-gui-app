@@ -222,18 +222,7 @@ describe('Render test suite', () => {
 
     })
 
-    it('Render form with correct text admin', async () => {
-        let rendered = renderDetailsFormAdmin(auth)
-        mockAxios.onGet().replyOnce(200, detailsDataTableOcupated)
-
-        let name = await rendered.findByText('Ensaladilla')
-        let price = await rendered.findByText('2.5 €')
-
-
-        expect(name).toBeInTheDocument()
-        expect(price).toBeInTheDocument()
-
-    })
+    
 
 
 });

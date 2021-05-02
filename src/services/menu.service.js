@@ -26,6 +26,10 @@ class MenuDataService{
         return http.delete(`/bares/${idBar}/menu/itemMenu/${idItemMenu}/delete`, {headers: authHeader()})
     }
 
+    deleteImage(idBar, idItemMenu) {
+        return http.delete(`/bares/${idBar}/menu/itemMenu/${idItemMenu}/deleteImage`, {headers: authHeader()})
+    }
+
 }
 
 export default new MenuDataService() 

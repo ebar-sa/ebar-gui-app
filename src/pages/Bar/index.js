@@ -129,6 +129,7 @@ export default function Bar(props) {
         })
     }, [barId, history])
     useEffect(() => {
+        if(isClient && hasBarTable === false){
         MesaDataService.getBarTableClient(auth.username).then((res) => {
             if (res.status === 200) {
                 setBarTable(res.data)
@@ -141,7 +142,8 @@ export default function Bar(props) {
             console.log("Error: " + error)
             history.push('/pageNotFound')
         })
-    }, [auth, history])
+    }
+    }, [auth, history, isClient, hasBarTable])
 
     const onArrowClick = (direction) => {
         const increment = direction === 'left' ? -1 : 1;

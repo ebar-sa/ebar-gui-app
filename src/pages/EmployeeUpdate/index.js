@@ -215,7 +215,7 @@ export default function UpdateEmployee(props) {
                                         id="phoneNumber"
                                         defaultValue={state.phoneNumber}
                                         name="Telefono"
-                                        label="Phone Number"
+                                        label="Número de teléfono"
                                         variant="outlined"
                                         error={formErrors.phoneNumber !== null && formErrors.phoneNumber !== undefined && formErrors.phoneNumber !== ''}
                                         helperText={formErrors.phoneNumber}

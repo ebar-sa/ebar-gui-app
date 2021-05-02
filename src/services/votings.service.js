@@ -61,6 +61,10 @@ class VotingDataService {
     finishVoting = (barId, votingId) => {
         return http.post('/bar/' + barId + '/voting/' + votingId + "/finish", {}, { headers: authHeader() })
     }
+    
+    userIsValidVoter = (barId, username) => {
+        return http.get('/bar/' + barId + '/username/' + username, { headers: authHeader() })
+    }
 }
 
 export default new VotingDataService()

@@ -3,9 +3,7 @@ import { useHistory } from 'react-router'
 import { GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
 import { Link } from 'react-router-dom'
 import BarDataService from "../services/bar.service";
-import Geocode from "react-geocode";
 import '../styles/map.css'
-import { getDistance } from 'geolib';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 var options = {
@@ -19,13 +17,14 @@ function Map(props) {
 
     const [bars, setBars] = useState([])
     let location = props.location
-    const [posWindow, setPosWindow] = useState({ lat: 0, lng: 0 });
+    const [posWindow, setPosWindow] = useState();
     const [ids, setIds] = useState({});
     const setLocation = props.setLocation
     const error = props.error
     const setError = props.setError
     const history = useHistory()
     const [loading, setLoading] = useState(false)
+    const zoom = 15
 
     const setStartLoc = useCallback(() => {
         return new Promise(function (resolve, reject) {    
@@ -57,50 +56,18 @@ function Map(props) {
     }, [setLocation, setStartLoc]);
 
     useEffect(() => {
-        BarDataService.getAllWithCapacity().then(res => {
-            setBars(res.data);
-        })
+        if(location){
+            BarDataService.getBarsMap(location).then(res => {
+                setBars(res.data);
+            })
             .catch(e => {
                 console.log("El error es ", e);
                 history.push("/pageNotFound")
             });
-    }, [history])
+        }
+    }, [history, location])
 
 
-    const [arr, setArr] = useState([])
-
-    useEffect(() => {
-        Geocode.setApiKey(process.env.REACT_APP_API_KEY);
-        Geocode.setLanguage("en");
-        Geocode.setRegion("es");
-        Geocode.setLocationType("ROOFTOP");
-
-        Promise.all(bars)
-            .then((resp) => {
-                resp.forEach((bar) => { 
-                    if (bar.capacity.split('/')[0] > 0){
-                    Geocode.fromAddress(bar.location).then(
-                        (response) => {
-                            const { lat, lng } = response.results[0].geometry.location;
-                            const list = ({ lat: parseFloat(lat), lng: parseFloat(lng), bar: bar })
-                            setArr(prevArray => [...prevArray, list])
-                            setError(false)
-                        },
-                        (err) => {
-                            console.log('Existen direcciones no válidas');
-                        })
-                    }
-                })
-            })
-    }, [bars, setError, history])
-
-
-    const obtainDistance = (lat, lng) => {
-        return getDistance(
-            { latitude: location.lat, longitude: location.lng },
-            { latitude: lat, longitude: lng }
-        );
-    }
 
     return (
         <div>
@@ -114,16 +81,15 @@ function Map(props) {
                     <GoogleMap
                         mapContainerClassName='contain'
                         center={location}
-                        zoom={15}>
-                        {arr.map(function (v, index) {
+                        zoom={zoom}>
+                        {bars.map(function (v, index) {
                             return <div data-testid={'marker-' + index} key={'div-' + index}>
-                                {typeof v.lat !== "undefined" && obtainDistance(v.lat, v.lng)<200000 && (
                                     <Marker key={'mark-' + index}
-                                        position={{ lat: v.lat, lng: v.lng }}
+                                        position={{ lat: v.coord.lat, lng: v.coord.lng }}
                                         onClick={() => {
                                             setPosWindow({
-                                                ...posWindow, lat: v.lat + 0.0005,
-                                                lng: v.lng
+                                                ...posWindow, lat: v.coord.lat + 0.0005,
+                                                lng: v.coord.lng
                                             })
                                             setIds({ ...ids, id: index })
                                         }}
@@ -136,18 +102,20 @@ function Map(props) {
                                                     }}
                                                     position={posWindow}>
                                                     <div >
-                                                        <Link key={'link-' + index} to={'/bares/'+v.bar.id}>
-                                                            <h3>{v.bar.name}</h3>
+                                                        <Link key={'link-' + index} to={'/bares/'+v.id}>
+                                                            <h3>{v.name}</h3>
                                                         </Link>
-                                                        <p>{v.bar.location}</p>
+                                                        <p>{v.location}</p>
+                                                        <p>Mesas disponibles: {v.capacity}</p>
                                                     </div>
                                                 </InfoWindow>}
                                         </div>
                                     </Marker>
-                                )}
+                                )
                             </div>
                         })}
                     </GoogleMap>
+                    
                     }
             </div>
         </div>

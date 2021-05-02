@@ -78,7 +78,7 @@ export default function CreateItemMenu(props) {
     function handleValidation() {
         let objErrors = {}
         let valid = true
-        const decimal = new RegExp('^[0-9]+(.[0-9]{1,2})?$')
+        const decimal = new RegExp('^[0-9]+(\\.[0-9]{1,2})?$')
 
         if (!state.name) {
             valid = false
@@ -97,10 +97,10 @@ export default function CreateItemMenu(props) {
 
         if (!state.price.match(decimal)) {
             valid = false
-            objErrors['price'] = "El precio puede contener hasta 2 decimales"
+            objErrors['price'] = "El precio debe de estar en formato xx o xx.yy con dos decimales como máximo"
         }
 
-        if (state.price < 0) {
+        if (state.price <= 0) {
             valid = false
             objErrors['price'] = "El precio debe de ser mayor a 0.00 €"
         }
@@ -145,7 +145,7 @@ export default function CreateItemMenu(props) {
                         </Grid>
                         <Grid container justify="center" alignItems="center" >
                             <div style={{ "paddingBottom": "10px" }} >
-                                <TextField fullWidth
+                                <TextField fullWidth multiline
                                     id="description"
                                     label="Descripción"
                                     name="description"

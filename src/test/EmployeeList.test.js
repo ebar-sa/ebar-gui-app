@@ -5,7 +5,7 @@ import {act, render} from "@testing-library/react";
 import { createMemoryHistory } from 'history';
 import MockAdapter from 'axios-mock-adapter';
 
-import EmployeeList from '../components/employee-list.component';
+import EmployeeList from '../pages/EmployeeList';
 import Context from '../context/UserContext';
 import http from '../http-common';
 

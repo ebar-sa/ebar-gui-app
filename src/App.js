@@ -120,6 +120,7 @@ const theme = createMuiTheme({
 export function App() {
   const classes = useStyles()
   const { isLogged } = useUser()
+  const changeAndReload = false
   return (
     <div className={classes.root}>
       <ThemeProvider theme={theme}>
@@ -167,7 +168,7 @@ export function App() {
           </Switch>
         </main>
         <div className={classes.colorBar}>
-          <BottomBar />
+          <BottomBar props={changeAndReload} />
         </div>
       </ThemeProvider>
     </div>

@@ -4,9 +4,8 @@ const Context = React.createContext({})
 
 export function UserContextProvider ({children}) {
     const [auth, setAuth] = useState(() => JSON.parse(window.sessionStorage.getItem('user')))
-    const [currentBar, setCurrentBar] = useState(undefined);
     
-    return <Context.Provider value={{auth, setAuth, currentBar, setCurrentBar}}>
+    return <Context.Provider value={{auth, setAuth}}>
         {children}
     </Context.Provider>
 }

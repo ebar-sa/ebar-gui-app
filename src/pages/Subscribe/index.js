@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions'
@@ -12,7 +12,6 @@ import Container from '@material-ui/core/Container'
 import { useHistory } from 'react-router-dom'
 
 import * as checkoutService from '../../services/checkout'
-import { CircularProgress } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   '@global': {
@@ -79,7 +78,6 @@ const tiers = [
 export default function Subscribe({ match }) {
   const classes = useStyles()
   const history = useHistory()
-  const [loading, setLoading] = useState(true)
 
   const subscribe = () => {
     checkoutService
@@ -94,22 +92,14 @@ export default function Subscribe({ match }) {
 
   useEffect(() => {
     checkoutService.getCards().then((res) => {
-      if (!res.length) {
-        history.push({
-          pathname: '/payments/add-card',
-          state: { next: '/payments/subscribe/' + match.params.id },
-        })
-      }
-      setLoading(false)
+      if (!res.length) history.push({
+        pathname: '/payments/add-card',
+        state: { next: "/payments/subscribe/" + match.params.id }
+      })
     })
   })
 
-  return loading ? (
-    <div className="loading">
-      <CircularProgress />
-      <p>Cargando espere...</p>
-    </div>
-  ) : (
+  return (
     <Container maxWidth="md" component="main">
       <h1>Pagar suscripción de bar</h1>
       <Grid container spacing={5} alignItems="flex-end">

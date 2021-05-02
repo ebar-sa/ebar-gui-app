@@ -193,8 +193,7 @@ export default function Bar(props) {
         if (token === '') {
             setOpenSubmitIncorrect(true);
         }
-        console.log(token.token);
-        MesaDataService.ocupateBarTableByToken(token.token).then((res) => {
+        MesaDataService.ocupateBarTableByToken(token.token,barId).then((res) => {
             if (res.status === 200) {
                 history.push(`/mesas/detallesMesa/${res.data.id}`)
             }
@@ -369,7 +368,7 @@ export default function Bar(props) {
                 <div className={useStyles.snak}>
                     <Snackbar open={openSubmitIncorrect} autoHideDuration={6000} onClose={handleCloseSnackBar}>
                         <Alert onClose={handleCloseSnackBar} severity="error">
-                            El token no se corresponde con ninguna mesa
+                            El token no corresponde a ninguna mesa de este establecimiento
                         </Alert>
                     </Snackbar>
                 </div>

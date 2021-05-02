@@ -15,8 +15,8 @@ class BarTableDataService{
         return http.get(`/tables/busyTable/${id}`,{headers: authHeader()});
     }
 
-    ocupateBarTableByToken(token) {
-        return http.get(`/tables/autoOccupateTable/${token}`,{headers: authHeader()});
+    ocupateBarTableByToken(token,barId) {
+        return http.get(`/tables/autoOccupateTable/${token}/${barId}`,{headers: authHeader()});
     }
     createBarTable(barId,table) {
         return http.post(`/tables/createTable/${barId.id}`,table, {headers: authHeader()});

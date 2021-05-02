@@ -4,10 +4,9 @@ import * as authService from '../services/auth'
 import { useHistory } from 'react-router'
 
 export default function useUser() {
-    const { auth, setAuth, currentBar, setCurrentBar } = useContext(Context)
+    const { auth, setAuth } = useContext(Context)
     const [state, setState] = useState({ loading: false, error: false })
     const [isUpdate, setUpdate] = useState(false)
-    
     const history = useHistory()
 
     const login = useCallback(({ username, password }) => {
@@ -77,10 +76,6 @@ export default function useUser() {
         window.sessionStorage.removeItem('user')
         setAuth(null)
     }, [setAuth, history])
- 
-    const updateCurrentBar = useCallback((bar) => {
-        setCurrentBar(bar)
-    }, [setCurrentBar])
 
     return {
         isLogged: Boolean(auth),
@@ -90,8 +85,6 @@ export default function useUser() {
         update,
         logout,
         auth,
-        currentBar,
-        updateCurrentBar,
         error: state.error
     }
 

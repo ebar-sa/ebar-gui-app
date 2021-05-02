@@ -33,6 +33,7 @@ import { getCurrentUser } from '../services/auth'
 import BillDataService from '../services/bill.service'
 import { Redirect } from 'react-router'
 import BottomBar from './bottom-bar'
+import BillCheckout from "../pages/BillCheckout";
 import TextField from '@material-ui/core/TextField';
 
 
@@ -47,6 +48,10 @@ export default class BarTableDetails extends Component {
     this.handleClose = this.handleClose.bind(this)
     this.handleChangeToken = this.handleChangeToken.bind(this)
     this.currentWidth = this.currentWidth.bind(this)
+    this.refreshBillAndOrder = this.refreshBillAndOrder.bind(this)
+    this.handleOpenPayment = this.handleOpenPayment.bind(this)
+    this.handleClosePayment = this.handleClosePayment.bind(this)
+    this.handleSnackbarClose = this.handleSnackbarClose.bind(this)
     this.timer = 0
     this.timer2 = 0
     this.timerLoadinBar = 0
@@ -71,6 +76,7 @@ export default class BarTableDetails extends Component {
         id: null,
         itemBill: [],
         itemOrder: [],
+        paid: ''
       },
 
       amountActual: [],
@@ -78,6 +84,8 @@ export default class BarTableDetails extends Component {
       name: '',
       isAdmin: false,
       openDialog: false,
+      openPaymentDialog: false,
+      openSuccess: false,
       token: '',
       error: false,
       isPhoneScreen: false,
@@ -87,11 +95,13 @@ export default class BarTableDetails extends Component {
       height: 0,
       showModalInputZero: false,
       progressBarHidden: false,
+      paymentSet: false
     }
   }
 
   componentDidMount() {
     this.setState({progressBarHidden : true});
+
     this.timerLoadinBar = setTimeout(() => {this.setState({
       progressBarHidden: false
     })},1000); 
@@ -99,7 +109,9 @@ export default class BarTableDetails extends Component {
     window.addEventListener('resize', this.updateDimensions)
     this.getMesasDetails(this.props.match.params.id)
     this.isLogged()
+    this.checkBarPaymentIsSet(this.props.match.params.id)
     this.timer = setInterval(() => this.bannedClientFromTable(), 10000)
+    this.timer = setInterval(() => this.refreshBillAndOrder(), 10000)
   }
   componentWillUnmount() {
     clearInterval(this.timer)
@@ -107,7 +119,18 @@ export default class BarTableDetails extends Component {
     clearInterval(this.timerLoadinBar)
     window.removeEventListener('resize', this.updateDimensions)
   }
-  
+
+  refreshBillAndOrder() {
+    const id = this.props.match.params.id
+    MesaDataService.refreshBillAndOrder(id).then((res) => {
+      if(res.status === 200) {
+        this.setState({
+          billActual: res.data,
+        })
+      }
+    })
+  }
+
   bannedClientFromTable() {
     const user = getCurrentUser()
     if (user.roles.includes('ROLE_CLIENT')) {
@@ -183,12 +206,30 @@ export default class BarTableDetails extends Component {
       amountActual: []
     })
   }
+
   handleOpen() {
     this.setState({
       openDialog: true,
       amountActual: []
     })
   }
+
+  handleClosePayment(success) {
+    this.setState({
+      openPaymentDialog: false
+    })
+
+    if (success) {
+      this.props.history.push({pathname: '/', state: {data: success}})
+    }
+  }
+
+  handleOpenPayment() {
+    this.setState({
+      openPaymentDialog: true,
+    })
+  }
+
   handleChangeToken(event) {
     this.setState({
       token: event.target.value,
@@ -297,6 +338,26 @@ export default class BarTableDetails extends Component {
       })
   }
 
+  handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    this.setState({
+      openSuccess: false
+    })
+  };
+
+  checkBarPaymentIsSet(id) {
+    return MesaDataService.checkBarPaymentIsSet(id)
+        .then((response) => {
+          this.setState({paymentSet: response.data.paymentSet})
+        })
+        .catch((err) => {
+          console.log(err)
+          this.setState({paymentSet: false})
+        })
+  }
+
   render() {
     const useStyles = makeStyles((theme) => ({
       card: {
@@ -391,7 +452,7 @@ export default class BarTableDetails extends Component {
 
     const StyledTableCell = withStyles((theme) => ({
       head: {
-        backgroundColor: '#2A5DBC',
+        backgroundColor: '#006e85',
         color: theme.palette.common.white,
       },
       body: {
@@ -417,12 +478,15 @@ export default class BarTableDetails extends Component {
       isAdmin,
       name,
       openDialog,
+      openPaymentDialog,
       error,
       showMenuPhone,
       showBillPhone,
       isPhoneScreen,
+      openSuccess,
       showModalInputZero,
-      progressBarHidden
+      progressBarHidden,
+      paymentSet
     } = this.state
     return !error ? (
       <div>
@@ -582,7 +646,7 @@ export default class BarTableDetails extends Component {
                           <caption>
                             PRODUCTOS PEDIDOS PERO NO ENTREGADOS
                           </caption>
-                          <TableHead>
+                          <TableHead >
                             <TableRow>
                               <StyledTableCell align="center">
                                 <Typography className={useStyles.title}>
@@ -770,6 +834,18 @@ export default class BarTableDetails extends Component {
                             </TableRow>
                           </TableBody>
                         </Table>
+                        {!isAdmin && (
+                            <Button
+                                variant="contained"
+                                size="small"
+                                color="primary"
+                                disabled={!paymentSet || total === 0.}
+                                style={{ ...stylesComponent.buttonCrear }}
+                                onClick={this.handleOpenPayment}
+                            >
+                              Pagar cuenta
+                            </Button>
+                        )}
                       </CardContent>
                     </Grid>
                   </Grid>
@@ -928,7 +1004,7 @@ export default class BarTableDetails extends Component {
                 <CardContent>
                   <Table size="small" aria-label="a dense table">
                     <caption>CARTA</caption>
-                    <TableHead>
+                    <TableHead >
                       <TableRow>
                         <StyledTableCell align="center">
                           <Typography
@@ -1044,7 +1120,7 @@ export default class BarTableDetails extends Component {
                   <CardContent>
                     <Table size="small" aria-label="a dense table">
                       <caption>PRODUCTOS PEDIDOS PERO NO ENTREGADOS</caption>
-                      <TableHead>
+                      <TableHead >
                         <TableRow>
                           <StyledTableCell align="center">
                             <Typography
@@ -1183,7 +1259,7 @@ export default class BarTableDetails extends Component {
                 </Grid>
                 <Grid item component={Card} xs={12} lg={6} xl={6}>
                   <CardContent>
-                    <Table size="small" aria-label="a dense table">
+                    <Table size="small" aria-label="a dense table" color={"primary"}>
                       <caption>PRODUCTOS PEDIDOS Y ENTREGADOS</caption>
                       <TableHead>
                         <TableRow>
@@ -1278,6 +1354,18 @@ export default class BarTableDetails extends Component {
                         </TableRow>
                       </TableBody>
                     </Table>
+                    {!isAdmin && (
+                        <Button
+                        variant="contained"
+                        size="small"
+                        color="primary"
+                        disabled={!paymentSet || total === 0.}
+                        style={{ ...stylesComponent.buttonCrear }}
+                        onClick={this.handleOpenPayment}
+                    >
+                      Pagar cuenta
+                    </Button>
+                    )}
                   </CardContent>
                 </Grid>
               </Grid>
@@ -1317,6 +1405,26 @@ export default class BarTableDetails extends Component {
           ) : (
             <p></p>
           )}
+          <Dialog
+          open={openPaymentDialog}
+          fullScreen={isPhoneScreen}
+          onClose={() => this.handleClosePayment(false)}
+          aria-labelledby="form-dialog-title">
+            <DialogTitle id="form-dialog-title">Pago de la cuenta</DialogTitle>
+            <DialogContent>
+              <BillCheckout amount={total} onCloseDialog={this.handleClosePayment} table={mesaActual.id}/>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => this.handleClosePayment(false)} color="primary">
+                Cancelar
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <Snackbar open={openSuccess} autoHideDuration={6000} onClose={this.handleSnackbarClose}>
+            <Alert onClose={this.handleSnackbarClose} severity="success">
+              El pago se ha realizado correctamente
+            </Alert>
+          </Snackbar>
         </div>
       </div>
     ) : (

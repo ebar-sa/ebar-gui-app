@@ -36,6 +36,9 @@ class BarTableDataService{
     enableBarTable(tableId) {
         return http.get(`/tables/enableTable/${tableId}`, { headers: authHeader()});
     }
+    checkBarPaymentIsSet(tableId) {
+        return http.get(`/tables/checkPayment/${tableId}`, { headers: authHeader()});
+    }
 }
 
 

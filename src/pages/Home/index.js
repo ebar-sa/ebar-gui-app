@@ -10,6 +10,8 @@ import LocationSearch from '../../components/LocationSearch'
 import '../../styles/home.css'
 import Map from '../../components/map'
 import Logo from "../../img/ebarLogo.png"
+import Alert from "@material-ui/lab/Alert";
+import Snackbar from "@material-ui/core/Snackbar";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -43,11 +45,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function Home() {
+export default function Home(props) {
   const classes = useStyles()
   const { isLogged } = useUser()
+  const [paymentSuccess, setPaymentSuccess] = useState(props.history.location.state?
+      props.history.location.state.data : false)
   const [location, setLocation] = useState()
   const [error, setError] = useState(false)
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setPaymentSuccess(false)
+  };
 
   return (
 
@@ -96,6 +107,12 @@ export default function Home() {
             }
           </Container>
         </div>
+
+        <Snackbar open={paymentSuccess} autoHideDuration={6000} onClose={handleSnackbarClose}>
+          <Alert onClose={handleSnackbarClose} severity="success">
+            El pago se ha realizado correctamente
+          </Alert>
+        </Snackbar>
 
       </main>
       <Footer />

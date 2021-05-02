@@ -9,6 +9,12 @@ import TextField from "@material-ui/core/TextField";
 import Payment from "payment";
 import 'react-credit-cards/es/styles-compiled.css';
 import * as checkoutService from '../../services/checkout'
+import {create as createClient} from 'braintree-web/client'
+import {create as createDataCollector} from 'braintree-web/data-collector'
+import Snackbar from "@material-ui/core/Snackbar";
+import Alert from "@material-ui/lab/Alert";
+
+const braintreeLogo = require('../../static/images/braintree-logo-black.png');
 
 const useStyles = makeStyles(() => ({
 
@@ -37,16 +43,11 @@ export default function BillCheckout(props) {
         focus: '',
         name: '',
         number: ''})
+    const [openProcessing, setOpenProcessing] = useState(false)
+    const [openBraintreeError, setOpenBraintreeError] = useState(false)
+    const [axiosError, setAxiosError] = useState(false)
     const [errors, setErrors] = useState({})
 
-    function generateRandomString(characters) {
-        let result = ''
-        const charactersLength = characters.length
-        for ( let i = 0; i < charactersLength; i++ ) {
-            result += characters.charAt(Math.floor(Math.random() * charactersLength));
-        }
-        return result
-    }
 
     function clearNumber(value = "") {
         return value.replace(/\D+/g, "");
@@ -107,65 +108,81 @@ export default function BillCheckout(props) {
         return clearValue;
     }
 
-    function formatExpiryForRequest(expiry) {
-        let sp = expiry.split("/")
-        return sp[1] + sp[0]
-    }
-
     const handleSubmit = (e) => {
         e.preventDefault()
+        setOpenProcessing(true)
+        createClient({
+            authorization: 'sandbox_ktr2gzdj_j4hyq9c7ff2jmc3f'
+        }, (createErr, clientInstance) => {
+            if (createErr) {
+                setOpenProcessing(false)
+                setOpenBraintreeError(true)
+            } else {
+                let data = {
+                    creditCard: {
+                        number: state.number,
+                        cvv: state.cvc,
+                        expirationDate: state.expiry,
+                        billingAddress: {}
+                    },
+                    options: {
+                        validate: false
+                    }
+                }
 
-        const CryptoJS = require("crypto-js");
-        // let stateAmount = props.history.location.state
-        const merchantOrder = generateRandomString('0123456789') + generateRandomString('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789')
-        const testValues = {
-            "Ds_Merchant_MerchantCode": "999008881",
-            "Ds_Merchant_Terminal": "1",
-            "Ds_Merchant_TransactionType": "0",
-            "Ds_Merchant_Amount": "150",
-            "Ds_Merchant_Currency": "978",
-            "Ds_Merchant_Order": merchantOrder,
-            "Ds_Merchant_Pan": 4548812049400004,
-            "Ds_Merchant_ExpiryDate": 2112,
-            "Ds_Merchant_CVV2": 123
-        }
-
-        let merchantWordArray = CryptoJS.enc.Utf8.parse(JSON.stringify(testValues));
-        let merchantBase64 = merchantWordArray.toString(CryptoJS.enc.Base64);
-        let keyWordArray = CryptoJS.enc.Base64.parse("sq7HjrUOBfKmC576ILgskD5srU870gJ7");
-
-        let iv = CryptoJS.enc.Hex.parse("0000000000000000");
-        let cipher = CryptoJS.TripleDES.encrypt(testValues.Ds_Merchant_Order, keyWordArray, {
-            iv:iv,
-            mode: CryptoJS.mode.CBC,
-            padding: CryptoJS.pad.ZeroPadding
-        });
-
-        let signature = CryptoJS.HmacSHA256(merchantBase64, cipher.ciphertext);
-        let signatureBase64 = signature.toString(CryptoJS.enc.Base64);
-
-        let request = {
-            "Ds_SignatureVersion": "HMAC_SHA256_V1",
-            "Ds_MerchantParameters": merchantBase64,
-            "Ds_Signature": signatureBase64
-        }
-
-        checkoutService.payBill(request).then(response => {
-            if (response.data.errorCode) {
-                console.log(response.data.errorCode)
-            } else if (response.data.ds_response < 100) {
-                console.log("Pago perfe")
-                // props.history.push({
-                //     pathname: response.headers["location"],
-                //     state: {
-                //         data: true
-                //     }
-                // })
+                createDataCollector({
+                    client: clientInstance,
+                    paypal: false
+                }, (err, dataCollectorInstance) => {
+                    if (err) {
+                        setOpenProcessing(false)
+                        setOpenBraintreeError(true)
+                    } else {
+                        let deviceData = JSON.parse(dataCollectorInstance.deviceData)
+                        console.log(deviceData)
+                        generateNonce(clientInstance, data, deviceData)
+                    }
+                })
             }
-        }).catch(error => {
-            console.log("Error" + error)
-
         })
+
+        const generateNonce = (clientInstance, data, deviceData) => {
+            clientInstance.request({
+                endpoint: 'payment_methods/credit_cards',
+                method: 'post',
+                data: data
+            }, (requestErr, response) => {
+                if (requestErr) {
+                    setOpenProcessing(false)
+                    setOpenBraintreeError(true)
+                } else {
+                    let nonce = response.creditCards[0].nonce
+                    console.log("Nonce: " + nonce)
+                    processPayment(nonce, deviceData)
+                }
+            })
+        }
+
+        const processPayment = (nonce, deviceData) => {
+            let request = {
+                amount: props.amount,
+                nonce: nonce,
+                deviceData: deviceData
+            }
+
+            checkoutService.payBill(request, props.table).then(response => {
+                props.onCloseDialog(true)
+            }).catch(error => {
+                if (error.response.data.errors) {
+                    setOpenProcessing(false)
+                    setOpenBraintreeError(true)
+                } else {
+                    setOpenProcessing(false)
+                    setAxiosError(true)
+                }
+            })
+        }
+
     }
 
     const handleChange = ({target}) => {
@@ -192,6 +209,14 @@ export default function BillCheckout(props) {
         }
     };
 
+    const handleSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setAxiosError(false)
+        setOpenBraintreeError(false)
+    };
+
     const classes = useStyles()
     return (
         <Container maxWidth={"sm"} className={classes.root}>
@@ -201,7 +226,6 @@ export default function BillCheckout(props) {
                 </Typography>
             </div>
             <div className={classes.form}>
-
                 <form onSubmit={(e) => handleSubmit(e)}>
                     <Grid container spacing={2} alignItems="center" justify={"center"}>
                         <Grid item xs={12} align={"center"}>
@@ -253,6 +277,7 @@ export default function BillCheckout(props) {
                                        onFocus={handleInputFocus}/>
                         </Grid>
                         <Grid item xs={12} sm={6} align={"center"}>
+
                             <TextField fullWidth required
                                        id={"cvc"}
                                        type={"tel"}
@@ -277,8 +302,29 @@ export default function BillCheckout(props) {
                                 Pagar
                             </Button>
                         </Grid>
+                        <Grid item xs={12}>
+                            <img src={braintreeLogo.default} alt="" width={"20%"}/>
+                        </Grid>
                     </Grid>
                 </form>
+            </div>
+
+            <div>
+                <Snackbar open={openBraintreeError} autoHideDuration={6000} onClose={handleSnackbarClose}>
+                    <Alert onClose={handleSnackbarClose} severity="error">
+                        No se ha podido procesar el pago correctamente. Revise los datos e inténtelo de nuevo.
+                    </Alert>
+                </Snackbar>
+                <Snackbar open={axiosError} autoHideDuration={6000} onClose={handleSnackbarClose}>
+                    <Alert onClose={handleSnackbarClose} severity="error">
+                        Ha ocurrido un error al procesar la petición. Inténtelo de nuevo más tarde.
+                    </Alert>
+                </Snackbar>
+                <Snackbar open={openProcessing} onClose={handleSnackbarClose}>
+                    <Alert onClose={handleSnackbarClose} severity="info">
+                        Procesando el pago
+                    </Alert>
+                </Snackbar>
             </div>
         </Container>
     )

@@ -106,10 +106,17 @@ export function EmailDialog({dialogAction, setDialogAction, auth}) {
     );
 }
 
-export default function Profile() {
+export default function Profile(props) {
+
     const classes = useStyles();
-    const {auth, update, isLogged, isUpdate, error} = useUser()
+    const {auth, update, updateBraintreeData, isLogged, isUpdate, error} = useUser()
+    const [openBraintreeDialog, setOpenBraintreeDialog] = useState(!!(props.history?.location.state))
     const [formData, setFormData] = useState({"email": auth != null ? auth.email : null})
+    const [braintreeFormData, setBraintreeFormData] = useState({
+        "merchantId": auth.braintreeMerchantId,
+        "publicKey": auth.braintreePublicKey,
+        "privateKey": auth.braintreePrivateKey
+    })
     const [formErrors, setFormErrors] = useState({})
 
     const [dialogAction, setDialogAction] = React.useState(null);
@@ -126,6 +133,19 @@ export default function Profile() {
         setFormErrors({})
     }
 
+    const handleBraintreeChange = (e) => {
+        setBraintreeFormData({...braintreeFormData, [e.target.name]: e.target.value})
+        setFormErrors({})
+    }
+
+    const handleOpenDialog = () => {
+        setOpenBraintreeDialog(true)
+    }
+
+    const handleCloseDialog = () => {
+        setOpenBraintreeDialog(false)
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault()
         if (handleValidation()) {
@@ -136,6 +156,36 @@ export default function Profile() {
             let confirmPassword = formData.confirmPassword
             update({username, email, oldPassword, password, confirmPassword})
         }
+    }
+
+    const handleBraintreeSubmit = (e) => {
+        e.preventDefault()
+        if (handleBraintreeValidation()) {
+            updateBraintreeData({...braintreeFormData, username: auth.username})
+            setOpenBraintreeDialog(false)
+        }
+    }
+
+    const handleBraintreeValidation = () => {
+        let valid = true
+        let objErrors = {}
+
+        if (!braintreeFormData.merchantId) {
+            valid = false
+            objErrors["merchantId"] = "El campo no puede estar vacío"
+        }
+
+        if (!braintreeFormData.publicKey) {
+            valid = false
+            objErrors["publicKey"] = "El campo no puede estar vacío"
+        }
+
+        if (!braintreeFormData.privateKey) {
+            valid = false
+            objErrors["privateKey"] = "El campo no puede estar vacío"
+        }
+        setFormErrors(objErrors)
+        return valid
     }
 
     function handleValidation() {
@@ -260,6 +310,16 @@ export default function Profile() {
                         </Button>
                     </form>
                     <Grid container spacing={2} style={{marginTop: '10px', marginBottom: '20px', alignItems: 'center'}}>
+                        <Grid item xs={12}>
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                color="secondary"
+                                onClick={handleOpenDialog}
+                            >
+                                Introducir credenciales de Braintree
+                            </Button>
+                        </Grid>
                         <Grid item xs={12} sm={6}>
                             <Button
                                 fullWidth
@@ -285,6 +345,62 @@ export default function Profile() {
                     </Grid>
                 </div>
             </Container>
+            <Dialog open={openBraintreeDialog}
+                    onClose={handleCloseDialog}
+                    aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">Credenciales de Braintree</DialogTitle>
+                <DialogContent>
+                    <Grid container spacing={2} alignItems="center" justify={"center"}>
+                        <Grid item xs={12}>
+                            <TextField fullWidth required
+                                       id={"merchantId"}
+                                       type={"text"}
+                                       name={"merchantId"}
+                                       label={'Id de comerciante'}
+                                       error={formErrors.merchantId !== null && formErrors.merchantId !== undefined && formErrors.merchantId !== ''}
+                                       helperText={formErrors.merchantId}
+                                       variant={"outlined"}
+                                       value={braintreeFormData.merchantId}
+                                       InputLabelProps={{ shrink: true }}
+                                       onChange={handleBraintreeChange}/>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField fullWidth required
+                                       id={"publicKey"}
+                                       type={"text"}
+                                       name={"publicKey"}
+                                       label={'Clave pública'}
+                                       error={formErrors.publicKey !== null && formErrors.publicKey !== undefined && formErrors.publicKey !== ''}
+                                       helperText={formErrors.publicKey}
+                                       variant={"outlined"}
+                                       value={braintreeFormData.publicKey}
+                                       InputLabelProps={{ shrink: true }}
+                                       onChange={handleBraintreeChange}/>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField fullWidth required
+                                       id={"privateKey"}
+                                       type={"text"}
+                                       name={"privateKey"}
+                                       label={'Clave privada'}
+                                       error={formErrors.privateKey !== null && formErrors.privateKey !== undefined && formErrors.privateKey !== ''}
+                                       helperText={formErrors.privateKey}
+                                       variant={"outlined"}
+                                       value={braintreeFormData.privateKey}
+                                       InputLabelProps={{ shrink: true }}
+                                       onChange={handleBraintreeChange}/>
+                        </Grid>
+                    </Grid>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleBraintreeSubmit} color="primary">
+                        Registrar claves
+                    </Button>
+                    <Button onClick={handleCloseDialog} color="secondary">
+                        Cancelar
+                    </Button>
+                </DialogActions>
+            </Dialog>
             <Footer/>
         </div>
     );

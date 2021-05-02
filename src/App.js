@@ -1,7 +1,6 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
-import { createMuiTheme } from '@material-ui/core/styles';
+import { makeStyles, createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
@@ -31,7 +30,6 @@ import BarTableDetails from './components/BarTableDetails.component'
 import UserMenuDetails from './components/user-menu.component'
 import UserBillDetails from './components/user-bill.component'
 import MenuGestion from './components/menu.component'
-import { ThemeProvider } from '@material-ui/core/styles';
 
 
 import Bar from './pages/Bar'
@@ -46,7 +44,6 @@ import CreateEmployee from './pages/EmployeeCreate'
 import UpdateEmployee from './pages/EmployeeUpdate'
 import EmployeeDetails from './pages/EmployeeDetails'
 import Checkout from './pages/Checkout'
-import BillCheckout from './pages/BillCheckout'
 import Subscribe from './pages/Subscribe'
 
 const drawerWidth = 240
@@ -161,7 +158,6 @@ export function App() {
             <PrivateRoute exact path={'/bar/:idBar/employees/:user'} component={EmployeeDetails} />
             <PrivateRoute exact path={'/bares/:idBar/menu/itemMenu'} component={CreateItem} />
             <PrivateRoute exact path={'/bares/:idBar/menu/itemMenu/:idItemMenu'} component={EditItem} />
-            <PrivateRoute exact path={'/payments/bill'} component={BillCheckout} />
             <PrivateRoute exact path={'/payments/subscriptions'} component={Subscriptions} />
             <PrivateRoute exact path={'/payments/add-card'} component={Checkout} />
             <PrivateRoute exact path={'/payments/subscribe/:id'} component={Subscribe} />

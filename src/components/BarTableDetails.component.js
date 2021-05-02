@@ -89,16 +89,15 @@ export default class BarTableDetails extends Component {
   }
 
   componentDidMount() {
-    this.timerLoadinBar = setInterval(
-      () => this.setState({ progressBarHidden: true }),
-      1000
-    );
+    this.setState({progressBarHidden : true});
+    this.timerLoadinBar = setTimeout(() => {this.setState({
+      progressBarHidden: false
+    })},1000); 
     this.updateDimensions();
     window.addEventListener('resize', this.updateDimensions);
     this.getMesasDetails(this.props.match.params.id);
     this.isLogged();
     this.timer = setInterval(() => this.bannedClientFromTable(), 10000);
-    // this.timer2 = setInterval(() => this.refreshBillAndOrder(), 10000)
   }
   componentWillUnmount() {
     clearInterval(this.timer);
@@ -107,16 +106,7 @@ export default class BarTableDetails extends Component {
     window.removeEventListener('resize', this.updateDimensions);
   }
 
-  /*refreshBillAndOrder() {
-    const id = this.props.match.params.id
-    MesaDataService.refreshBillAndOrder(id).then((res) => {
-      if (res.status === 200) {
-        this.setState({
-          billActual: res.data,
-        })
-      }
-    })
-  }*/
+
 
   bannedClientFromTable() {
     const user = getCurrentUser();
@@ -433,7 +423,7 @@ export default class BarTableDetails extends Component {
     } = this.state;
     return !error ? (
       <div style={{ maxWidth: 1400, margin: '50px auto' }}>
-        <LinearProgress hidden={progressBarHidden} />
+        <LinearProgress show={progressBarHidden} hidden={!progressBarHidden} />
         <div className={stylesComponent.colorBar}>
           <BottomBar props={true} />
         </div>

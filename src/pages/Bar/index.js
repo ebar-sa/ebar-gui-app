@@ -186,20 +186,6 @@ export default function Bar(props) {
     setOpen(true);
   }
 
-
-    function automaticOcuppatioWithToken() {
-        if (token === '') {
-            setOpenSubmitIncorrect(true);
-        }
-        MesaDataService.ocupateBarTableByToken(token.token,barId).then((res) => {
-            if (res.status === 200) {
-                history.push(`/mesas/detallesMesa/${res.data.id}`)
-            }
-        }).catch(e => {
-            setOpenSubmitIncorrect(true);
-            console.log(e);
-        })
-
   function handleClose() {
     setOpen(false);
     setOpenSubmitIncorrect(false);
@@ -215,8 +201,7 @@ export default function Bar(props) {
     if (token === '') {
       setOpenSubmitIncorrect(true);
     }
-    console.log(token.token);
-    MesaDataService.ocupateBarTableByToken(token.token)
+    MesaDataService.ocupateBarTableByToken(token.token,barId)
       .then((res) => {
         MesaDataService.getBarClient(auth.username).then((res) =>
           updateCurrentBar(res.data)

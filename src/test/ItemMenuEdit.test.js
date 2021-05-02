@@ -61,7 +61,6 @@ describe("ItemMenuUpdate test suite", () => {
         let category = await rendered.findByDisplayValue("Carnes")
         let rationType = await rendered.findByDisplayValue("Ración")
         let price = await rendered.findByDisplayValue("15.5")
-        let upload = await rendered.findByText("Subir imágenes")
         let submit = await rendered.findByText("Enviar")
 
         expect(name).toBeInTheDocument()
@@ -74,7 +73,6 @@ describe("ItemMenuUpdate test suite", () => {
         expect(rationType.value).toBe("Ración")
         expect(price).toBeInTheDocument()
         expect(price.value).toBe("15.5")
-        expect(upload).toBeInTheDocument()
         expect(submit).toBeInTheDocument()
     })
 
@@ -114,7 +112,7 @@ describe("ItemMenuUpdate test suite", () => {
         await act(async () => {
             fireEvent.click(send)
         })
-        let errorSubmit = await rendered.queryByText('El precio puede contener hasta 2 decimales')
+        let errorSubmit = await rendered.queryByText('El precio debe de estar en formato xx o xx.yy con dos decimales como máximo')
         expect(errorSubmit).not.toBeInTheDocument()
     })
 
@@ -164,7 +162,7 @@ describe("ItemMenuUpdate test suite", () => {
         let errorRationType = await rendered.queryByText('La cantidad (ud, media ración, ración...) del item tiene que rellenarse')
         expect(errorRationType).toBeInTheDocument()
 
-        let errorPrice = await rendered.queryByText('El precio debe de incluir decimales')
+        let errorPrice = await rendered.queryByText('El precio debe de estar en formato xx o xx.yy con dos decimales como máximo')
         expect(errorPrice).toBeInTheDocument()
     })
 })

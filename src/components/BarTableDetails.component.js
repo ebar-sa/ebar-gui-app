@@ -536,8 +536,8 @@ export default class BarTableDetails extends Component {
                       <div style={stylesComponent.buttonMovil}>
                         {!mesaActual.free ? (
                           <h4>
-                            Ya tienes ocupada la mesa disfruta de tu estancia.
-                            De desocupar la mesa se encarga el Camarero.
+                            Ya tienes ocupada la mesa, ¡disfruta de tu estancia!
+                            De desocuparla ya se encarga el camarero.
                           </h4>
                         ) : (
                           <p></p>
@@ -910,8 +910,8 @@ export default class BarTableDetails extends Component {
                   <CardActions className={useStyles.buttonOcupar}>
                     {!mesaActual.free ? (
                       <h4>
-                        Ya tienes ocupada la mesa disfruta de tu estancia. De
-                        desocupar la mesa se encarga el Camarero.
+                        Ya tienes ocupada la mesa, ¡disfruta de tu estancia!
+                        De desocuparla ya se encarga el camarero.
                       </h4>
                     ) : (
                       <h3 style={useStyles.mesaLibre}>
@@ -1350,8 +1350,8 @@ export default class BarTableDetails extends Component {
               </DialogTitle>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                  Si lo haces todos los datos relacionados con la cuenta de esta
-                  mesa, serán eliminados, asegurate de que hayan pagado.
+                  Si lo haces, todos los datos relacionados con la cuenta de esta
+                  mesa serán eliminados. Asegúrate de haber pagado.
                 </DialogContentText>
               </DialogContent>
               <DialogActions>

@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     paper: {
         marginTop: theme.spacing(4),
         textAlign: 'center',
-        marginBottom: theme.spacing(4),
+        marginBottom: theme.spacing(9),
     },
     avatar: {
         margin: theme.spacing(1),

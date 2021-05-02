@@ -431,8 +431,9 @@ export default function ServiceTerms() {
                                         cumplimentación.
                                     </Typography></li>
                                     <li><Typography variant="body1" gutterBottom>
-                                        DNI o NIF (Opcional): el DNI o NIF de la persona titular de la cuenta se usará
-                                        para su identificación personal, aunque no es de obligatoria cumplimentación.
+                                        DNI o NIF: el DNI o NIF de la persona titular de la cuenta se usará
+                                        para su identificación personal. Será obligatorio para los empleados y jefe del
+                                        establecimiento, pero no para usuarios comunes.
                                     </Typography></li>
                                     <li><Typography variant="body1" gutterBottom>
                                         Contraseña: la contraseña del titular de la cuenta se utilizará para verificar

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { useHistory } from 'react-router';
 import BarDataService from '../../services/bar.service';
 import Typography from '@material-ui/core/Typography';
@@ -201,8 +201,7 @@ export default function Bar(props) {
     if (token === '') {
       setOpenSubmitIncorrect(true);
     }
-    console.log(token.token);
-    MesaDataService.ocupateBarTableByToken(token.token)
+    MesaDataService.ocupateBarTableByToken(token.token,barId)
       .then((res) => {
         MesaDataService.getBarClient(auth.username).then((res) =>
           updateCurrentBar(res.data)
@@ -445,7 +444,7 @@ export default function Bar(props) {
             onClose={handleCloseSnackBar}
           >
             <Alert onClose={handleCloseSnackBar} severity="error">
-              El token no se corresponde con ninguna mesa
+              El token no corresponde a ninguna mesa de este establecimiento
             </Alert>
           </Snackbar>
         </div>

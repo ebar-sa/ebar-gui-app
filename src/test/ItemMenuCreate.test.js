@@ -149,7 +149,7 @@ describe("ItemMenu test suite", () => {
             fireEvent.change(rationType, { target: { value: '' } })
 
             let price = await rendered.getByRole('textbox', { name: /Precio/i })
-            fireEvent.change(price, { target: { value: '3.123' } })
+            fireEvent.change(price, { target: { value: '3,123' } })
 
             let submit = await rendered.getByRole('button', { name: /Enviar/i })
 
@@ -166,7 +166,7 @@ describe("ItemMenu test suite", () => {
             let errorRationType = await rendered.queryByText('La cantidad (ud, media ración, ración...) del item tiene que rellenarse')
             expect(errorRationType).toBeInTheDocument()
 
-            let errorPrice = await rendered.queryByText('El precio puede contener hasta 2 decimales')
+            let errorPrice = await rendered.queryByText('El precio debe de estar en formato xx o xx.yy con dos decimales como máximo')
             expect(errorPrice).toBeInTheDocument()
         })
 

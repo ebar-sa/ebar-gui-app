@@ -58,30 +58,26 @@ const bar = {
 
 describe('Render test suite', () => {
   it('Render with a correct menu', async () => {
-    mockAxios.onGet().replyOnce(200, menu)
+    mockAxios.onGet().replyOnce(200, {"Carnes": menu.items})
     mockAxios.onGet().replyOnce(200, bar)
-    
+
     window.sessionStorage.setItem("user",JSON.stringify(auth))
     let rendered = render(
       <UserContextProvider>
         <Router history={history}>
-          <MenuAdmin {...{ match: { params: { idBar: 1 } } }} />
+          <MenuAdmin {...{ match: { params: { idBar: 1 }}}} />
         </Router>
       </UserContextProvider>
     )
 
     let promise = new Promise(r => setTimeout(r, 250));
     await act(() => promise)
-        
+    rendered.debug()
     let name = await rendered.findByText('Secreto Ibérico')
-    let description = await rendered.findByText('descripcion')
-    let rationType = await rendered.findByText('Racion')
     let category = await rendered.findByText('Carnes')
     let back = await rendered.findByText("Volver")
         
     expect(name).toBeInTheDocument()
-    expect(description).toBeInTheDocument()
-    expect(rationType).toBeInTheDocument()
     expect(category).toBeInTheDocument()
     expect(back).toBeInTheDocument()
     },[10000])

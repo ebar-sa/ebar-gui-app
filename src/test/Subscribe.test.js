@@ -42,7 +42,7 @@ const cards = [
 
 describe('Render subscribe', () => {
   it('Render with a correct menu', async () => {
-    mockAxios.onGet().replyOnce(200, cards)
+    mockAxios.onGet().reply(200, cards)
 
     let rendered = render(
       <Context.Provider value={{ auth, setAuth }}>
@@ -60,7 +60,7 @@ describe('Render subscribe', () => {
   })
 
   it('Redirect if user has no cards', async () => {
-    mockAxios.onGet().replyOnce(200, [])
+    mockAxios.onGet().reply(200, [])
 
     render(
       <Context.Provider value={{ auth, setAuth }}>
@@ -73,12 +73,15 @@ describe('Render subscribe', () => {
     let promise = new Promise((r) => setTimeout(r, 250))
     await act(() => promise)
 
-    expect(mockHistoryPush).toHaveBeenCalledWith({"pathname": "/payments/add-card", "state": {"next": "/payments/subscribe/1"}})
+    expect(mockHistoryPush).toHaveBeenCalledWith({
+      pathname: '/payments/add-card',
+      state: { next: '/payments/subscribe/1' },
+    })
   })
 
   it('Press payment button', async () => {
-    mockAxios.onGet().replyOnce(200, [])
-    mockAxios.onPost().replyOnce(204, {})
+    mockAxios.onGet().reply(200, [])
+    mockAxios.onPost().reply(204, {})
 
     let rendered = render(
       <Context.Provider value={{ auth, setAuth }}>
@@ -101,8 +104,8 @@ describe('Render subscribe', () => {
   })
 
   it('Press payment button', async () => {
-    mockAxios.onGet().replyOnce(200, [])
-    mockAxios.onPost().replyOnce(400, {})
+    mockAxios.onGet().reply(200, [])
+    mockAxios.onPost().reply(400, {})
 
     let rendered = render(
       <Context.Provider value={{ auth, setAuth }}>

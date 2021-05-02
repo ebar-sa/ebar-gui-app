@@ -5,9 +5,15 @@ class BarTableDataService{
     getBarTable(id) {
         return http.get(`/tables/tableDetails/${id}`,{headers: authHeader()});
     }
+    
     getBarTableClient(username) {
         return http.get(`/tables/tableClient/${username}`,{headers: authHeader()});
     }
+
+    getBarClient(username) {
+        return http.get(`/bar/barClient/${username}`,{headers: authHeader()});
+    }
+
     updateBarTableStateToFree(id) {
         return http.get(`/tables/freeTable/${id}`,{headers: authHeader()});
     }
@@ -15,8 +21,8 @@ class BarTableDataService{
         return http.get(`/tables/busyTable/${id}`,{headers: authHeader()});
     }
 
-    ocupateBarTableByToken(token) {
-        return http.get(`/tables/autoOccupateTable/${token}`,{headers: authHeader()});
+    ocupateBarTableByToken(token,barId) {
+        return http.get(`/tables/autoOccupateTable/${token}/${barId}`,{headers: authHeader()});
     }
     createBarTable(barId,table) {
         return http.post(`/tables/createTable/${barId.id}`,table, {headers: authHeader()});

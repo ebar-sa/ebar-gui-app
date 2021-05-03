@@ -61,7 +61,7 @@ export default class EmployeeList extends Component {
 
         return (
             <div style={{marginBottom:"30px"}}>
-                <Container component="main" maxWidth="xs" style={{marginBottom:"15%"}}>
+                <Container component="main" maxWidth="xs" style={{marginBottom:"26%"}}>
                     <CssBaseline/>
                     <div>
                         <div style={{"textAlign": "center"}}>

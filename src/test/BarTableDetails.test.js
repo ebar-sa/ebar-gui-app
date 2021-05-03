@@ -249,12 +249,10 @@ describe('Render test suite', () => {
         await act(() => promise)
 
         let name = await rendered.findByText('Mesa 1')
-        let token = await rendered.findByText('jdh-256')
         let estadoMesa = await rendered.findByText('Ocupada')
         let botonDesocupar = await rendered.findByText('Desocupar Manualmente')
 
         expect(name).toBeInTheDocument()
-        expect(token).toBeInTheDocument()
         expect(estadoMesa).toBeInTheDocument()
         expect(botonDesocupar).toBeInTheDocument()
 

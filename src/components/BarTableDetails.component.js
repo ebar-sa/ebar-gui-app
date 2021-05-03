@@ -46,7 +46,6 @@ export default class BarTableDetails extends Component {
     this.handleOpen = this.handleOpen.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.handleChangeToken = this.handleChangeToken.bind(this)
-    this.refreshBillAndOrder = this.refreshBillAndOrder.bind(this)
     this.handleOpenPayment = this.handleOpenPayment.bind(this)
     this.handleClosePayment = this.handleClosePayment.bind(this)
     this.handleSnackbarClose = this.handleSnackbarClose.bind(this)
@@ -112,24 +111,12 @@ export default class BarTableDetails extends Component {
     }
 
     this.timer = setInterval(() => this.bannedClientFromTable(), 10000)
-    this.timer = setInterval(() => this.refreshBillAndOrder(), 10000)
   }
   componentWillUnmount() {
     clearInterval(this.timer);
     clearInterval(this.timer2);
     clearInterval(this.timerLoadinBar);
     window.removeEventListener('resize', this.updateDimensions);
-  }
-
-  refreshBillAndOrder() {
-    const id = this.props.match.params.id
-    MesaDataService.refreshBillAndOrder(id).then((res) => {
-      if(res.status === 200) {
-        this.setState({
-          billActual: res.data,
-        })
-      }
-    })
   }
 
   bannedClientFromTable() {
@@ -523,32 +510,40 @@ export default class BarTableDetails extends Component {
                       <img alt="Mesa Ocupada" src={mesaOcupada} />
                     )}
 
-                    {isAdmin ? (
-                      <div>
+                    {isAdmin && mesaActual.free ?(
+                        <div>
+                          <Typography
+                              variant="h5"
+                              className={useStyles.title}
+                              gutterBottom
+                          >
+                            Código
+                          </Typography>
+                          <Typography
+                              variant="h5"
+                              className={useStyles.title}
+                              gutterBottom
+                          >
+                            <span data-testid="tokenId">{mesaActual.token}</span>
+                          </Typography>
+                        </div>
+                    ) : isAdmin && !mesaActual.free ? (
+                            <Typography
+                                variant="h6"
+                                className={useStyles.title}
+                                gutterBottom
+                            >
+                              Comienza a gestionar esta mesa
+                            </Typography>
+                        ) :
                         <Typography
-                          variant="h5"
-                          className={useStyles.title}
-                          gutterBottom
+                            variant="h6"
+                            className={useStyles.title}
+                            gutterBottom
                         >
-                          Código
+                          Bienvenido/a, {name}
                         </Typography>
-                        <Typography
-                          variant="h5"
-                          className={useStyles.title}
-                          gutterBottom
-                        >
-                          <span data-testid="tokenId">{mesaActual.token}</span>
-                        </Typography>
-                      </div>
-                    ) : !mesaActual.free ? (
-                      <Typography
-                        variant="h6"
-                        className={useStyles.title}
-                        gutterBottom
-                      >
-                        Bienvenido/a, {name}
-                      </Typography>
-                    ) : null}
+                    }
                   </CardContent>
                   {isAdmin ? (
                     <CardActions>
@@ -907,30 +902,40 @@ export default class BarTableDetails extends Component {
               </Grid>
               <Grid item component={Card} xs={4}>
                 <CardContent>
-                  {!mesaActual.free ? (
-                    <Typography
-                      variant="h6"
-                      className={useStyles.title}
-                      gutterBottom
-                    >
-                      Bienvenido/a, {name}
-                    </Typography>
-                  ) : (
-                    <Typography
-                      variant="h5"
-                      className={useStyles.title}
-                      gutterBottom
-                    >
-                      Código
-                    </Typography>
-                  )}
-                  <Typography
-                    variant="h5"
-                    className={useStyles.title}
-                    gutterBottom
-                  >
-                    <span data-testid="tokenId">{mesaActual.token}</span>
-                  </Typography>
+                  {isAdmin && mesaActual.free ?(
+                      <div>
+                        <Typography
+                            variant="h5"
+                            className={useStyles.title}
+                            gutterBottom
+                        >
+                          Código
+                        </Typography>
+                        <Typography
+                            variant="h5"
+                            className={useStyles.title}
+                            gutterBottom
+                        >
+                          <span data-testid="tokenId">{mesaActual.token}</span>
+                        </Typography>
+                      </div>
+                  ) : isAdmin && !mesaActual.free ? (
+                          <Typography
+                              variant="h6"
+                              className={useStyles.title}
+                              gutterBottom
+                          >
+                            Comienza a gestionar esta mesa
+                          </Typography>
+                      ) :
+                      <Typography
+                          variant="h6"
+                          className={useStyles.title}
+                          gutterBottom
+                      >
+                        Bienvenido/a, {name}
+                      </Typography>
+                  }
                 </CardContent>
                 {isAdmin ? (
                   <CardActions>

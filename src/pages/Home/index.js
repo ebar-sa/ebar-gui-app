@@ -3,18 +3,20 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 
-import {makeStyles} from '@material-ui/core/styles';
+import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Footer from '../../components/Footer';
 import useUser from '../../hooks/useUser';
 import LocationSearch from '../../components/LocationSearch';
 import '../../styles/home.css';
 import Map from '../../components/map';
-import {Button, Grid, Paper} from '@material-ui/core';
+import {Button, Grid, Paper, useMediaQuery} from '@material-ui/core';
 
 import img1 from "../../img/img1.png";
 import img2 from "../../img/img2.png";
 import img3 from "../../img/img3.png";
 import Logo from "../../img/ebarLogo.png"
+import Alert from "@material-ui/lab/Alert";
+import Snackbar from "@material-ui/core/Snackbar";
 
 import './style.css';
 
@@ -71,6 +73,8 @@ const useStyles = makeStyles((theme) => ({
 
 function Landing() {
     const classes = useStyles();
+    const theme = useTheme();
+    const phoneScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     return (
         <>
@@ -118,9 +122,11 @@ function Landing() {
                                         Iniciar sesión
                                     </Button>
                                 </Grid>
-                                <Grid item md={6} xs={12} className={classes.center1}>
-                                    <img className={classes.image} alt="logo" src={Logo} width="60%" height="60%"/>
-                                </Grid>
+                                {!phoneScreen && (
+                                    <Grid item md={6} xs={12} className={classes.center1}>
+                                        <img className={classes.image} alt="logo" src={Logo} width="60%" height="60%"/>
+                                    </Grid>
+                                )}
                             </Grid>
                         </Container>
                     </div>
@@ -196,10 +202,19 @@ function Landing() {
     );
 }
 
-function AuthenticatedHome() {
+function AuthenticatedHome(props) {
     const classes = useStyles();
+    const [paymentSuccess, setPaymentSuccess] = useState(props.history?.location.state?
+        props.history.location.state.data : false)
     const [location, setLocation] = useState();
     const [error, setError] = useState(false);
+
+    const handleSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setPaymentSuccess(false)
+    };
 
     return (
         <div style={{marginBottom: "30px"}}>
@@ -240,15 +255,23 @@ function AuthenticatedHome() {
                 </div>
             </Container>
             <Footer/>
+            <Snackbar open={paymentSuccess} autoHideDuration={6000} onClose={handleSnackbarClose}>
+                <Alert onClose={handleSnackbarClose} severity="success">
+                    El pago se ha realizado correctamente
+                </Alert>
+            </Snackbar>
         </div>
     );
+
 }
 
-export default function Home() {
+
+
+export default function Home(props) {
     const {isLogged} = useUser();
 
     return isLogged ? (
-        <AuthenticatedHome></AuthenticatedHome>
+        <AuthenticatedHome history={props.history} />
     ) : (
         <Landing></Landing>
     );

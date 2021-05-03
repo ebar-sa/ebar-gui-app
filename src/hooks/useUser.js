@@ -72,6 +72,29 @@ export default function useUser() {
             })
     }, [history])
 
+    const updateBraintreeData = useCallback((braintreeData) => {
+        setState({ loading: true, error: false })
+        authService.updateBraintreeData(braintreeData)
+            .then(() => {
+                let user = JSON.parse(window.sessionStorage.getItem('user'))
+                user.braintreeMerchantId = braintreeData.merchantId
+                user.braintreePublicKey = braintreeData.publicKey
+                user.braintreePrivateKey = braintreeData.privateKey
+                window.sessionStorage.setItem('user', JSON.stringify(user))
+                setUpdate(true)
+            })
+            .catch((err) => {
+                setUpdate(false)
+                if (err.response?.status === 400) {
+                    setState({loading: false, error: "Los datos no se han enviado correctamente"})
+                } else if (err.response?.status === 403) {
+                    setState({loading: false, error: "No autorizado"})
+                } else {
+                    history.push("/pageNotFound")
+                }
+            })
+    }, [history])
+
     const logout = useCallback(() => {
         history.push("/")
         window.sessionStorage.removeItem('user')
@@ -92,6 +115,7 @@ export default function useUser() {
         auth,
         currentBar,
         updateCurrentBar,
+        updateBraintreeData,
         error: state.error
     }
 

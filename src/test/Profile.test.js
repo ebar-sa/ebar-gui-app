@@ -5,7 +5,7 @@ import {act, render, fireEvent} from "@testing-library/react";
 import {createMemoryHistory} from 'history';
 import MockAdapter from 'axios-mock-adapter';
 
-import Context from '../context/UserContext';
+import Context, {UserContextProvider} from '../context/UserContext';
 import http from '../http-common';
 import Profile from '../pages/Profile';
 
@@ -19,6 +19,17 @@ const auth = {
     roles: ["ROLE_CLIENT"],
     tokenType: "Bearer",
     accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pMyIsImlhdCI6MTYxNzMyNjA3NywiZXhwIjoxNjE3NDEyNDc3fQ.Hcpf9naGfM1FiQ6CEdBMthcsa9m9rIHs7ae4zaiO7MCPKAT3HpK9Is5fAKbuu7MlF4bLuTN2qctRalxTz8elQg"
+}
+
+const ownerAuth = {
+    username: "test-owner",
+    email: "test@owner.com",
+    roles: ["ROLE_OWNER"],
+    tokenType: "Bearer",
+    accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pMyIsImlhdCI6MTYxNzMyNjA3NywiZXhwIjoxNjE3NDEyNDc3fQ.Hcpf9naGfM1FiQ6CEdBMthcsa9m9rIHs7ae4zaiO7MCPKAT3HpK9Is5fAKbuu7MlF4bLuTN2qctRalxTz8elQg",
+    braintreeMerchantId: '',
+    braintreePublicKey: '',
+    braintreePrivateKey: '',
 }
 
 describe('Profile test suite', () => {
@@ -152,6 +163,45 @@ describe('Profile test suite', () => {
         let success = await rendered.findByText(/Datos actualizados correctamente/)
 
         expect(success).toBeInTheDocument()
+    })
+
+    it('Fill Braintree data form', async () => {
+        window.sessionStorage.setItem("user", JSON.stringify(ownerAuth))
+        mockAxios.onPatch().replyOnce(200, {message: 'Datos actualizados correctamente.'})
+
+        let rendered = render(
+            <UserContextProvider>
+                <Router history={history}>
+                    <Profile history={history}/>
+                </Router>
+            </UserContextProvider>)
+
+        let promise = new Promise(r => setTimeout(r, 250));
+        await act(() => promise)
+
+        let braintreeButton = await rendered.getByRole('button', {name: /Introducir credenciales de Braintree/i})
+        fireEvent.click(braintreeButton)
+
+        let braintreeDialog = await rendered.getByTestId("braintree-dialog")
+        expect(braintreeDialog).toBeTruthy()
+
+        let merchantId = await rendered.getByRole('textbox', { name: /Id de comerciante/i })
+        fireEvent.change(merchantId, { target: { value: 'merchantId' } })
+
+        let publicKey = await rendered.getByRole('textbox', { name: /Clave pública/i })
+        fireEvent.change(publicKey, { target: { value: 'publicKey' } })
+
+        let privateKey = await rendered.getByRole('textbox', { name: /Clave privada/i })
+        fireEvent.change(privateKey, { target: { value: 'privateKey' } })
+
+        let submit = await rendered.getByRole('button', {name: /Registrar claves/i})
+        await act(async () => {
+            fireEvent.click(submit)
+        })
+
+        let success = await rendered.findByText(/Datos actualizados correctamente/)
+        expect(success).toBeInTheDocument()
+
     })
 });
 

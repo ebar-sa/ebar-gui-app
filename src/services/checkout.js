@@ -56,3 +56,8 @@ export function removeCard(data) {
       return response.data
     })
 }
+
+export function payBill(data, tableId) {
+      return http.post("/payments/bill/" + tableId, data, { headers: authHeader() })
+}
+

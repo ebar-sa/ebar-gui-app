@@ -61,7 +61,7 @@ export default function ServiceTerms() {
                                     <b>AVISO LEGAL Y CONDICIONES GENERALES DE USO DEL SITIO WEB</b>
                                 </Typography>
                                 <Typography variant="h6" component="h2" gutterBottom className={classes.centered}>
-                                    https://ebar-gui-sprint3.herokuapp.com
+                                    https://ebar-gui-sprint3-kjuk5gkiva-ew.a.run.app
                                 </Typography>
                                 <Typography component="h2" gutterBottom>
                                     <b>I. INFORMACIÓN GENERAL</b>
@@ -74,7 +74,7 @@ export default function ServiceTerms() {
                                     web:
                                 </Typography>
                                 <Typography variant="body1" gutterBottom>
-                                    La titularidad de este sitio web, https://ebar-gui-sprint3.herokuapp.com, (en
+                                    La titularidad de este sitio web, https://ebar-gui-sprint3-kjuk5gkiva-ew.a.run.app, (en
                                     adelante,
                                     Sitio Web) la ostenta: EBAR S.L., provista de NIF: A-8008000 e inscrita en el
                                     Registro

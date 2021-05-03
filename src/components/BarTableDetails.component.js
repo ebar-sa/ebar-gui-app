@@ -105,7 +105,12 @@ export default class BarTableDetails extends Component {
     window.addEventListener('resize', this.updateDimensions)
     this.getMesasDetails(this.props.match.params.id)
     this.isLogged()
-    this.checkBarPaymentIsSet(this.props.match.params.id)
+    const user = getCurrentUser();
+    if(!user.roles.includes('ROLE_OWNER') &&
+        !user.roles.includes('ROLE_EMPLOYEE')) {
+      this.checkBarPaymentIsSet(this.props.match.params.id)
+    }
+
     this.timer = setInterval(() => this.bannedClientFromTable(), 10000)
     this.timer = setInterval(() => this.refreshBillAndOrder(), 10000)
   }
@@ -479,7 +484,7 @@ export default class BarTableDetails extends Component {
     } = this.state
     return !error ? (
       <div style={{ maxWidth: 1400, margin: '50px auto' }}>
-        <LinearProgress show={progressBarHidden} hidden={!progressBarHidden} />
+        <LinearProgress hidden={!progressBarHidden} />
         <div className={stylesComponent.colorBar}>
           <BottomBar props={true} />
         </div>
@@ -541,7 +546,7 @@ export default class BarTableDetails extends Component {
                         className={useStyles.title}
                         gutterBottom
                       >
-                        Bienvenido {name}
+                        Bienvenido/a, {name}
                       </Typography>
                     ) : null}
                   </CardContent>
@@ -590,13 +595,10 @@ export default class BarTableDetails extends Component {
                   ) : (
                     <CardActions className={useStyles.buttonOcupar}>
                       <div style={stylesComponent.buttonMovil}>
-                        {!mesaActual.free ? (
+                        {!mesaActual.free && (
                           <h4>
                             Ya tienes ocupada la mesa, ¡disfruta de tu estancia!
-                            De desocuparla ya se encarga el camarero.
                           </h4>
-                        ) : (
-                          <p></p>
                         )}
                       </div>
                     </CardActions>
@@ -911,7 +913,7 @@ export default class BarTableDetails extends Component {
                       className={useStyles.title}
                       gutterBottom
                     >
-                      Bienvenido {name}
+                      Bienvenido/a, {name}
                     </Typography>
                   ) : (
                     <Typography
@@ -922,17 +924,13 @@ export default class BarTableDetails extends Component {
                       Código
                     </Typography>
                   )}
-                  {isAdmin ? (
-                    <Typography
-                      variant="h5"
-                      className={useStyles.title}
-                      gutterBottom
-                    >
-                      <span data-testid="tokenId">{mesaActual.token}</span>
-                    </Typography>
-                  ) : (
-                    <p></p>
-                  )}
+                  <Typography
+                    variant="h5"
+                    className={useStyles.title}
+                    gutterBottom
+                  >
+                    <span data-testid="tokenId">{mesaActual.token}</span>
+                  </Typography>
                 </CardContent>
                 {isAdmin ? (
                   <CardActions>
@@ -976,16 +974,10 @@ export default class BarTableDetails extends Component {
                   </CardActions>
                 ) : (
                   <CardActions className={useStyles.buttonOcupar}>
-                    {!mesaActual.free ? (
+                    {!mesaActual.free && (
                       <h4>
                         Ya tienes ocupada la mesa, ¡disfruta de tu estancia!
-                        De desocuparla ya se encarga el camarero.
                       </h4>
-                    ) : (
-                      <h3 style={useStyles.mesaLibre}>
-                        La {mesaActual.name} se encuentra libre, ocupe la mesa
-                        para comenzar.
-                      </h3>
                     )}
                   </CardActions>
                 )}

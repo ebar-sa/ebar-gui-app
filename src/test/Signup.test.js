@@ -1,5 +1,5 @@
 import React from 'react';
-import {Router} from 'react-router-dom';
+import {Route, Router} from 'react-router-dom';
 import {act, render, fireEvent} from "@testing-library/react";
 
 import {createMemoryHistory} from 'history';
@@ -13,13 +13,6 @@ const mockAxios = new MockAdapter(http)
 const history = createMemoryHistory()
 
 const badAuth = {}
-const auth = {
-    username: "test-client",
-    email: "test@client.com",
-    roles: ["ROLE_CLIENT"],
-    tokenType: "Bearer",
-    accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pMyIsImlhdCI6MTYxNzMyNjA3NywiZXhwIjoxNjE3NDEyNDc3fQ.Hcpf9naGfM1FiQ6CEdBMthcsa9m9rIHs7ae4zaiO7MCPKAT3HpK9Is5fAKbuu7MlF4bLuTN2qctRalxTz8elQg"
-}
 const setAuth = jest.fn()
 
 const {getComputedStyle} = window;
@@ -33,7 +26,7 @@ describe("SignUp test suite", () => {
         let rendered = render(
             <Context.Provider value={{badAuth, setAuth}}>
                 <Router history={history}>
-                    <SignUp/>
+                    <SignUp history={history}/>
                 </Router>
             </Context.Provider>
         )
@@ -42,18 +35,18 @@ describe("SignUp test suite", () => {
         let firstName = await rendered.findByText("Nombre")
         let lastName = await rendered.findByText("Apellido")
         let email = await rendered.findByText("Email")
-        let phoneNumber = await rendered.findByText("Telefono")
-        let dni = await rendered.findAllByText('DNI')
+        let phoneNumber = await rendered.findByText("Teléfono")
         let password = await rendered.findByText("Contraseña")
+        let serviceTerms = await rendered.findByText(/He leído y acepto/i)
         let submit = await rendered.findAllByText("Registrarse")
 
         expect(username).toBeInTheDocument()
         expect(firstName).toBeInTheDocument()
         expect(lastName).toBeInTheDocument()
         expect(email).toBeInTheDocument()
-        expect(dni[0]).toBeInTheDocument()
         expect(phoneNumber).toBeInTheDocument()
         expect(password).toBeInTheDocument()
+        expect(serviceTerms).toBeInTheDocument()
         expect(submit[0]).toBeInTheDocument()
 
     })
@@ -63,7 +56,7 @@ describe("SignUp test suite", () => {
         let rendered = render(
             <Context.Provider value={{badAuth, setAuth}}>
                 <Router history={history}>
-                    <SignUp/>
+                    <SignUp history={history}/>
                 </Router>
             </Context.Provider>
         )
@@ -84,17 +77,17 @@ describe("SignUp test suite", () => {
         fireEvent.change(email, {target: {value: 'test@mail.com'}})
         expect(email.value).toBe('test@mail.com')
 
-        let dni = await rendered.getByRole('textbox', {name: /DNI/i})
-        fireEvent.change(dni, {target: {value: '12345678A'}})
-        expect(dni.value).toBe('12345678A')
-
-        let phoneNumber = await rendered.getByRole('textbox', {name: /Telefono/i})
+        let phoneNumber = await rendered.getByRole('textbox', {name: /Teléfono/i})
         fireEvent.change(phoneNumber, {target: {value: '666111222'}})
         expect(phoneNumber.value).toBe('666111222')
 
         let password = await rendered.getByLabelText(/Contraseña/i)
         fireEvent.change(password, {target: {value: 'password1234'}})
         expect(password.value).toBe('password1234')
+
+        let serviceTerms = await rendered.getByLabelText(/He leído y acepto/i)
+        fireEvent.change(serviceTerms, {target: {checked: true}})
+        expect(serviceTerms.checked).toBe(true)
 
     })
 
@@ -124,17 +117,16 @@ describe("SignUp test suite", () => {
         let email = await rendered.getByRole('textbox', {name: /Email/i})
         fireEvent.change(email, {target: {value: 'testmail.com'}})
 
-        let dni = await rendered.getByRole('textbox', {name: /DNI/i})
-        fireEvent.change(dni, {target: {value: '8A'}})
-
-        let phoneNumber = await rendered.getByRole('textbox', {name: /Telefono/i})
+        let phoneNumber = await rendered.getByRole('textbox', {name: /Teléfono/i})
         fireEvent.change(phoneNumber, {target: {value: '+666111+222'}})
 
         let password = await rendered.getByLabelText(/Contraseña/i)
         fireEvent.change(password, {target: {value: 'pass'}})
 
-        let submit = await rendered.getByRole('button', {name: /Registrarse/i})
+        let serviceTerms = await rendered.getByLabelText(/He leído y acepto/i)
+        fireEvent.change(serviceTerms, {target: {checked: false}})
 
+        let submit = await rendered.getByRole('button', {name: /Registrarse/i})
         await act(async () => {
             fireEvent.click(submit)
         })
@@ -143,26 +135,27 @@ describe("SignUp test suite", () => {
         let errorFirstName = await rendered.findByText('El nombre no puede estar vacío')
         let errorLastName = await rendered.findByText('El apellido no puede estar vacío')
         let errorEmail = await rendered.findByText('Se debe introducir un correo electrónico válido y no mayor de 50 caracteres')
-        let errorDni = await rendered.findByText('El DNI introducido no es válido, debe tener 8 dígitos seguidos de una letra mayúscula')
         let errorPhoneNumber = await rendered.findByText('Se debe introducir un número de teléfono válido')
         let errorPassword = await rendered.findByText('La contraseña debe tener más de 6 caracteres y menos de 40')
+        let errorServiceTerms = await rendered.findByText('Obligatorio')
 
         expect(errorUsername).toBeInTheDocument()
         expect(errorFirstName).toBeInTheDocument()
         expect(errorLastName).toBeInTheDocument()
         expect(errorEmail).toBeInTheDocument()
-        expect(errorDni).toBeInTheDocument()
         expect(errorPhoneNumber).toBeInTheDocument()
         expect(errorPassword).toBeInTheDocument()
+        expect(errorServiceTerms).toBeInTheDocument()
     })
 
     it("Correct submit", async () => {
-        mockAxios.onPost().replyOnce(200, {message: 'User registered successfully!'})
+        mockAxios.onPost().replyOnce(200, {message: '¡Usuario registrado correctamente!'})
 
         let rendered = render(
             <Context.Provider value={{badAuth, setAuth}}>
                 <Router history={history}>
                     <SignUp history={history}/>
+                    <Route path="/login">Iniciar sesión</Route>
                 </Router>
             </Context.Provider>
         )
@@ -182,24 +175,21 @@ describe("SignUp test suite", () => {
         let email = await rendered.getByRole('textbox', {name: /Email/i})
         fireEvent.change(email, {target: {value: 'test@mail.com'}})
 
-        let dni = await rendered.getByRole('textbox', {name: /DNI/i})
-        fireEvent.change(dni, {target: {value: '12345678A'}})
-
-        let phoneNumber = await rendered.getByRole('textbox', {name: /Telefono/i})
+        let phoneNumber = await rendered.getByRole('textbox', {name: /Teléfono/i})
         fireEvent.change(phoneNumber, {target: {value: '666111222'}})
 
         let password = await rendered.getByLabelText(/Contraseña/i)
         fireEvent.change(password, {target: {value: 'password1234'}})
 
-        let send = await rendered.getByRole('button', {name: /Registrarse/i})
+        let serviceTerms = await rendered.getByLabelText(/He leído y acepto/i)
+        fireEvent.click(serviceTerms)
 
+        let send = await rendered.getByRole('button', {name: /Registrarse/i})
         await act(async () => {
             fireEvent.click(send)
         })
 
-        let successMessage = await rendered.findByText('Éxito')
-
-        expect(successMessage).toBeInTheDocument()
+        expect(rendered.container).toHaveTextContent(/Iniciar sesión/)
     })
 
 })

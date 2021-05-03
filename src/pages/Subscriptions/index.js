@@ -33,7 +33,6 @@ export default function Subscriptions() {
       .getCards()
       .then((response) => {
         setCards(response)
-        console.log(response)
       })
       .catch((err) => alert('error'))
   }
@@ -42,7 +41,6 @@ export default function Subscriptions() {
     checkoutService
       .getSubscriptions()
       .then((response) => {
-        console.log(response)
         setSubscriptions(response)
       })
       .catch((err) => alert('error'))

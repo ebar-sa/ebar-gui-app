@@ -20,6 +20,7 @@
         "babel-core": "^6.26.3",
         "date-fns": "^2.19.0",
         "debug": "^4.3.1",
+        "emailjs-com": "^2.6.4",
         "enzyme": "^3.11.0",
         "enzyme-adapter-react-16": "^1.15.6",
         "geolib": "^3.3.1",
@@ -42,12 +43,17 @@
         "typescript": "^4.2.3",
         "validator": "^13.5.2",
         "webpack": "4.44.2",
-        "serve": "^11.3.2"
+        "serve": "^11.3.2",
+        "crypto-js": "^4.0.0",
+        "react-credit-cards": "^0.8.3",
+        "payment": "^2.4.3",
+        "prop-types": "^15.7.2",
+        "braintree-web": "^3.76.2"
     },
     "scripts": {
-        "start": "serve -s build",
+        "start": "react-scripts --optimize_for_size --max_old_space_size=2048 start",
         "build": "react-scripts --optimize_for_size --max_old_space_size=2048 build",
-        "dev": "webpack-dev-server --mode=development",
+        "dev": "react-scripts --optimize_for_size --max_old_space_size=2048 start",
         "test": "react-scripts test --coverage --watchAll=false",
         "eject": "react-scripts eject",
         "postinstall": "react-scripts --optimize_for_size --max_old_space_size=2048 build"

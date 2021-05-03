@@ -7,7 +7,7 @@ import { createMemoryHistory } from 'history';
 import MockAdapter from 'axios-mock-adapter';
 
 import CreateBar from '../pages/BarCreate';
-import Context from '../context/UserContext';
+import Context, {UserContextProvider} from '../context/UserContext';
 import http from '../http-common';
 
 const setAuth = jest.fn()
@@ -22,8 +22,10 @@ const auth = {
     email: "test@owner.com",
     roles: ["ROLE_OWNER"],
     tokenType: "Bearer",
-    accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pMyIsImlhdCI6MTYxNzMyNjA3NywiZXhwIjoxNjE3NDEyNDc3fQ.Hcpf9naGfM1FiQ6CEdBMthcsa9m9rIHs7ae4zaiO7MCPKAT3HpK9Is5fAKbuu7MlF4bLuTN2qctRalxTz8elQg"
-
+    accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pMyIsImlhdCI6MTYxNzMyNjA3NywiZXhwIjoxNjE3NDEyNDc3fQ.Hcpf9naGfM1FiQ6CEdBMthcsa9m9rIHs7ae4zaiO7MCPKAT3HpK9Is5fAKbuu7MlF4bLuTN2qctRalxTz8elQg",
+    braintreeMerchantId: "merchantId",
+    braintreePublicKey: "publicKey",
+    braintreePrivateKey: "privateKey"
 }
 
 
@@ -31,12 +33,14 @@ describe("BarCreate test suite", () => {
 
     it("BarCreate render form successfully", async () => {
 
+        window.sessionStorage.setItem("user", JSON.stringify(auth))
+
         let rendered = render(
-            <Context.Provider value={{auth, setAuth}}>
+            <UserContextProvider>
                 <Router history={history} >
                     <CreateBar />
                 </Router>
-            </Context.Provider>
+            </UserContextProvider>
         )
 
         let name = await rendered.findByText("Nombre")
@@ -61,12 +65,14 @@ describe("BarCreate test suite", () => {
 
     it("Fill the form with valid values", async () => {
 
+        window.sessionStorage.setItem("user", JSON.stringify(auth))
+
         let rendered = render(
-            <Context.Provider value={{auth, setAuth}}>
+            <UserContextProvider>
                 <Router history={history} >
                     <CreateBar />
                 </Router>
-            </Context.Provider>
+            </UserContextProvider>
         )
 
         let name = await rendered.getByRole('textbox', { name: /Nombre/i })
@@ -97,12 +103,14 @@ describe("BarCreate test suite", () => {
 
     it("Fill the form with incorrect values", async () => {
 
+        window.sessionStorage.setItem("user", JSON.stringify(auth))
+
         let rendered = render(
-            <Context.Provider value={{auth, setAuth}}>
+            <UserContextProvider>
                 <Router history={history} >
                     <CreateBar />
                 </Router>
-            </Context.Provider>
+            </UserContextProvider>
         )
 
         let openingTime = await rendered.getByRole('textbox', { name: /Hora de apertura/i })
@@ -123,14 +131,16 @@ describe("BarCreate test suite", () => {
     })
 
     it("Correct submit", async () => {
+
+        window.sessionStorage.setItem("user", JSON.stringify(auth))
         mockAxios.onPost().replyOnce(201, {}, {"location": "/bares/1"})
 
         let rendered = render(
-            <Context.Provider value={{auth, setAuth}}>
+            <UserContextProvider>
                 <Router history={history} >
                     <CreateBar history={history}/>
                 </Router>
-            </Context.Provider>
+            </UserContextProvider>
         )
 
         let promise = new Promise(r => setTimeout(r, 250));
@@ -164,14 +174,15 @@ describe("BarCreate test suite", () => {
     })
 
     it("Incorrect submit", async () => {
+        window.sessionStorage.setItem("user", JSON.stringify(auth))
         mockAxios.onPost().replyOnce(201)
 
         let rendered = render(
-            <Context.Provider value={{auth, setAuth}}>
+            <UserContextProvider>
                 <Router history={history} >
                     <CreateBar history={history}/>
                 </Router>
-            </Context.Provider>
+            </UserContextProvider>
         )
 
         let promise = new Promise(r => setTimeout(r, 250));
@@ -207,16 +218,18 @@ describe("BarCreate test suite", () => {
 
     it("Add images to form", async () => {
 
+        window.sessionStorage.setItem("user", JSON.stringify(auth))
+
         var file1 = new File(["foo"], "foo.png", {
             type: "image/png",
         });
 
         let rendered = render(
-            <Context.Provider value={{auth, setAuth}}>
+            <UserContextProvider>
                 <Router history={history} >
                     <CreateBar history={history}/>
                 </Router>
-            </Context.Provider>
+            </UserContextProvider>
         )
 
         let input = rendered.getByTestId("prueba")

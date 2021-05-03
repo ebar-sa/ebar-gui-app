@@ -2,6 +2,8 @@ dist: xenial
 language: node_js
 node_js:
 - '12'
+git:
+  depth: false
 addons:
   sonarcloud:
     organization: ebar-sa

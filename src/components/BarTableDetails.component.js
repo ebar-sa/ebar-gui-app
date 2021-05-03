@@ -1407,6 +1407,7 @@ export default class BarTableDetails extends Component {
           )}
           <Dialog
           open={openPaymentDialog}
+          data-testid={"pay-dialog"}
           fullScreen={isPhoneScreen}
           onClose={() => this.handleClosePayment(false)}
           aria-labelledby="form-dialog-title">

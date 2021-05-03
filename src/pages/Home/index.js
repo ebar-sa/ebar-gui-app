@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Home(props) {
   const classes = useStyles()
   const { isLogged } = useUser()
-  const [paymentSuccess, setPaymentSuccess] = useState(props.history.location.state?
+  const [paymentSuccess, setPaymentSuccess] = useState(props.history?.location.state?
       props.history.location.state.data : false)
   const [location, setLocation] = useState()
   const [error, setError] = useState(false)

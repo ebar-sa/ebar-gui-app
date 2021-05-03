@@ -108,81 +108,107 @@ export default function BillCheckout(props) {
         return clearValue;
     }
 
+    function handleValidation() {
+        let valid = true
+        let objErrors = {}
+        if(!state.name) {
+            valid = false
+            objErrors["name"] = "El nombre no puede estar vacío"
+        }
+        if(!state.cvc) {
+            valid = false
+            objErrors["cvc"] = "El código CVC no puede estar vacío"
+        }
+        if(!state.number) {
+            valid = false
+            objErrors["number"] = "El número de tarjeta no puede estar vacío"
+        }
+        if(!state.expiry) {
+            valid = false
+            objErrors["expiry"] = "La fecha de caducidad no puede estar vacía"
+        }
+        setErrors(objErrors)
+        return valid
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault()
-        setOpenProcessing(true)
-        createClient({
-            authorization: 'sandbox_ktr2gzdj_j4hyq9c7ff2jmc3f'
-        }, (createErr, clientInstance) => {
-            if (createErr) {
+        if(handleValidation()) {
+
+
+            setOpenProcessing(true)
+            createClient({
+                authorization: 'sandbox_ktr2gzdj_j4hyq9c7ff2jmc3f'
+            }, (createErr, clientInstance) => {
+                if (createErr) {
+                    setOpenProcessing(false)
+                    setOpenBraintreeError(true)
+                } else {
+                    let data = {
+                        creditCard: {
+                            number: state.number,
+                            cvv: state.cvc,
+                            expirationDate: state.expiry,
+                            billingAddress: {}
+                        },
+                        options: {
+                            validate: false
+                        }
+                    }
+
+                    createDataCollector({
+                        client: clientInstance,
+                        paypal: false
+                    }, (err, dataCollectorInstance) => {
+                        if (err) {
+                            setOpenProcessing(false)
+                            setOpenBraintreeError(true)
+                        } else {
+                            let deviceData = JSON.parse(dataCollectorInstance.deviceData)
+                            console.log(deviceData)
+                            generateNonce(clientInstance, data, deviceData)
+                        }
+                    })
+                }
+            })
+        }
+    }
+
+    const generateNonce = (clientInstance, data, deviceData) => {
+        clientInstance.request({
+            endpoint: 'payment_methods/credit_cards',
+            method: 'post',
+            data: data
+        }, (requestErr, response) => {
+            if (requestErr) {
                 setOpenProcessing(false)
                 setOpenBraintreeError(true)
             } else {
-                let data = {
-                    creditCard: {
-                        number: state.number,
-                        cvv: state.cvc,
-                        expirationDate: state.expiry,
-                        billingAddress: {}
-                    },
-                    options: {
-                        validate: false
-                    }
-                }
-
-                createDataCollector({
-                    client: clientInstance,
-                    paypal: false
-                }, (err, dataCollectorInstance) => {
-                    if (err) {
-                        setOpenProcessing(false)
-                        setOpenBraintreeError(true)
-                    } else {
-                        let deviceData = JSON.parse(dataCollectorInstance.deviceData)
-                        console.log(deviceData)
-                        generateNonce(clientInstance, data, deviceData)
-                    }
-                })
+                let nonce = response.creditCards[0].nonce
+                console.log("Nonce: " + nonce)
+                processPayment(nonce, deviceData)
             }
         })
+    }
 
-        const generateNonce = (clientInstance, data, deviceData) => {
-            clientInstance.request({
-                endpoint: 'payment_methods/credit_cards',
-                method: 'post',
-                data: data
-            }, (requestErr, response) => {
-                if (requestErr) {
-                    setOpenProcessing(false)
-                    setOpenBraintreeError(true)
-                } else {
-                    let nonce = response.creditCards[0].nonce
-                    console.log("Nonce: " + nonce)
-                    processPayment(nonce, deviceData)
-                }
-            })
+    const processPayment = (nonce, deviceData) => {
+        let request = {
+            amount: props.amount,
+            nonce: nonce,
+            deviceData: deviceData
         }
 
-        const processPayment = (nonce, deviceData) => {
-            let request = {
-                amount: props.amount,
-                nonce: nonce,
-                deviceData: deviceData
+        checkoutService.payBill(request, props.table).then(response => {
+            props.onCloseDialog(true)
+        }).catch(error => {
+            if (error.response.data.errors) {
+                setOpenProcessing(false)
+                setOpenBraintreeError(true)
+            } else {
+                setOpenProcessing(false)
+                setAxiosError(true)
             }
-
-            checkoutService.payBill(request, props.table).then(response => {
-                props.onCloseDialog(true)
-            }).catch(error => {
-                if (error.response.data.errors) {
-                    setOpenProcessing(false)
-                    setOpenBraintreeError(true)
-                } else {
-                    setOpenProcessing(false)
-                    setAxiosError(true)
-                }
-            })
-        }
-
+        })
     }
 
     const handleChange = ({target}) => {
@@ -320,7 +346,7 @@ export default function BillCheckout(props) {
                         Ha ocurrido un error al procesar la petición. Inténtelo de nuevo más tarde.
                     </Alert>
                 </Snackbar>
-                <Snackbar open={openProcessing} onClose={handleSnackbarClose}>
+                <Snackbar open={openProcessing} data-testid={"pay-processing"} onClose={handleSnackbarClose}>
                     <Alert onClose={handleSnackbarClose} severity="info">
                         Procesando el pago
                     </Alert>

@@ -310,16 +310,18 @@ export default function Profile(props) {
                         </Button>
                     </form>
                     <Grid container spacing={2} style={{marginTop: '10px', marginBottom: '20px', alignItems: 'center'}}>
-                        <Grid item xs={12}>
-                            <Button
-                                fullWidth
-                                variant="contained"
-                                color="secondary"
-                                onClick={handleOpenDialog}
-                            >
-                                Introducir credenciales de Braintree
-                            </Button>
-                        </Grid>
+                        {auth.roles.includes('ROLE_OWNER') && (
+                            <Grid item xs={12}>
+                                <Button
+                                    fullWidth
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={handleOpenDialog}
+                                >
+                                    Introducir credenciales de Braintree
+                                </Button>
+                            </Grid>
+                        )}
                         <Grid item xs={12} sm={6}>
                             <Button
                                 fullWidth
@@ -345,7 +347,9 @@ export default function Profile(props) {
                     </Grid>
                 </div>
             </Container>
-            <Dialog open={openBraintreeDialog}
+            {auth.roles.includes('ROLE_OWNER') && (
+            <Dialog open={openBraintreeDialog && auth.roles.includes('ROLE_OWNER')}
+                    data-testid={"braintree-dialog"}
                     onClose={handleCloseDialog}
                     aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Credenciales de Braintree</DialogTitle>
@@ -401,6 +405,7 @@ export default function Profile(props) {
                     </Button>
                 </DialogActions>
             </Dialog>
+            )}
             <Footer/>
         </div>
     );

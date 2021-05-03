@@ -24,7 +24,6 @@ export default class UserMenuDetails extends Component {
   };
 
   componentDidMount() {
-    console.log(this.props.match.params.id);
     this.getBarMenu(this.props.match.params.id);
   }
 
@@ -34,7 +33,6 @@ export default class UserMenuDetails extends Component {
       this.setState({
         menuActual: res.data
       })
-      console.log(res.data);
     })
       .catch(e => {
         console.log(e);
@@ -43,12 +41,10 @@ export default class UserMenuDetails extends Component {
 
   addToOrder(idItem) {
     const idBill = this.state.billActual.id;
-    console.log(idItem);
     BillDataService.addToOrder(idBill, idItem).then(res => {
       this.setState({
         billActual: res.data
       })
-      console.log(res.data)
     }).catch(e => {
       console.log(e);
     })
@@ -60,7 +56,6 @@ export default class UserMenuDetails extends Component {
       this.setState({
         billActual: res.data
       })
-      console.log(res.data)
     }).catch(e => {
       console.log(e);
     })

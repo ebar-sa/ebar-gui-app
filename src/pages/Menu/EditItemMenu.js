@@ -62,7 +62,6 @@ export default function EditItemMenu(props) {
         BarDataService.getBar(idBar).then(res => {
             let owner = res.data.owner
             let emp = res.data.employees.map(a => a.username)
-            console.log('Emp', emp)
             if (!(owner === username || emp.includes(username))) history.push('/')
         }).catch(err => {
             history.push('/pageNotFound/')
@@ -131,7 +130,6 @@ export default function EditItemMenu(props) {
         const fr = new FileReader()
         fr.onload = () => {
             let blob = btoa(fr.result)
-            console.log(blob)
             let object = {
                 "fileName": f.name,
                 "fileType": f.type,

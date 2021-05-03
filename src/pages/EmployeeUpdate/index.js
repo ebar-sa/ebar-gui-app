@@ -58,8 +58,6 @@ export default function UpdateEmployee(props) {
 
 
     const handleChange = (e) => {
-        console.log(e.target.name)
-        console.log(e.target.value)
         setState({ ...state, [e.target.name]: e.target.value })
         setFormErrors({})
     }
@@ -73,7 +71,6 @@ export default function UpdateEmployee(props) {
         })
     }, [idBar, history, auth.username])
 
-    console.log(employee)
     const handleSubmit = (e) => {
         e.preventDefault()
         if (handleValidation()) {
@@ -118,8 +115,6 @@ export default function UpdateEmployee(props) {
 
     useEffect(() => {
         EmployeeDataService.getEmployeeByUsername(idBar, user).then(res => {
-            console.log("adios", res.data)
-            console.log("hola", user)
             if (res && res.data.username === (user)) {
                 let initialState = {
                     username: res.data.username,
@@ -144,7 +139,6 @@ export default function UpdateEmployee(props) {
     }, [idBar, user, history])
 
 
-    console.log("email", state.email)
     return (
         <div>
             {Object.keys(state).length !== 0 &&

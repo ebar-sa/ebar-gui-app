@@ -47,7 +47,6 @@ export default class BarTableDetails extends Component {
     this.handleOpen = this.handleOpen.bind(this)
     this.handleClose = this.handleClose.bind(this)
     this.handleChangeToken = this.handleChangeToken.bind(this)
-    this.currentWidth = this.currentWidth.bind(this)
     this.refreshBillAndOrder = this.refreshBillAndOrder.bind(this)
     this.handleOpenPayment = this.handleOpenPayment.bind(this)
     this.handleClosePayment = this.handleClosePayment.bind(this)
@@ -170,9 +169,6 @@ export default class BarTableDetails extends Component {
         isPhoneScreen: false,
       })
     }
-  }
-  currentWidth() {
-    console.log(this.props.width)
   }
   getMesasDetails(id) {
     MesaDataService.getBarTable(id)
@@ -311,7 +307,6 @@ export default class BarTableDetails extends Component {
 
   addAllToBill(idItemBill) {
     const idBill = this.state.billActual.id
-    console.log("all" + idItemBill)
     BillDataService.addAllToBill(idBill, idItemBill)
       .then((res) => {
         this.setState({

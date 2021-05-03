@@ -193,7 +193,6 @@ export default function Bar(props) {
         if (token === '') {
             setOpenSubmitIncorrect(true);
         }
-        console.log(token.token);
         MesaDataService.ocupateBarTableByToken(token.token).then((res) => {
             if (res.status === 200) {
                 history.push(`/mesas/detallesMesa/${res.data.id}`)

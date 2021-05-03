@@ -165,7 +165,6 @@ export default function BillCheckout(props) {
                             setOpenBraintreeError(true)
                         } else {
                             let deviceData = JSON.parse(dataCollectorInstance.deviceData)
-                            console.log(deviceData)
                             generateNonce(clientInstance, data, deviceData)
                         }
                     })
@@ -185,7 +184,6 @@ export default function BillCheckout(props) {
                 setOpenBraintreeError(true)
             } else {
                 let nonce = response.creditCards[0].nonce
-                console.log("Nonce: " + nonce)
                 processPayment(nonce, deviceData)
             }
         })

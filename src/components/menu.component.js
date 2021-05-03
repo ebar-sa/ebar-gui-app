@@ -81,7 +81,6 @@ export default class Menu extends Component {
       this.setState({
         mapa: res.data,
       })
-      console.log(res.data);
     })
       .catch(e => {
         console.log(e)

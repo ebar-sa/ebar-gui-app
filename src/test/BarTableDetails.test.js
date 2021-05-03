@@ -220,46 +220,6 @@ describe('Render test suite', () => {
         Enzyme.configure({adapter: new Adapter()});
     })
 
-    it('Pay', async () => {
-        mockAxios.onGet().replyOnce(200, tableWithItemsInBill);
-        mockAxios.onGet("/tables/tableClient/test-client").replyOnce(200, tableWithItemsInBill)
-        mockAxios.onGet("/tables/checkPayment/1").replyOnce(200, {paymentSet: true});
-        mockAxios.onPost("/payments/bill/1").replyOnce(200);
-        let promise = new Promise(r => setTimeout(r, 350));
-
-        let rendered = renderDetailsFormAdmin(clientAuth);
-        await act(() => promise)
-
-        let pay = await rendered.getByRole('button', {name: /Pagar cuenta/i})
-        expect(pay).toBeEnabled()
-
-        fireEvent.click(pay, { button: 0 })
-
-        let payDialog = await rendered.getByTestId("pay-dialog")
-        expect(payDialog).toBeTruthy()
-
-        let number = await rendered.getByRole('textbox', { name: /Número de tarjeta/i })
-        fireEvent.change(number, { target: { value: '4111 1111 1111 1111' } })
-
-        let name = await rendered.getByRole('textbox', { name: /Nombre/i })
-        fireEvent.change(name, { target: { value: 'Antonio Martínez Martínez' } })
-
-        let expiry = await rendered.getByRole('textbox', { name: /Fecha de caducidad/i })
-        fireEvent.change(expiry, { target: { value: '01/25' } })
-
-        let cvc = await rendered.getByRole('textbox', { name: /CVC/i })
-        fireEvent.change(cvc, { target: { value: '123' } })
-
-        let payButton = await rendered.getByRole('button', {name: /Pagar/i})
-
-        await act(async () => {
-            fireEvent.click(payButton, { button: 0 })
-        })
-
-        let success = await rendered.getByTestId("pay-processing")
-        expect(success).toBeTruthy()
-    })
-
     it('Render with a correct Free BarTable', async () => {
         mockAxios.onGet().replyOnce(200, detailsDataLibre)
         window.sessionStorage.setItem("user",JSON.stringify(auth));

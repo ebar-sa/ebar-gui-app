@@ -205,7 +205,6 @@ export default function BarForm(props) {
             const fr = new FileReader()
             fr.onload = () => {
                 let blob = btoa(fr.result)
-                console.log(blob)
                 let object = {
                     "fileName": f.name,
                     "fileType": f.type,

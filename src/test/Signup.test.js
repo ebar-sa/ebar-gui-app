@@ -36,7 +36,6 @@ describe("SignUp test suite", () => {
         let lastName = await rendered.findByText("Apellido")
         let email = await rendered.findByText("Email")
         let phoneNumber = await rendered.findByText("Teléfono")
-        let dni = await rendered.findAllByText('DNI')
         let password = await rendered.findByText("Contraseña")
         let serviceTerms = await rendered.findByText(/He leído y acepto/i)
         let submit = await rendered.findAllByText("Registrarse")
@@ -45,7 +44,6 @@ describe("SignUp test suite", () => {
         expect(firstName).toBeInTheDocument()
         expect(lastName).toBeInTheDocument()
         expect(email).toBeInTheDocument()
-        expect(dni[0]).toBeInTheDocument()
         expect(phoneNumber).toBeInTheDocument()
         expect(password).toBeInTheDocument()
         expect(serviceTerms).toBeInTheDocument()
@@ -78,10 +76,6 @@ describe("SignUp test suite", () => {
         let email = await rendered.getByRole('textbox', {name: /Email/i})
         fireEvent.change(email, {target: {value: 'test@mail.com'}})
         expect(email.value).toBe('test@mail.com')
-
-        let dni = await rendered.getByRole('textbox', {name: /DNI/i})
-        fireEvent.change(dni, {target: {value: '12345678A'}})
-        expect(dni.value).toBe('12345678A')
 
         let phoneNumber = await rendered.getByRole('textbox', {name: /Teléfono/i})
         fireEvent.change(phoneNumber, {target: {value: '666111222'}})
@@ -123,9 +117,6 @@ describe("SignUp test suite", () => {
         let email = await rendered.getByRole('textbox', {name: /Email/i})
         fireEvent.change(email, {target: {value: 'testmail.com'}})
 
-        let dni = await rendered.getByRole('textbox', {name: /DNI/i})
-        fireEvent.change(dni, {target: {value: '8A'}})
-
         let phoneNumber = await rendered.getByRole('textbox', {name: /Teléfono/i})
         fireEvent.change(phoneNumber, {target: {value: '+666111+222'}})
 
@@ -144,7 +135,6 @@ describe("SignUp test suite", () => {
         let errorFirstName = await rendered.findByText('El nombre no puede estar vacío')
         let errorLastName = await rendered.findByText('El apellido no puede estar vacío')
         let errorEmail = await rendered.findByText('Se debe introducir un correo electrónico válido y no mayor de 50 caracteres')
-        let errorDni = await rendered.findByText('El DNI introducido no es válido, debe tener 8 dígitos seguidos de una letra mayúscula')
         let errorPhoneNumber = await rendered.findByText('Se debe introducir un número de teléfono válido')
         let errorPassword = await rendered.findByText('La contraseña debe tener más de 6 caracteres y menos de 40')
         let errorServiceTerms = await rendered.findByText('Obligatorio')
@@ -153,7 +143,6 @@ describe("SignUp test suite", () => {
         expect(errorFirstName).toBeInTheDocument()
         expect(errorLastName).toBeInTheDocument()
         expect(errorEmail).toBeInTheDocument()
-        expect(errorDni).toBeInTheDocument()
         expect(errorPhoneNumber).toBeInTheDocument()
         expect(errorPassword).toBeInTheDocument()
         expect(errorServiceTerms).toBeInTheDocument()
@@ -185,9 +174,6 @@ describe("SignUp test suite", () => {
 
         let email = await rendered.getByRole('textbox', {name: /Email/i})
         fireEvent.change(email, {target: {value: 'test@mail.com'}})
-
-        let dni = await rendered.getByRole('textbox', {name: /DNI/i})
-        fireEvent.change(dni, {target: {value: '12345678A'}})
 
         let phoneNumber = await rendered.getByRole('textbox', {name: /Teléfono/i})
         fireEvent.change(phoneNumber, {target: {value: '666111222'}})

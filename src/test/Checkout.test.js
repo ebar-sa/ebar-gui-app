@@ -90,7 +90,6 @@ describe('Render checkout', () => {
     await act(() => promise)
 
     let button = await rendered.findByText('Añadir')
-    console.log(button)
     fireEvent.click(button)
 
     let promise2 = new Promise((r) => setTimeout(r, 250))

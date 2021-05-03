@@ -21,7 +21,10 @@ const auth = {
     email: "test@owner.com",
     roles: ["ROLE_OWNER"],
     tokenType: "Bearer",
-    accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pMyIsImlhdCI6MTYxNzMyNjA3NywiZXhwIjoxNjE3NDEyNDc3fQ.Hcpf9naGfM1FiQ6CEdBMthcsa9m9rIHs7ae4zaiO7MCPKAT3HpK9Is5fAKbuu7MlF4bLuTN2qctRalxTz8elQg"
+    accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pMyIsImlhdCI6MTYxNzMyNjA3NywiZXhwIjoxNjE3NDEyNDc3fQ.Hcpf9naGfM1FiQ6CEdBMthcsa9m9rIHs7ae4zaiO7MCPKAT3HpK9Is5fAKbuu7MlF4bLuTN2qctRalxTz8elQg",
+    braintreeMerchantId: "merchantId",
+    braintreePublicKey: "publicKey",
+    braintreePrivateKey: "privateKey"
 }
 
 const wrongAuth = {
@@ -29,7 +32,10 @@ const wrongAuth = {
     email: "test@owner2.com",
     roles: ["ROLE_OWNER"],
     tokenType: "Bearer",
-    accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pMyIsImlhdCI6MTYxNzMyNjA3NywiZXhwIjoxNjE3NDEyNDc3fQ.Hcpf9naGfM1FiQ6CEdBMthcsa9m9rIHs7ae4zaiO7MCPKAT3HpK9Is5fAKbuu7MlF4bLuTN2qctRalxTz8elQg"
+    accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pMyIsImlhdCI6MTYxNzMyNjA3NywiZXhwIjoxNjE3NDEyNDc3fQ.Hcpf9naGfM1FiQ6CEdBMthcsa9m9rIHs7ae4zaiO7MCPKAT3HpK9Is5fAKbuu7MlF4bLuTN2qctRalxTz8elQg",
+    braintreeMerchantId: null,
+    braintreePublicKey: null,
+    braintreePrivateKey: null
 }
 
 const bar = {
@@ -58,14 +64,15 @@ describe("BarUpdate test suite", () => {
 
     it("Render form correctly", async () => {
 
+        window.sessionStorage.setItem("user", JSON.stringify(auth))
         mockAxios.onGet().replyOnce(200, bar)
 
         let rendered = render(
-            <Context.Provider value={{auth, setAuth}}>
+            <UserContextProvider>
                 <Router history={history} >
                     <UpdateBar {...{match: {params: {barId: 1}}}} />
                 </Router>
-            </Context.Provider>
+            </UserContextProvider>
         )
 
         let promise = new Promise(r => setTimeout(r, 250));
@@ -91,15 +98,16 @@ describe("BarUpdate test suite", () => {
     })
 
     it("404 error", async () => {
+        window.sessionStorage.setItem("user", JSON.stringify(auth))
         const spy = jest.spyOn(history, 'push')
         mockAxios.onGet().replyOnce(404, bar)
 
         let rendered = render(
-            <Context.Provider value={{auth, setAuth}}>
+            <UserContextProvider>
                 <Router history={history} >
                     <UpdateBar {...{match: {params: {barId: 1}}}} />
                 </Router>
-            </Context.Provider>
+            </UserContextProvider>
         )
 
         let promise = new Promise(r => setTimeout(r, 2000));
@@ -132,15 +140,16 @@ describe("BarUpdate test suite", () => {
 
     it("Correct submit", async () => {
 
+        window.sessionStorage.setItem("user", JSON.stringify(auth))
         mockAxios.onGet().replyOnce(200, bar)
         mockAxios.onPut().replyOnce(200, bar)
 
         let rendered = render(
-            <Context.Provider value={{auth, setAuth}}>
+            <UserContextProvider>
                 <Router history={history} >
                     <UpdateBar {...{match: {params: {barId: 1}}}} history={history}/>
                 </Router>
-            </Context.Provider>
+            </UserContextProvider>
         )
 
         let promise = new Promise(r => setTimeout(r, 250));

@@ -62,7 +62,6 @@ export default function EditItemMenu(props) {
         BarDataService.getBar(idBar).then(res => {
             let owner = res.data.owner
             let emp = res.data.employees.map(a => a.username)
-            console.log('Emp', emp)
             if (!(owner === username || emp.includes(username))) history.push('/')
         }).catch(err => {
             history.push('/pageNotFound/')
@@ -99,7 +98,7 @@ export default function EditItemMenu(props) {
     function handleValidation() {
         let objErrors = {}
         let valid = true
-        const decimal = new RegExp('^[0-9]+(.[0-9]{1,2})?$')
+        const decimal = new RegExp('^[0-9]+(\\.[0-9]{1,2})?$')
         let price = itemMenu.price
 
         if (!itemMenu.name) {
@@ -116,9 +115,9 @@ export default function EditItemMenu(props) {
         }
         if (!decimal.test(price)) {
             valid = false;
-            objErrors['price'] = "El precio debe de incluir decimales"
+            objErrors['price'] = "El precio debe de estar en formato xx o xx.yy con dos decimales como máximo"
         }
-        if (price < 0) {
+        if (price <= 0) {
             valid = false;
             objErrors['price'] = "El precio debe de ser mayor a 0.00 €"
         }
@@ -131,7 +130,6 @@ export default function EditItemMenu(props) {
         const fr = new FileReader()
         fr.onload = () => {
             let blob = btoa(fr.result)
-            console.log(blob)
             let object = {
                 "fileName": f.name,
                 "fileType": f.type,
@@ -174,7 +172,7 @@ export default function EditItemMenu(props) {
                         </Grid>
                         <Grid container justify="center" alignItems="center" >
                             <div style={{ "paddingBottom": "10px" }} >
-                                <TextField id="description"
+                                <TextField id="description" multiline
                                     label="Descripción"
                                     name="description"
                                     onChange={(e) => handleChange(e)}
@@ -212,6 +210,7 @@ export default function EditItemMenu(props) {
                                     value={itemMenu.price} />
                             </div>
                         </Grid>
+                        {(itemMenu.image == null ?
                         <Grid container justify="center" alignItems="center">
                             <div style={{ "paddingBottom": "10px" }} >
                                 <input
@@ -221,6 +220,7 @@ export default function EditItemMenu(props) {
                                     className={classes.inputFile}
                                     data-testid={"prueba"}
                                     onChange={selectFile}
+                                    value={itemMenu.image}
                                 />
                                 <Typography className={classes.inputFile} variant="subtitle1" gutterBottom>
                                     Subida de imágenes
@@ -232,6 +232,7 @@ export default function EditItemMenu(props) {
                                 </label>
                             </div>
                         </Grid>
+                        : null)}
                         <Grid>
                             <div style={{ "textAlign": "center", "paddingBottom": "10px" }}>
                                 <Button

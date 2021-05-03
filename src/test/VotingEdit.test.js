@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, render, fireEvent, screen } from "@testing-library/react";
+import { act, render, fireEvent } from "@testing-library/react";
 import MockAdapter from "axios-mock-adapter";
 import VotingEdit from '../pages/VotingEdit';
 import http from "../http-common";
@@ -117,7 +117,7 @@ describe('Testing render component correctly', () => {
         let option1 = await rendered.findByTestId('option1')
         let option2 = await rendered.findByTestId('option2')
         let votingDescription = await rendered.findByText('testing description')
-        let editButton = await rendered.findByText('Editar votación')
+        let editButton = await rendered.findByText('Guardar')
         let openingHour = await rendered.findByTestId('openingField')
         let closingHour = await rendered.findByTestId('closingField')
 
@@ -156,7 +156,6 @@ describe('Testing render component correctly', () => {
 
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
-        screen.debug()
         let alreadyBegunAlert = await rendered.findByText('No puedes editar votaciones ya comenzadas')
         expect(alreadyBegunAlert).toBeInTheDocument()
         
@@ -270,7 +269,7 @@ describe('Behaviour testing', () => {
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)
 
-        let editButton = await rendered.findByText('Editar votación')
+        let editButton = await rendered.findByText('Guardar')
         let descriptionField = await rendered.findByText('testing description')
         let titleField = await rendered.findByTestId('titleField')
 
@@ -301,7 +300,7 @@ describe('Behaviour testing', () => {
         let titleField = await rendered.findByTestId('titleField')
         let closingField = await rendered.findByTestId('closingField')
         let openingField = await rendered.findByTestId('openingField')
-        let editButton = await rendered.findByText('Editar votación')
+        let editButton = await rendered.findByText('Guardar')
         let deleteButton = await rendered.findByText('Eliminar')
 
         await act(async () => {

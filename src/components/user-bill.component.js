@@ -27,7 +27,6 @@ export default class UserBillDetails extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.match.params.id);
     this.isClient();
     this.getBill(this.props.match.params.id);
   }
@@ -47,7 +46,6 @@ export default class UserBillDetails extends Component {
       this.setState({
         billActual: res.data
       })
-      console.log(res.data);
     })
       .catch(e => {
         console.log(e);

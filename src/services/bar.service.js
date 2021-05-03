@@ -6,8 +6,12 @@ class BarDataService {
         return http.get("/bares");
     }
 
-    getAllWithCapacity() {
-        return http.get("/bar/capacity", {headers: authHeader()})
+    getAllWithCapacity(location) {
+        return http.post("/bar/capacity", location, {headers: authHeader()})
+    }
+
+    getBarsMap(object) {
+        return http.post("/bar/map", object, { headers: authHeader() })
     }
 
     getBar(id) {
@@ -24,6 +28,10 @@ class BarDataService {
 
     deleteImage(barId, imgId) {
         return http.delete("/bar/" + barId + "/image/" + imgId, {headers: authHeader()})
+    }
+
+    searchBars(text, location){
+        return http.post("/bar/search/" + text, location ,{headers: authHeader()})
     }
 }
 

@@ -1,7 +1,6 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
-import { makeStyles } from '@material-ui/core/styles'
-import { createMuiTheme } from '@material-ui/core/styles';
+import { makeStyles, createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
@@ -12,6 +11,7 @@ import Votings from './pages/VotingList'
 import VotingDetailUser from './pages/VotingDetail'
 import CreateItem from './pages/Menu/CreateItemMenu'
 import EditItem from './pages/Menu/EditItemMenu'
+import ServiceTerms from "./pages/ServiceTerms";
 
 import BarCreate from "./pages/BarCreate"
 import BarUpdate from "./pages/BarUpdate"
@@ -22,7 +22,7 @@ import EditVoting from './pages/VotingEdit'
 import Header from './components/Header'
 
 import clsx from 'clsx'
-import EmployeeList from './components/employee-list.component'
+import EmployeeList from './pages/EmployeeList'
 import Mesas from './pages/Mesas'
 import BottomBar from './components/bottom-bar'
 import useUser from './hooks/useUser'
@@ -30,7 +30,6 @@ import BarTableDetails from './components/BarTableDetails.component'
 import UserMenuDetails from './components/user-menu.component'
 import UserBillDetails from './components/user-bill.component'
 import MenuGestion from './components/menu.component'
-import { ThemeProvider } from '@material-ui/core/styles';
 
 
 import Bar from './pages/Bar'
@@ -43,7 +42,7 @@ import AccessDenied from './pages/AccessDenied'
 
 import CreateEmployee from './pages/EmployeeCreate'
 import UpdateEmployee from './pages/EmployeeUpdate'
-import EmployeeDetails from './components/employee-details.component'
+import EmployeeDetails from './pages/EmployeeDetails'
 import Checkout from './pages/Checkout'
 import Subscribe from './pages/Subscribe'
 
@@ -119,7 +118,6 @@ const theme = createMuiTheme({
 export function App() {
   const classes = useStyles()
   const { isLogged } = useUser()
-  const changeAndReload = false
   return (
     <div className={classes.root}>
       <ThemeProvider theme={theme}>
@@ -132,11 +130,12 @@ export function App() {
           <div className={classes.drawerHeader} />
           <Switch>
             <Route exact path={'/'} component={Home} />
-            <PrivateRoute exact path={'/bares'} component={BarList} />
             <Route exact path={'/mesas/:barId'} component={Mesas} />
             <Route exact path={'/login'} component={Login} />
             <Route exact path={'/signup'} component={Signup} />
             <Route exact path={'/profile'} component={Profile} />
+            <Route exact path={'/terms'} component={ServiceTerms} />
+            <PrivateRoute exact path={'/bares'} component={BarList} />
             <PrivateRoute exact path={'/bares/create'} component={BarCreate} />
             <PrivateRoute exact path={'/bares/:barId'} component={Bar} />
             <PrivateRoute exact path={'/bares/:barId/update'} component={BarUpdate} />
@@ -158,32 +157,15 @@ export function App() {
             <PrivateRoute exact path={'/bar/:idBar/employees/:user'} component={EmployeeDetails} />
             <PrivateRoute exact path={'/bares/:idBar/menu/itemMenu'} component={CreateItem} />
             <PrivateRoute exact path={'/bares/:idBar/menu/itemMenu/:idItemMenu'} component={EditItem} />
-            
-            <PrivateRoute
-              exact
-              path={'/payments/subscriptions'}
-              component={Subscriptions}
-            />
-            <PrivateRoute
-              exact
-              path={'/payments/add-card'}
-              component={Checkout}
-            />
-            <PrivateRoute
-              exact
-              path={'/payments/subscribe/:id'}
-              component={Subscribe}
-            />
-            <PrivateRoute
-              exact
-              path={'/payments/cancel/:id'}
-              component={Checkout}
-            />
+            <PrivateRoute exact path={'/payments/subscriptions'} component={Subscriptions} />
+            <PrivateRoute exact path={'/payments/add-card'} component={Checkout} />
+            <PrivateRoute exact path={'/payments/subscribe/:id'} component={Subscribe} />
+            <PrivateRoute exact path={'/payments/cancel/:id'} component={Checkout} />
             <PrivateRoute component={NotFoundPage} />
           </Switch>
         </main>
         <div className={classes.colorBar}>
-          <BottomBar props={changeAndReload} />
+          <BottomBar />
         </div>
       </ThemeProvider>
     </div>

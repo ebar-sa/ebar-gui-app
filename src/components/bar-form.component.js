@@ -13,6 +13,12 @@ import Alert from "@material-ui/lab/Alert";
 import React, {useEffect, useState} from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import BarDataService from "../services/bar.service";
+import {getCurrentUser} from "../services/auth";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import {useHistory} from "react-router-dom";
 
 const useStyles = makeStyles(() => ({
 
@@ -35,7 +41,9 @@ const useStyles = makeStyles(() => ({
 }))
 
 export default function BarForm(props) {
+    const history = useHistory()
     const classes = useStyles()
+    const user = getCurrentUser()
     const [state, setState] = useState({
         name: '',
         description: '',
@@ -48,8 +56,11 @@ export default function BarForm(props) {
     const [openingTimeError, setOpeningTimeError] = useState('')
     const [closingTimeError, setClosingTimeError] = useState('')
     const [errors, setErrors] = useState({})
+    const [openBraintreeDialog, setOpenBraintreeDialog] = useState(!(user.braintreeMerchantId && user.braintreePublicKey && user.braintreePrivateKey))
     const [axiosError, setAxiosError] = useState(false)
     const [openSubmitIncorrect, setOpenSubmitIncorrect] = useState(false)
+
+    const braintreeLogo = require('../static/images/braintree-logo-black.png');
 
     useEffect( () => {
         setState(props.bar)
@@ -167,6 +178,10 @@ export default function BarForm(props) {
         setOpenSubmitIncorrect(false)
     };
 
+    const handleCloseDialog = () => {
+        setOpenBraintreeDialog(false)
+    };
+
     const handleOpeningTimeChange = (time) => {
         setOpeningTime(time)
         if (time === undefined || isNaN(time) || time === null) {
@@ -190,7 +205,6 @@ export default function BarForm(props) {
             const fr = new FileReader()
             fr.onload = () => {
                 let blob = btoa(fr.result)
-                console.log(blob)
                 let object = {
                     "fileName": f.name,
                     "fileType": f.type,
@@ -365,6 +379,33 @@ export default function BarForm(props) {
                                 Ha ocurrido un error al procesar la petición. Inténtelo de nuevo más tarde.
                             </Alert>
                         </Snackbar>
+                        <Dialog open={openBraintreeDialog}
+                                onClose={handleCloseDialog}
+                                aria-labelledby="form-dialog-title">
+                            <DialogTitle id="form-dialog-title">Regístrate en Braintree</DialogTitle>
+                            <DialogContent>
+                                <div align={"center"}>
+                                    <img src={braintreeLogo.default} width={"50%"} alt={""}/>
+                                </div>
+                                <Typography variant={"body1"} className='h5' gutterBottom>
+                                    Regístrate en Braintree para ofrecer a tus clientes el pago de la cuenta a través de
+                                    la aplicación. Solo te llevará unos minutos. Puedes hacerlo
+                                    desde <a href={"https://www.braintreepayments.com/es/sandbox"} target={"_blank"} rel={"noreferrer"}>este enlace.</a> Una
+                                    vez te registres, debes añadir tu clave de comercio, tu clave pública y tu clave privada
+                                    a tu cuenta de usuario.
+                                </Typography>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={() => {
+                                    history.push({pathname: '/profile', state: {data: true}})
+                                }} color="primary">
+                                    Añadir las claves
+                                </Button>
+                                <Button onClick={handleCloseDialog} color="secondary">
+                                    Más tarde
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
 
                     </div>
                 </form>

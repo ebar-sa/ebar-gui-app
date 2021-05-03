@@ -1,17 +1,16 @@
 import React from 'react';
 import { Router } from 'react-router-dom';
-import {act, render, queryByAttribute, fireEvent} from "@testing-library/react";
+import {act, render, fireEvent} from "@testing-library/react";
 import Adapter from 'enzyme-adapter-react-16'
 import Enzyme from 'enzyme';
 
 import { createMemoryHistory } from 'history';
 import MockAdapter from 'axios-mock-adapter';
 
-import Context from '../context/UserContext';
+import {UserContextProvider} from '../context/UserContext';
 import http from '../http-common';
 import BarTableDetails from '../components/BarTableDetails.component';
-import BottomBar from '../components/bottom-bar';
-const setAuth = jest.fn()
+
 const mockAxios = new MockAdapter(http)
 const history = createMemoryHistory()
 
@@ -22,6 +21,15 @@ const auth = {
     tokenType:"Bearer",
     accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pMyIsImlhdCI6MTYxNzMyNjA3NywiZXhwIjoxNjE3NDEyNDc3fQ.Hcpf9naGfM1FiQ6CEdBMthcsa9m9rIHs7ae4zaiO7MCPKAT3HpK9Is5fAKbuu7MlF4bLuTN2qctRalxTz8elQg"
 }
+
+const clientAuth = {
+    username: "test-client",
+    email: "test@client.com",
+    roles: ["ROLE_CLIENT"],
+    tokenType:"Bearer",
+    accessToken: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkYW5pMyIsImlhdCI6MTYxNzMyNjA3NywiZXhwIjoxNjE3NDEyNDc3fQ.Hcpf9naGfM1FiQ6CEdBMthcsa9m9rIHs7ae4zaiO7MCPKAT3HpK9Is5fAKbuu7MlF4bLuTN2qctRalxTz8elQg"
+}
+
 const detailsDataLibre = {
     0:{
         "id" : 1,
@@ -129,19 +137,89 @@ const detailsDataTableOcupated = {
     }
 }
 
+const tableWithItemsInBill = {
+    0:{
+        "id" : 1,
+        "name": "Mesa 1",
+        "token": "jdh-256",
+        "free": false,
+        "seats": 5,
+        "bar_id": null,
+        "trabajador_id": null,
+    },
+    1:{
+        "id": 3,
+        "items": [
+            {
+                "id": 10,
+                "name": "Salmorejo",
+                "description": "descripcion",
+                "rationType": "RATION",
+                "price": 5.5,
+                "category": {
+                    "id": 1,
+                    "name": "picoteamos",
+                    "new": false
+                },
+                "image": {
+                    "id": 1,
+                    "fileName": "name",
+                    "fileType": "type",
+                    "data": null,
+                    "new": false
+                },
+                "new": false
+            }
+        ]
+    },
+    2:{
+        "id": 1,
+        "itemBill": [
+            {
+                "id": 1,
+                "amount": 3,
+                "itemMenu": {
+                    "id": 1,
+                    "name": "Ensaladilla",
+                    "description": "descripcion",
+                    "rationType": "RATION",
+                    "price": 2.5,
+                    "category": {
+                        "id": 1,
+                        "name": "picoteamos",
+                        "new": false
+                    },
+                    "image": {
+                        "id": 1,
+                        "fileName": "name",
+                        "fileType": "type",
+                        "data": null,
+                        "new": false
+                    },
+                    "new": false
+                },
+                "new": false
+            }
+        ]
+    }
+}
+
 function renderDetailsFormAdmin(auth) {
+    window.sessionStorage.setItem("user", JSON.stringify(auth))
     return render(
-        <Context.Provider value={{auth, setAuth}}>
+        <UserContextProvider>
             <Router history={history} >
                 <BarTableDetails {...{match: {params: {id: 1}}}}/>
             </Router>
-        </Context.Provider>)
+        </UserContextProvider>)
 
 }
+
 describe('Render test suite', () => {
     beforeEach(() => {
         Enzyme.configure({adapter: new Adapter()});
     })
+
     it('Render with a correct Free BarTable', async () => {
         mockAxios.onGet().replyOnce(200, detailsDataLibre)
         window.sessionStorage.setItem("user",JSON.stringify(auth));
@@ -171,12 +249,10 @@ describe('Render test suite', () => {
         await act(() => promise)
 
         let name = await rendered.findByText('Mesa 1')
-        let token = await rendered.findByText('jdh-256')
         let estadoMesa = await rendered.findByText('Ocupada')
         let botonDesocupar = await rendered.findByText('Desocupar Manualmente')
 
         expect(name).toBeInTheDocument()
-        expect(token).toBeInTheDocument()
         expect(estadoMesa).toBeInTheDocument()
         expect(botonDesocupar).toBeInTheDocument()
 
@@ -186,7 +262,6 @@ describe('Render test suite', () => {
     it('Render with a correct Ocupate BarTable with botton', async () => {
         mockAxios.onGet().replyOnce(200, detailsDataLibre)
         mockAxios.onGet().replyOnce(200,detailsDataTableOcupated);
-        window.sessionStorage.setItem("user",JSON.stringify(auth));
         let rendered = renderDetailsFormAdmin(auth);
 
         let promise = new Promise(r => setTimeout(r, 350));
@@ -205,7 +280,6 @@ describe('Render test suite', () => {
     it('Render with a correct Desocupate BarTable with botton', async () => {
         mockAxios.onGet().replyOnce(200, detailsDataTableOcupated)
         mockAxios.onGet().replyOnce(200,detailsDataLibre);
-        window.sessionStorage.setItem("user",JSON.stringify(auth));
         let rendered = renderDetailsFormAdmin(auth);
 
         let promise = new Promise(r => setTimeout(r, 350));
@@ -221,8 +295,5 @@ describe('Render test suite', () => {
         expect(rendered.findByText('Volver'));
 
     })
-
-    
-
 
 });

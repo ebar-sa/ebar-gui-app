@@ -252,10 +252,9 @@ describe('Render test suite', () => {
 
         let payButton = await rendered.getByRole('button', {name: /Pagar/i})
 
-        fireEvent.click(payButton, { button: 0 })
-
-        promise = new Promise(r => setTimeout(r, 500));
-        await act(() => promise)
+        await act(async () => {
+            fireEvent.click(payButton, { button: 0 })
+        })
 
         let success = await rendered.getByTestId("pay-processing")
         expect(success).toBeTruthy()

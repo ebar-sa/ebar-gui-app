@@ -366,25 +366,3 @@ describe('Render first test suite', () => {
     }, 8000)
 
 })
-
-    describe('Render fourth test suite', () => {
-    it('Render with a correct order all phone', async () => {
-        global.innerWidth = 500;
-        mockAxios.onGet().replyOnce(200, detailsDataTableOcupated)
-        let rendered = renderDetailsFormAdmin(auth);
-
-        let promise = new Promise(r => setTimeout(r, 350));
-        await act(() => promise)
-
-        let orders = await rendered.getByRole('button', { name: /PEDIDOS Y CUENTA/i })
-        await act(async () => {
-            fireEvent.click(orders)
-        })
-        let deliver = await rendered.getByRole('button', { name: /Todo/i })
-        await act(async () => {
-            fireEvent.click(deliver)
-            mockAxios.onGet().replyOnce(200, bill)
-        })
-
-    }, 8000)
-    })

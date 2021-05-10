@@ -725,6 +725,7 @@ export default class BarTableDetails extends Component {
                                     {isAdmin ? (
                                       <div>
                                         <Button
+                                          id="order"
                                           variant="contained"
                                           size="small"
                                           color="primary"
@@ -751,6 +752,7 @@ export default class BarTableDetails extends Component {
                                         </Button>
 
                                         <Button
+                                          id="remove"
                                           variant="contained"
                                           size="small"
                                           color="primary"

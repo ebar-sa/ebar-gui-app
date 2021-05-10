@@ -251,7 +251,9 @@ function renderDetailsFormAdmin(auth) {
 
 const paymentSet = {'paymentSet':true}
 
-describe('Render barTableDetails test suite', () => {
+
+
+describe('Render first test suite', () => {
     beforeEach(() => {
         Enzyme.configure({adapter: new Adapter()});
     })
@@ -291,44 +293,6 @@ describe('Render barTableDetails test suite', () => {
         expect(name).toBeInTheDocument()
         expect(estadoMesa).toBeInTheDocument()
         expect(botonDesocupar).toBeInTheDocument()
-
-    })
-
-    it('Render with a correct Ocupate BarTable client', async () => {
-
-        mockAxios.onGet().replyOnce(200, detailsDataTableOcupated)
-        
-        window.sessionStorage.setItem("user", JSON.stringify(auth));
-        let rendered = renderDetailsFormAdmin(clientAuth);
-
-        let promise = new Promise(r => setTimeout(r, 350));
-        await act(() => promise)
-
-        let title = await rendered.findByText('Ya tienes ocupada la mesa, ¡disfruta de tu estancia!')
-        let info = await rendered.findByText('Información')
-        let state = await rendered.findByText('ESTADO:')
-        let seats = await rendered.findByText('ASIENTOS: 5')
-        let refresh = await rendered.getByRole('button', { name: /Refrescar comanda/i })
-        let amount = await rendered.getByRole('spinbutton', { name: /Cantidad/i })
-        fireEvent.change(amount, { target: { value: '2' } })
-        expect(amount.value).toBe('2')
-
-        let add = await rendered.getByRole('button', { name: /Añadir/i })
-
-        await act(async () => {
-            fireEvent.click(add)
-        })
-
-        await act(async () => {
-            fireEvent.click(refresh)
-        })
-
-        expect(title).toBeInTheDocument()
-        expect(info).toBeInTheDocument()
-        expect(state).toBeInTheDocument()
-        expect(seats).toBeInTheDocument()
-        expect(refresh).toBeInTheDocument()
-
     })
 
     it('Render with a correct Ocupate BarTable client2', async () => {
@@ -358,10 +322,9 @@ describe('Render barTableDetails test suite', () => {
             expect(total[0]).toBeInTheDocument()
             let pay = await rendered.getByRole('button', { name: /Pagar cuenta/i })
             expect(pay).toBeInTheDocument()
-            fireEvent.click(pay)
-            
+            fireEvent.click(pay)  
         })
-    },9000)
+    },11000)
 
     it('Render with a correct Ocupate BarTable with button', async () => {
         mockAxios.onGet().replyOnce(200, detailsDataLibre)
@@ -402,151 +365,9 @@ describe('Render barTableDetails test suite', () => {
 
     }, 8000)
 
-    it('Render with a correct order', async () => {
-        mockAxios.onGet().replyOnce(200, detailsDataTableOcupated)
-        let rendered = renderDetailsFormAdmin(auth);
+})
 
-        let promise = new Promise(r => setTimeout(r, 350));
-        await act(() => promise)
-
-        let deliver = await rendered.getByRole('button', { name: /Entregado/i })
-
-        await act(async () => {
-            fireEvent.click(deliver)
-        })
-
-    }, 8000)
-
-    it('Render with a correct order all', async () => {
-        mockAxios.onGet().replyOnce(200, detailsDataTableOcupated)
-        let rendered = renderDetailsFormAdmin(auth);
-
-        let promise = new Promise(r => setTimeout(r, 350));
-        await act(() => promise)
-
-        let deliver = await rendered.getByRole('button', { name: /Entregar todo/i })
-
-        await act(async () => {
-            fireEvent.click(deliver)
-            mockAxios.onGet().replyOnce(200, bill)
-        })
-
-    }, 8000)
-
-    it('Render with a correct remove', async () => {
-        mockAxios.onGet().replyOnce(200, detailsDataTableOcupated)
-        let rendered = renderDetailsFormAdmin(auth);
-
-        let promise = new Promise(r => setTimeout(r, 350));
-        await act(() => promise)
-
-        let remove = await rendered.getByRole('button', { name: /Eliminar/i })
-
-        await act(async () => {
-            fireEvent.click(remove)
-            mockAxios.onGet().replyOnce(200, { 'id': 1, 'itemBill': [] })
-        })
-        mockAxios.onGet().replyOnce(200, detailsDataTableOcupatedWithoutBill)
-        let order = await rendered.queryByText('Entregar todo')
-        expect(order).not.toBeInTheDocument()
-    }, 8000)
-
-
-});
-
-describe('Render barTableDetails test phone', () => {
-
-    beforeEach(() => {
-        Enzyme.configure({ adapter: new Adapter() });
-    })
-
-    it('Render with a correct Ocupate BarTable client phone', async () => {
-        global.innerWidth = 500;
-        mockAxios.onGet().replyOnce(200, detailsDataTableOcupated)
-        mockAxios.onGet().replyOnce(200, paymentSet)
-
-        window.sessionStorage.setItem("user", JSON.stringify(clientAuth));
-        let rendered = renderDetailsFormAdmin(clientAuth);
-
-        let promise = new Promise(r => setTimeout(r, 350));
-        await act(() => promise)
-
-        let amount = await rendered.getByRole('spinbutton', { name: /Cantidad/i })
-        fireEvent.change(amount, { target: { value: '2' } })
-        expect(amount.value).toBe('2')
-
-        let add = await rendered.getByRole('button', { name: /Añadir/i })
-        let orders = await rendered.getByRole('button', { name: /PEDIDOS Y CUENTA/i })
-
-        await act(async () => {
-            fireEvent.click(add)
-            mockAxios.onGet().replyOnce(200, bill)
-
-        })
-        expect(orders).toBeInTheDocument()
-        fireEvent.click(orders)
-        mockAxios.onGet().replyOnce(200, detailsDataTableOcupated)
-        mockAxios.onGet().replyOnce(200, paymentSet)
-        let total = await rendered.getAllByRole('cell', { name: /7.5 €/i })
-        expect(total[0]).toBeInTheDocument()
-
-    }, 9000)
-
-   
-    it('Render with a correct Ocupate BarTable with button phone', async () => {
-        global.innerWidth = 500;
-        mockAxios.onGet().replyOnce(200, detailsDataLibre)
-        let rendered = renderDetailsFormAdmin(auth);
-
-        let promise = new Promise(r => setTimeout(r, 350));
-        await act(() => promise)
-
-        let ocupate = await rendered.getByRole('button', { name: /Ocupar Manualmente/i })
-
-        await act(async () => {
-            fireEvent.click(ocupate)
-        })
-
-    }, 8000)
-
-    
-    it('Render with a correct Desocupate BarTable with botton phone', async () => {
-        global.innerWidth = 500;
-        mockAxios.onGet().replyOnce(200, detailsDataTableOcupated)
-        let rendered = renderDetailsFormAdmin(auth);
-
-        let promise = new Promise(r => setTimeout(r, 350));
-        await act(() => promise)
-
-        let desocupate = await rendered.getByRole('button', { name: /Desocupar Manualmente/i })
-
-        await act(async () => {
-            fireEvent.click(desocupate)
-        })
-
-        expect(rendered.findByText('Volver'));
-
-    }, 8000)
-
-    
-    it('Render with a correct order phone', async () => {
-        global.innerWidth = 500;
-        mockAxios.onGet().replyOnce(200, detailsDataTableOcupated)
-        let rendered = renderDetailsFormAdmin(auth);
-
-        let promise = new Promise(r => setTimeout(r, 350));
-        await act(() => promise)
-
-        let orders = await rendered.getByRole('button', { name: /PEDIDOS Y CUENTA/i })
-        fireEvent.click(orders)
-        let deliver = await rendered.container.querySelector('#order');
-
-        await act(async () => {
-            fireEvent.click(deliver)
-        })
-
-    },8000)
-
+    describe('Render fourth test suite', () => {
     it('Render with a correct order all phone', async () => {
         global.innerWidth = 500;
         mockAxios.onGet().replyOnce(200, detailsDataTableOcupated)
@@ -566,26 +387,4 @@ describe('Render barTableDetails test phone', () => {
         })
 
     }, 8000)
-
-    it('Render with a correct remove phone', async () => {
-        global.innerWidth = 500;
-        mockAxios.onGet().replyOnce(200, detailsDataTableOcupated)
-        let rendered = renderDetailsFormAdmin(auth);
-
-        let promise = new Promise(r => setTimeout(r, 350));
-        await act(() => promise)
-
-        let orders = await rendered.getByRole('button', { name: /PEDIDOS Y CUENTA/i })
-        await act(async () => {
-            fireEvent.click(orders)
-        })
-        let remove = await rendered.container.querySelector('#remove');
-        await act(async () => {
-            fireEvent.click(remove)
-            mockAxios.onGet().replyOnce(200, { 'id': 1, 'itemBill': [] })
-        })
-        mockAxios.onGet().replyOnce(200, detailsDataTableOcupatedWithoutBill)
-        let order = await rendered.queryByText('Entregar todo')
-        expect(order).not.toBeInTheDocument()
-    }, 8000)
-})
+    })

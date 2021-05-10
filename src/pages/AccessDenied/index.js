@@ -1,5 +1,4 @@
 import React from 'react';
-//import PageNotFound from '../img/barClosed.png';
 import { useHistory } from "react-router"
 import {Button} from '@material-ui/core';
 

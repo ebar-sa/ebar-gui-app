@@ -64,7 +64,7 @@ describe("BarUpdate test suite", () => {
 
     it("Render form correctly", async () => {
 
-        window.sessionStorage.setItem("user", JSON.stringify(auth))
+        window.localStorage.setItem("user", JSON.stringify(auth))
         mockAxios.onGet().replyOnce(200, bar)
 
         let rendered = render(
@@ -98,7 +98,7 @@ describe("BarUpdate test suite", () => {
     })
 
     it("404 error", async () => {
-        window.sessionStorage.setItem("user", JSON.stringify(auth))
+        window.localStorage.setItem("user", JSON.stringify(auth))
         const spy = jest.spyOn(history, 'push')
         mockAxios.onGet().replyOnce(404, bar)
 
@@ -121,7 +121,7 @@ describe("BarUpdate test suite", () => {
 
         const spy = jest.spyOn(history, 'push')
         mockAxios.onGet().replyOnce(200, bar)
-        window.sessionStorage.setItem("user", JSON.stringify(wrongAuth))
+        window.localStorage.setItem("user", JSON.stringify(wrongAuth))
 
         let rendered = render(
             <UserContextProvider>
@@ -140,7 +140,7 @@ describe("BarUpdate test suite", () => {
 
     it("Correct submit", async () => {
 
-        window.sessionStorage.setItem("user", JSON.stringify(auth))
+        window.localStorage.setItem("user", JSON.stringify(auth))
         mockAxios.onGet().replyOnce(200, bar)
         mockAxios.onPut().replyOnce(200, bar)
 

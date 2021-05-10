@@ -481,12 +481,11 @@ function EditVoting(props) {
                 </div>
                 :
                 <div>
-                    {showPublishedVotingAlert ?
+                    {showPublishedVotingAlert &&
                         <Alert icon={false} severity="warning">
                             No puedes editar votaciones ya comenzadas
                         </Alert>
-                        :
-                        <div></div>}
+                    }
                     <Button
                         variant="contained"
                         color="primary"

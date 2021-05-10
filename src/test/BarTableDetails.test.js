@@ -205,7 +205,7 @@ const tableWithItemsInBill = {
 }
 
 function renderDetailsFormAdmin(auth) {
-    window.sessionStorage.setItem("user", JSON.stringify(auth))
+    window.localStorage.setItem("user", JSON.stringify(auth))
     return render(
         <UserContextProvider>
             <Router history={history} >
@@ -222,7 +222,7 @@ describe('Render test suite', () => {
 
     it('Render with a correct Free BarTable', async () => {
         mockAxios.onGet().replyOnce(200, detailsDataLibre)
-        window.sessionStorage.setItem("user",JSON.stringify(auth));
+        window.localStorage.setItem("user",JSON.stringify(auth));
         global.innerWidth = 1025;
         window.dispatchEvent(new Event('resize'));
         let rendered = renderDetailsFormAdmin(auth);
@@ -242,7 +242,7 @@ describe('Render test suite', () => {
     })
     it('Render with a correct Ocupate BarTable', async () => {
         mockAxios.onGet().replyOnce(200, detailsDataTableOcupated)
-        window.sessionStorage.setItem("user",JSON.stringify(auth));
+        window.localStorage.setItem("user",JSON.stringify(auth));
         let rendered = renderDetailsFormAdmin(auth);
 
         let promise = new Promise(r => setTimeout(r, 350));

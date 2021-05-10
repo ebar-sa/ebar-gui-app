@@ -192,7 +192,7 @@ describe('Testing Voting list', () => {
 
         mockAxios.onGet().replyOnce(200, votings)
         mockAxios.onGet().replyOnce(200, barList)
-        window.sessionStorage.setItem("user", JSON.stringify(admin));
+        window.localStorage.setItem("user", JSON.stringify(admin));
         let rendered = renderVotingsUser(admin)
 
         let promise = new Promise(r => setTimeout(r, 250));
@@ -298,7 +298,7 @@ describe('Testing Voting list', () => {
         mockAxios.onGet().replyOnce(200, barList)
         mockAxios.onPost().replyOnce(200)
         let rendered = renderVotingsUser(admin)
-        window.sessionStorage.setItem("user", JSON.stringify(admin));
+        window.localStorage.setItem("user", JSON.stringify(admin));
 
         let promise = new Promise(r => setTimeout(r, 250));
         await act(() => promise)

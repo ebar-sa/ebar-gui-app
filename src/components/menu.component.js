@@ -36,6 +36,7 @@ export default class Menu extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleShowModal = this.handleShowModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
+    this.handleSuccessfulDelete = this.handleSuccessfulDelete.bind(this);
     this.state = {
       mapa: {},
       idBar: this.props.match.params.idBar,
@@ -103,12 +104,16 @@ export default class Menu extends Component {
       })
   }
 
+  handleSuccessfulDelete = (response) => {
+    if (response.status === 200) {
+      this.props.history.go(0);
+    }
+  }
+
   deleteItem(idBar, idItemMenu) {
     MenuDataService.deleteItem(idBar, idItemMenu)
       .then((response) => {
-        if (response.status === 200) {
-          this.props.history.go(0);
-        }
+        this.handleSuccessfulDelete(response)
       })
       .catch((error) => {
         this.setState({
@@ -121,9 +126,7 @@ export default class Menu extends Component {
   deleteImage(idBar, idItemMenu) {
     MenuDataService.deleteImage(idBar, idItemMenu)
       .then((response) => {
-        if (response.status === 200) {
-          this.props.history.go(0);
-        }
+        this.handleSuccessfulDelete(response)
       })
       .catch((error) => {
         this.props.history.push('/pageNotFound/');

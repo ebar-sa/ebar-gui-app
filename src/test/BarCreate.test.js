@@ -33,7 +33,7 @@ describe("BarCreate test suite", () => {
 
     it("BarCreate render form successfully", async () => {
 
-        window.sessionStorage.setItem("user", JSON.stringify(auth))
+        window.localStorage.setItem("user", JSON.stringify(auth))
 
         let rendered = render(
             <UserContextProvider>
@@ -65,7 +65,7 @@ describe("BarCreate test suite", () => {
 
     it("Fill the form with valid values", async () => {
 
-        window.sessionStorage.setItem("user", JSON.stringify(auth))
+        window.localStorage.setItem("user", JSON.stringify(auth))
 
         let rendered = render(
             <UserContextProvider>
@@ -103,7 +103,7 @@ describe("BarCreate test suite", () => {
 
     it("Fill the form with incorrect values", async () => {
 
-        window.sessionStorage.setItem("user", JSON.stringify(auth))
+        window.localStorage.setItem("user", JSON.stringify(auth))
 
         let rendered = render(
             <UserContextProvider>
@@ -132,7 +132,7 @@ describe("BarCreate test suite", () => {
 
     it("Correct submit", async () => {
 
-        window.sessionStorage.setItem("user", JSON.stringify(auth))
+        window.localStorage.setItem("user", JSON.stringify(auth))
         mockAxios.onPost().replyOnce(201, {}, {"location": "/bares/1"})
 
         let rendered = render(
@@ -174,7 +174,7 @@ describe("BarCreate test suite", () => {
     })
 
     it("Incorrect submit", async () => {
-        window.sessionStorage.setItem("user", JSON.stringify(auth))
+        window.localStorage.setItem("user", JSON.stringify(auth))
         mockAxios.onPost().replyOnce(201)
 
         let rendered = render(
@@ -218,7 +218,7 @@ describe("BarCreate test suite", () => {
 
     it("Add images to form", async () => {
 
-        window.sessionStorage.setItem("user", JSON.stringify(auth))
+        window.localStorage.setItem("user", JSON.stringify(auth))
 
         var file1 = new File(["foo"], "foo.png", {
             type: "image/png",

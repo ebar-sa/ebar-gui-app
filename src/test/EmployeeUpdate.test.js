@@ -84,7 +84,7 @@ describe('Testing render component correctly', () => {
     it('Render form with correct inital data', async() => {
         mockAxios.onGet().replyOnce(200, bar)
         mockAxios.onGet().replyOnce(200, correctEmployeeDummy)
-        window.sessionStorage.setItem("user",JSON.stringify(auth))
+        window.localStorage.setItem("user",JSON.stringify(auth))
         let rendered = renderComponent()
         
 
@@ -101,7 +101,7 @@ describe('Testing render component correctly', () => {
         mockAxios.onGet().replyOnce(200, bar)
         mockAxios.onGet().replyOnce(200, correctEmployeeDummy)
         mockAxios.onPut().replyOnce(200)
-        window.sessionStorage.setItem("user",JSON.stringify(auth))
+        window.localStorage.setItem("user",JSON.stringify(auth))
 
         let rendered = renderComponent()
 

@@ -12,7 +12,7 @@ import {green, red} from '@material-ui/core/colors';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
 import CarouselSlide from '../../components/CarouselSlide';
-import {ChevronLeft, ChevronRight} from '@material-ui/icons';
+import {ChevronLeft, ChevronRight, InfoOutlined, ReportProblemOutlined, ErrorOutlineOutlined} from '@material-ui/icons';
 import Slide from '@material-ui/core/Slide';
 import useUser from '../../hooks/useUser';
 import EditIcon from '@material-ui/icons/Edit';
@@ -29,7 +29,7 @@ import Dialog from '@material-ui/core/Dialog';
 import TextField from '@material-ui/core/TextField';
 import MesaDataService from '../../services/barTable.service';
 import Alert from '@material-ui/lab/Alert';
-import BottomBar from '../../components/bottom-bar';
+import BottomBar from '../../components/SimpleBottomNavigation';
 import Footer from "../../components/Footer";
 import Container from "@material-ui/core/Container";
 
@@ -77,6 +77,22 @@ const useStyles = makeStyles((theme) => ({
     colorBar: {
         backgroundColor: 'white',
     },
+    barClosed: {
+        color: "#611a15",
+        backgroundColor: "#fdecea"
+    },
+    barOpened: {
+        color: "#214d6f",
+        backgroundColor: "#e8f4fd"
+    },
+    barCloseToClosing: {
+        color: "#663c00",
+        backgroundColor: "#fff4e5"
+    },
+    gridMarginTop: {
+        marginTop: "20px"
+    }
+
 }));
 
 const logo = require('../../img/no-image.png');
@@ -99,6 +115,7 @@ export default function Bar(props) {
     const [hasBarTable, setHasBarTable] = useState(false);
     const [barTable, setBarTable] = useState({});
     const [bar, setBar] = useState({});
+    const [barState, setBarState] = useState('');
     const [index, setIndex] = useState(0);
     const [slideIn, setSlideIn] = useState(true);
     const [slideDirection, setSlideDirection] = useState('down');
@@ -131,6 +148,20 @@ export default function Bar(props) {
                 }
             });
     }, [barId, history]);
+
+    useEffect(() => {
+        let opening = bar.openingTime? new Date(bar.openingTime) : new Date()
+        let openingMins = opening.getHours() * 60 + opening.getMinutes()
+        let closing = bar.closingTime? new Date(bar.closingTime) : new Date()
+        let closingMins = closing.getHours() * 60 + closing.getMinutes()
+        let now = new Date();
+        let nowMins = now.getHours() * 60 + now.getMinutes()
+        if (nowMins >= openingMins && nowMins <= closingMins) {
+            return Math.abs(nowMins - closingMins) > 60? setBarState("info") : setBarState("warning")
+        } else {
+            return setBarState("error")
+        }
+    }, [bar]);
 
     useEffect(() => {
         if (isClient && hasBarTable === false) {
@@ -198,14 +229,14 @@ export default function Bar(props) {
         setOpenSubmitIncorrect(false);
     };
 
-    function automaticOcuppatioWithToken() {
+    function automaticOccupationWithToken() {
         if (token === '') {
             setOpenSubmitIncorrect(true);
         }
         MesaDataService.ocupateBarTableByToken(token.token, barId)
             .then((res) => {
-                MesaDataService.getBarClient(auth.username).then((res) =>
-                    updateCurrentBar(res.data)
+                MesaDataService.getBarClient(auth.username).then((result) =>
+                    updateCurrentBar(result.data)
                 );
                 if (res.status === 200) {
                     history.push(`/mesas/detallesMesa/${res.data.id}`);
@@ -220,6 +251,46 @@ export default function Bar(props) {
     const handleChange = (event) => {
         setToken({...token, [event.target.name]: event.target.value});
     };
+
+    const stateMessage = () => {
+        if (barState === 'info') {
+            return 'abierto'
+        } else if (barState === 'warning') {
+            return 'próximo a cerrar'
+        } else {
+            return 'cerrado'
+        }
+    }
+
+    const barStateClassName = () => {
+        if (barState === 'info') {
+            return classes.barOpened
+        } else if (barState === 'warning') {
+            return classes.barCloseToClosing
+        } else {
+            return classes.barClosed
+        }
+    }
+
+    const barStateIcon = () => {
+        if (barState === 'info') {
+            return <InfoOutlined style={{color: "#349ff3"}}/>
+        } else if (barState === 'warning') {
+            return <ReportProblemOutlined style={{color: "#ffa016"}}/>
+        } else {
+            return <ErrorOutlineOutlined style={{color: "#f45347"}}/>
+        }
+    }
+
+    function getOpeningTime() {
+        let openingTime = bar.openingTime? new Date(bar.openingTime) : new Date()
+        return openingTime.getHours() + ":" + openingTime.getMinutes();
+    }
+
+    function getClosingTime() {
+        let closingTime = bar.closingTime? new Date(bar.closingTime) : new Date()
+        return closingTime.getHours() + ":" + closingTime.getMinutes();
+    }
 
     return (
         <div style={{marginBottom: "30px"}}>
@@ -259,7 +330,7 @@ export default function Bar(props) {
 
                 <hr className={classes.hrColor}/>
 
-                <Grid container spacing={2} alignItems="center" justify="center">
+                <Grid container className={classes.gridMarginTop} spacing={2} alignItems="center" justify="center">
                     <Grid item xs={12} sm={6} align="center">
                         {bar && bar.images && imgsLength > 0 ? (
                             <Grid
@@ -324,47 +395,66 @@ export default function Bar(props) {
                     </Dialog>
 
                     <Grid item xs={12} sm={6} align="center">
-                        <Paper className={classes.block}>
-                            <Grid container spacing={1} justify={'center'}>
-                                <Grid item xs={12} className={classes.bottomDivider}>
-                                    <Grid container justify={'center'}>
+                        <Grid container spacing={1} justify={'center'}>
+                            <Grid item xs={12}>
+                                <Paper className={barStateClassName()}>
+                                    <Grid container spacing={1} alignContent="space-between" justify={"center"}>
                                         <Grid item>
-                                            {bar.freeTables > 0 ? (
-                                                <SvgIcon
-                                                    style={{color: green[300]}}
-                                                    component={CheckBoxIcon}
-                                                    viewBox="0 0 24 18"
-                                                />
-                                            ) : (
-                                                <SvgIcon
-                                                    style={{color: red[300]}}
-                                                    component={CloseIcon}
-                                                    viewBox="0 0 24 18"
-                                                />
-                                            )}
+                                            {barStateIcon()}
                                         </Grid>
                                         <Grid item>
-                                            <Typography component="h6" variant="h6" align="center">
-                                                Mesas disponibles: {bar.freeTables}/{bar.tables}
+                                            <Typography><strong>Este bar se encuentra {stateMessage()}</strong></Typography>
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <Typography>El horario de apertura es de {getOpeningTime()} a {getClosingTime()}</Typography>
+                                        </Grid>
+                                    </Grid>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} justify={'center'} alignItems="center" alignContent={"center"}>
+                                <Paper className={classes.block}>
+                                    <Grid container spacing={1} justify={'center'}>
+                                        <Grid item xs={12} className={classes.bottomDivider}>
+                                            <Grid container justify={'center'}>
+                                                <Grid item>
+                                                    {barState !== 'error' && bar.freeTables > 0 ? (
+                                                        <SvgIcon
+                                                            style={{color: green[300]}}
+                                                            component={CheckBoxIcon}
+                                                            viewBox="0 0 24 18"
+                                                        />
+                                                    ) : (
+                                                        <SvgIcon
+                                                            style={{color: red[300]}}
+                                                            component={CloseIcon}
+                                                            viewBox="0 0 24 18"
+                                                        />
+                                                    )}
+                                                </Grid>
+                                                <Grid item>
+                                                    <Typography component="h6" variant="h6" align="center">
+                                                        Mesas disponibles: {barState === 'error'? 0 : bar.freeTables}/{bar.tables}
+                                                    </Typography>
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                        <Grid item xs={12} className={classes.bottomDivider}>
+                                            <Typography variant={'subtitle1'} align="center">
+                                                {bar.location}
+                                            </Typography>
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <Typography variant={'body1'} align="center">
+                                                {bar.description}
                                             </Typography>
                                         </Grid>
                                     </Grid>
-                                </Grid>
-                                <Grid item xs={12} className={classes.bottomDivider}>
-                                    <Typography variant={'subtitle1'} align="center">
-                                        {bar.location}
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <Typography variant={'body1'} align="center">
-                                        {bar.description}
-                                    </Typography>
-                                </Grid>
+                                </Paper>
                             </Grid>
-                        </Paper>
+                        </Grid>
                     </Grid>
 
-                    {isClient && !hasBarTable ? (
+                    {isClient && barState !== 'error' && !hasBarTable && (
                         <Grid item xs={12}>
                             <Grid container spacing={1} justify={'center'}>
                                 <Grid item xs={12}>
@@ -396,7 +486,7 @@ export default function Bar(props) {
                                                 <Button
                                                     variant="contained"
                                                     color="primary"
-                                                    onClick={(e) => automaticOcuppatioWithToken()}
+                                                    onClick={(e) => automaticOccupationWithToken()}
                                                 >
                                                     Enviar
                                                 </Button>
@@ -407,8 +497,6 @@ export default function Bar(props) {
                                 </Grid>
                             </Grid>
                         </Grid>
-                    ) : (
-                        <div></div>
                     )}
 
                     <hr className={classes.hrColor}/>

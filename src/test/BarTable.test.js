@@ -42,7 +42,7 @@ describe('Render test suite', () => {
     it('Render with a correct list of tables', async () => {
 
         mockAxios.onGet().replyOnce(200, tableList)
-        window.sessionStorage.setItem('user',JSON.stringify(auth));
+        window.localStorage.setItem('user',JSON.stringify(auth));
         let rendered = render(
             <Context.Provider value={{auth, setAuth}}>
                 <Router history={history} >
@@ -60,7 +60,7 @@ describe('Render test suite', () => {
 
     it('Render with a correct enable BarTable', async () => {
         mockAxios.onGet().replyOnce(200, tableList)
-        window.sessionStorage.setItem('user',JSON.stringify(auth));
+        window.localStorage.setItem('user',JSON.stringify(auth));
         let rendered = render(
             <Context.Provider value={{auth, setAuth}}>
                 <Router history={history} >
@@ -78,7 +78,7 @@ describe('Render test suite', () => {
 
     it('Render with a correct disable BarTable', async () => {
         mockAxios.onGet().replyOnce(200, tableList)
-        window.sessionStorage.setItem('user',JSON.stringify(auth));
+        window.localStorage.setItem('user',JSON.stringify(auth));
         let rendered = render(
             <Context.Provider value={{auth, setAuth}}>
                 <Router history={history} >
@@ -96,7 +96,7 @@ describe('Render test suite', () => {
 
     it('Render with a correct disable BarTable with button', async () => {
         mockAxios.onGet().replyOnce(200, tableList)
-        window.sessionStorage.setItem("user",JSON.stringify(auth));
+        window.localStorage.setItem("user",JSON.stringify(auth));
         let rendered = render(
             <Context.Provider value={{auth, setAuth}}>
                 <Router history={history} >
@@ -117,7 +117,7 @@ describe('Render test suite', () => {
     })
     it('Render with a correct enable BarTable with button', async () => {
         mockAxios.onGet().replyOnce(200, tableList)
-        window.sessionStorage.setItem("user",JSON.stringify(auth));
+        window.localStorage.setItem("user",JSON.stringify(auth));
         let rendered = render(
             <Context.Provider value={{auth, setAuth}}>
                 <Router history={history} >

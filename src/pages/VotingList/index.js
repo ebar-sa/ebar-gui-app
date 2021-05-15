@@ -15,7 +15,6 @@ import {
 } from '@material-ui/core';
 import {ExpandLess, ExpandMore, Add, ArrowRightSharp} from '@material-ui/icons';
 import VotingDataService from "../../services/votings.service";
-import {Link} from "react-router-dom";
 import Alert from '@material-ui/lab/Alert';
 import useUser from '../../hooks/useUser'
 import '../../styles/votings.css'
@@ -240,18 +239,16 @@ function Votings(props) {
 
     function buttonRoles(x, next, finished) {
         if ((owner === username || employees.includes(username)) && next === true && finished === false) {
-            return <Link to={'/bares/' + barId + '/votings/voting/' + x.id + '/edit'}>
-                <Button variant="contained" size='small' color="primary" style={{...stylesComponent.buttonAcceder}}>
+            return <Button href={'/#/bares/' + barId + '/votings/voting/' + x.id + '/edit'}
+                        variant="contained" size='small' color="primary" style={{...stylesComponent.buttonAcceder}}>
                     Editar
                 </Button>
-            </Link>
         } else if (!(owner === username || employees.includes(username)) && !x.votersUsernames.includes(username) && next === false && finished === false) {
-            return <Link to={'/bares/' + barId + '/votings/voting/' + x.id}>
-                <Button variant="contained" size='small' color="primary" style={{...stylesComponent.buttonAcceder}}
+            return <Button href={'/#/bares/' + barId + '/votings/voting/' + x.id}
+                        variant="contained" size='small' color="primary" style={{...stylesComponent.buttonAcceder}}
                         data-testid="but">
                     Acceder
                 </Button>
-            </Link>
         } else if ((owner === username || employees.includes(username)) && next === false && finished === false) {
             return <Button variant="contained" onClick={() => handleFinishClick(x.id)} size='small' color="primary"
                            style={{...stylesComponent.buttonDiscard}} data-testid="finish-but">
@@ -325,12 +322,12 @@ function Votings(props) {
     const adminOrUser = () => {
         if (owner === username || employees.includes(username)) {
             return <div className="header">
-                <Link to={'/bares/' + barId + '/votings/voting/create'}>
-                    <Button variant="contained" color="primary" style={{...stylesComponent.buttonCrear}}
-                            startIcon={<Add/>}>
-                        Crear votación
-                    </Button>
-                </Link>
+                <Button href={'/#/bares/' + barId + '/votings/voting/create'}
+                        variant="contained" color="primary"
+                        style={{...stylesComponent.buttonCrear}}
+                        startIcon={<Add/>}>
+                    Crear votación
+                </Button>
             </div>
         } else {
             return <Typography className='h5' variant="h6" gutterBottom style={{marginTop: '30px'}}>

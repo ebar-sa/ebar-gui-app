@@ -102,6 +102,7 @@ export default class BarTableDetails extends Component {
       openDialog: false,
       openPaymentDialog: false,
       openSuccess: false,
+      successReview: props.history?.location.state? props.history.location.state.review : false,
       token: '',
       error: false,
       isPhoneScreen: false,
@@ -348,7 +349,8 @@ export default class BarTableDetails extends Component {
       return;
     }
     this.setState({
-      openSuccess: false
+      openSuccess: false,
+      successReview: false
     })
   };
 
@@ -410,6 +412,10 @@ export default class BarTableDetails extends Component {
     }));
 
     const stylesComponent = {
+      buttonPayReview: {
+        textTransform: 'none',
+        letterSpacing: 'normal',
+      },
       buttonCrear: {
         backgroundColor: '#006e85',
         textTransform: 'none',
@@ -418,7 +424,7 @@ export default class BarTableDetails extends Component {
         fontWeight: '600',
         marginLeft: '5px',
       },
-      buttonAñadir: {
+      buttonAdd: {
         backgroundColor: '#006e85',
         textTransform: 'none',
         letterSpacing: 'normal',
@@ -467,7 +473,8 @@ export default class BarTableDetails extends Component {
       openSuccess,
       showModalInputZero,
       progressBarHidden,
-      paymentSet
+      paymentSet,
+      successReview
     } = this.state
     return !error ? (
         <div style={{ maxWidth: 1400, margin: '50px auto' }}>
@@ -862,16 +869,31 @@ export default class BarTableDetails extends Component {
                                 </TableBody>
                               </Table>
                               {!isAdmin && (
-                                  <Button
-                                      variant="contained"
-                                      size="small"
-                                      color="primary"
-                                      disabled={!paymentSet || total === 0.}
-                                      style={{ ...stylesComponent.buttonCrear }}
-                                      onClick={this.handleOpenPayment}
-                                  >
-                                    Pagar cuenta
-                                  </Button>
+                                  <Grid container spacing={1}>
+                                    <Grid item>
+                                      <Button
+                                          variant="contained"
+                                          size="small"
+                                          color="primary"
+                                          disabled={!paymentSet || total === 0.}
+                                          style={{ ...stylesComponent.buttonPayReview }}
+                                          onClick={this.handleOpenPayment}
+                                      >
+                                        Pagar cuenta
+                                      </Button>
+                                    </Grid>
+                                    <Grid item>
+                                      <Button
+                                          variant="contained"
+                                          size="small"
+                                          color="secondary"
+                                          style={{ ...stylesComponent.buttonPayReview }}
+                                          href={"/#/reviews/" + mesaActual.token}
+                                      >
+                                        Hacer una reseña
+                                      </Button>
+                                    </Grid>
+                                  </Grid>
                               )}
                             </CardContent>
                           </Grid>
@@ -1123,7 +1145,7 @@ export default class BarTableDetails extends Component {
                                       variant="contained"
                                       size="small"
                                       color="primary"
-                                      style={{ ...stylesComponent.buttonAñadir }}
+                                      style={{ ...stylesComponent.buttonAdd }}
                                       onClick={() => {
                                         if (
                                             this.state.amountActual[index] ===
@@ -1397,16 +1419,31 @@ export default class BarTableDetails extends Component {
                           </TableBody>
                         </Table>
                         {!isAdmin && (
-                            <Button
-                                variant="contained"
-                                size="small"
-                                color="primary"
-                                disabled={!paymentSet || total === 0.}
-                                style={{ ...stylesComponent.buttonCrear }}
-                                onClick={this.handleOpenPayment}
-                            >
-                              Pagar cuenta
-                            </Button>
+                            <Grid container spacing={1}>
+                              <Grid item>
+                                <Button
+                                    variant="contained"
+                                    size="small"
+                                    color="primary"
+                                    disabled={!paymentSet || total === 0.}
+                                    style={{ ...stylesComponent.buttonPayReview }}
+                                    onClick={this.handleOpenPayment}
+                                >
+                                  Pagar cuenta
+                                </Button>
+                              </Grid>
+                              <Grid item>
+                                <Button
+                                    variant="contained"
+                                    size="small"
+                                    color="secondary"
+                                    style={{ ...stylesComponent.buttonPayReview }}
+                                    href={"/#/reviews/" + mesaActual.token}
+                                >
+                                  Hacer una reseña
+                                </Button>
+                              </Grid>
+                            </Grid>
                         )}
                       </CardContent>
                     </Grid>
@@ -1463,6 +1500,11 @@ export default class BarTableDetails extends Component {
                 </Button>
               </DialogActions>
             </Dialog>
+            <Snackbar open={successReview} autoHideDuration={6000} onClose={this.handleSnackbarClose}>
+              <Alert onClose={this.handleSnackbarClose} severity="success">
+                Las reseñas se han publicado correctamente
+              </Alert>
+            </Snackbar>
             <Snackbar open={openSuccess} autoHideDuration={6000} onClose={this.handleSnackbarClose}>
               <Alert onClose={this.handleSnackbarClose} severity="success">
                 El pago se ha realizado correctamente

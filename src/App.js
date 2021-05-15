@@ -43,6 +43,7 @@ import UpdateEmployee from './pages/EmployeeUpdate'
 import EmployeeDetails from './pages/EmployeeDetails'
 import Checkout from './pages/Checkout'
 import Subscribe from './pages/Subscribe'
+import Review from "./pages/Review";
 
 const drawerWidth = 240
 
@@ -157,6 +158,7 @@ export function App() {
             <PrivateRoute exact path={'/payments/add-card'} component={Checkout} />
             <PrivateRoute exact path={'/payments/subscribe/:id'} component={Subscribe} />
             <PrivateRoute exact path={'/payments/cancel/:id'} component={Checkout} />
+            <PrivateRoute exact path={'/reviews/:tableToken'} component={Review} />
             <PrivateRoute component={NotFoundPage} />
           </Switch>
         </main>

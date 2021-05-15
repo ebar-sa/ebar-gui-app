@@ -25,6 +25,13 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import Rating from '@material-ui/lab/Rating';
+import Grid from "@material-ui/core/Grid";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import Divider from "@material-ui/core/Divider";
+import Pagination from "@material-ui/lab/Pagination";
 
 export default class Menu extends Component {
   constructor(props) {
@@ -37,15 +44,27 @@ export default class Menu extends Component {
     this.handleShowModal = this.handleShowModal.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleSuccessfulDelete = this.handleSuccessfulDelete.bind(this);
+    this.handleOpenReviews = this.handleOpenReviews.bind(this);
+    this.getShownReviews = this.getShownReviews.bind(this);
+    this.handlePageChange = this.handlePageChange.bind(this);
+    this.updateDimensions = this.updateDimensions.bind(this);
     this.state = {
       mapa: {},
       idBar: this.props.match.params.idBar,
       isAdmin: false,
       alerta: false,
       showModal: false,
-      item: [],
+      showReviews: false,
+      shownReviews: [],
+      totalPages: 1,
+      currentPage: 1,
+      item: '',
+      phoneScreen: false,
     };
+    this.pageLength = 5
   }
+
+
 
   componentDidMount() {
     this.setState({
@@ -53,6 +72,12 @@ export default class Menu extends Component {
     });
     this.getMenuDetails(this.props.match.params.idBar);
     this.isLogged();
+    this.updateDimensions();
+    window.addEventListener('resize', this.updateDimensions);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateDimensions);
   }
 
   isLogged() {
@@ -82,12 +107,15 @@ export default class Menu extends Component {
     this.setState({
       showModal: true,
       item: row,
+      shownReviews: this.getShownReviews(row.reviews, 1),
+      totalPages: Math.ceil(row.reviews.length/this.pageLength)
     });
   }
 
   handleCloseModal() {
     this.setState({
       showModal: false,
+      showReviews: false
     });
   }
 
@@ -134,6 +162,45 @@ export default class Menu extends Component {
       });
   }
 
+  handleOpenReviews() {
+    this.setState({
+      showModal: false,
+      showReviews: true
+    });
+  }
+
+  getShownReviews = (reviews, page) => {
+    let toBeShown = []
+    for (let i = page * this.pageLength - this.pageLength; i < page * this.pageLength; i++) {
+      if (reviews.length <= i) {
+        break
+      }
+      toBeShown.push(reviews[i])
+    }
+
+    return toBeShown
+  }
+
+  handlePageChange = (event, value) => {
+    this.setState({
+      currentPage: value,
+      shownReviews: this.getShownReviews(this.state.item.reviews, value)
+    });
+  };
+
+  updateDimensions = () => {
+    this.setState({ width: window.innerWidth, height: window.innerHeight });
+    if (window.innerWidth < 768) {
+      this.setState({
+        phoneScreen: true,
+      });
+    } else {
+      this.setState({
+        phoneScreen: false,
+      });
+    }
+  }
+
   render() {
     const useStyles = makeStyles({
       title: {
@@ -141,7 +208,7 @@ export default class Menu extends Component {
       },
     });
 
-    const { mapa, idBar, isAdmin, alerta, showModal, item } = this.state;
+    const { mapa, idBar, isAdmin, alerta, showModal, item, showReviews, shownReviews, totalPages, currentPage, phoneScreen } = this.state;
 
     const StyledTableRow = withStyles((theme) => ({
       root: {
@@ -183,6 +250,9 @@ export default class Menu extends Component {
         fontWeight: '600',
         textAlign: 'center',
       },
+      block: {
+
+      }
     };
 
     const StyledTableCell = withStyles((theme) => ({
@@ -357,65 +427,143 @@ export default class Menu extends Component {
             aria-describedby="alert-dialog-description"
           >
             <DialogTitle align="center" id="alert-dialog-title">
-              {item.name}
+              {item?.name}
             </DialogTitle>
             <DialogContent>
               <DialogContentText align="center" id="alert-dialog-description">
-                {item.image != null ? (
-                  <img
-                    alt=""
-                    src={
-                      'data:' + item.image.type + ';base64,' + item.image.data
-                    }
-                    style={{
-                      width: '100px',
-                      height: '100px',
-                    }}
-                  />
-                ) : (
-                  <img
-                    alt=""
-                    src={logo.default}
-                    style={{
-                      width: '100px',
-                      height: '100px',
-                    }}
-                  />
-                )}
-                <Typography
-                  variant="h5"
-                  className={useStyles.title}
-                  gutterBottom
-                >
-                  Categoría: {item.category}
-                </Typography>
+                <Grid container spacing={1} justify={"center"}>
+                  <Grid item xs={12}>
+                    {item?.image != null ? (
+                      <img
+                        alt=""
+                        src={
+                          'data:' + item?.image.type + ';base64,' + item?.image.data
+                        }
+                        style={{
+                          width: '100px',
+                          height: '100px',
+                        }}
+                      />
+                    ) : (
+                      <img
+                        alt=""
+                        src={logo.default}
+                        style={{
+                          width: '100px',
+                          height: '100px',
+                        }}
+                      />
+                    )}
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Grid container spacing={1} alignContent={"center"} alignItems={"flex-start"} justify={"center"}>
+                      <Grid item>
+                        <Rating value={item?.avgRating} precision={0.1} readOnly />
+                      </Grid>
+                      <Grid item>
+                        <Typography>{" (" + item.reviews?.length + ")"}</Typography>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography
+                      variant="h5"
+                      className={useStyles.title}
+                      gutterBottom
+                    >
+                      Categoría: {item?.category}
+                    </Typography>
+                  </Grid>
                 {item.description != null ? (
-                  <Typography
-                    variant="h5"
-                    className={useStyles.title}
-                    gutterBottom
-                  >
-                    Descripción: {item.description}
-                  </Typography>
+                    <Grid item xs={12}>
+                      <Typography
+                        variant="h5"
+                        className={useStyles.title}
+                        gutterBottom
+                      >
+                        Descripción: {item?.description}
+                      </Typography>
+                    </Grid>
                 ) : null}
-                <Typography
-                  variant="h5"
-                  className={useStyles.title}
-                  gutterBottom
-                >
-                  Cantidad: {item.rationType}
-                </Typography>
-                <Typography
-                  variant="h5"
-                  className={useStyles.title}
-                  gutterBottom
-                >
-                  Precio: {item.price} €
-                </Typography>
+                  <Grid item xs={12}>
+                    <Typography
+                      variant="h5"
+                      className={useStyles.title}
+                      gutterBottom
+                    >
+                      Cantidad: {item?.rationType}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography
+                      variant="h5"
+                      className={useStyles.title}
+                      gutterBottom
+                    >
+                      Precio: {item?.price} €
+                    </Typography>
+                  </Grid>
+                </Grid>
               </DialogContentText>
             </DialogContent>
             <DialogActions>
+              <Button onClick={this.handleOpenReviews} color="secondary">
+                Mostrar reseñas
+              </Button>
               <Button onClick={this.handleCloseModal} color="secondary">
+                Cerrar
+              </Button>
+            </DialogActions>
+          </Dialog>
+          <Dialog
+              open={showReviews}
+              fullScreen={phoneScreen}
+              onClose={this.handleCloseModal}
+              aria-labelledby="responsive-dialog-title"
+          >
+            <DialogTitle id={'responsive-dialog-title'}>
+              Reseñas del ítem
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                <Grid container justify={"center"}>
+                  {shownReviews && shownReviews.length > 0?
+                  <List>
+                    {shownReviews.map((review, idx) => (
+                        <Grid item xs={12}>
+                          <ListItem alignItems={"flex-start"}>
+                            <ListItemText
+                                primary={<Rating value={review.value} precision={0.5} readOnly />}
+                                secondary={
+                                  <React.Fragment>
+                                    <Typography
+                                        component="span"
+                                        variant="body2"
+                                        color="textPrimary">
+                                      {review.description? review.description : ""}
+                                    </Typography>
+                                    {(review.description? " - " : "") + "Realizada por " + review.creator.username}
+                                  </React.Fragment>
+                                }/>
+                          </ListItem>
+                          <Divider />
+                        </Grid>
+                    ))}
+                    <Grid item xs={12}>
+                      <ListItem style={{display:'flex', justifyContent:'center'}}>
+                        <Pagination count={totalPages} page={currentPage} onChange={this.handlePageChange} />
+                      </ListItem>
+                    </Grid>
+                  </List>
+                  :
+                  <Typography>
+                    No hay reseñas para este ítem
+                  </Typography>}
+                </Grid>
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button autoFocus onClick={this.handleCloseModal} color="primary">
                 Cerrar
               </Button>
             </DialogActions>

@@ -32,16 +32,23 @@ import Alert from '@material-ui/lab/Alert';
 import BottomBar from '../../components/SimpleBottomNavigation';
 import Footer from "../../components/Footer";
 import Container from "@material-ui/core/Container";
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import Divider from '@material-ui/core/Divider';
+import ListItemText from '@material-ui/core/ListItemText';
+import Rating from '@material-ui/lab/Rating';
+import Pagination from '@material-ui/lab/Pagination';
 
 const useStyles = makeStyles((theme) => ({
     root: {
         marginTop: theme.spacing(5),
-        marginBottom: '16%',
+        marginBottom: "10px"
     },
     block: {
         padding: theme.spacing(1),
         textAlign: 'center',
         margin: 'auto',
+        minWidth: "100%",
     },
     bottomDivider: {
         borderBottom: '0.1em solid darkgray',
@@ -114,9 +121,14 @@ export default function Bar(props) {
     const [token, setToken] = useState('');
     const [hasBarTable, setHasBarTable] = useState(false);
     const [barTable, setBarTable] = useState({});
-    const [bar, setBar] = useState({});
+    const [bar, setBar] = useState({
+        avgRating: 0.
+    });
     const [barState, setBarState] = useState('');
     const [index, setIndex] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [shownReviews, setShownReviews] = useState([]);
     const [slideIn, setSlideIn] = useState(true);
     const [slideDirection, setSlideDirection] = useState('down');
     const [open, setOpen] = useState(false);
@@ -132,11 +144,14 @@ export default function Bar(props) {
     let isOwner = bar && auth.username === bar.owner;
     const isEmployee = auth.roles.includes('ROLE_EMPLOYEE');
     const isClient = auth.roles.includes('ROLE_CLIENT');
+    const pageLength = 5
 
     useEffect(() => {
         BarDataService.getBar(barId)
             .then((res) => {
                 setBar(res.data);
+                setShownReviews(getShownReviews(res.data.reviews, 1))
+                setTotalPages(Math.ceil(res.data.reviews.length/pageLength))
             })
             .catch((error) => {
                 // Http 402 -> Payment required
@@ -292,6 +307,23 @@ export default function Bar(props) {
         return closingTime.getHours() + ":" + closingTime.getMinutes();
     }
 
+    const handlePageChange = (event, value) => {
+        setCurrentPage(value);
+        setShownReviews(getShownReviews(bar.reviews, value));
+    };
+
+    const getShownReviews = (reviews, page) => {
+        let toBeShown = []
+        for (let i = page * pageLength - pageLength; i < page * pageLength; i++) {
+            if (reviews.length <= i) {
+                break
+            }
+            toBeShown.push(reviews[i])
+        }
+
+        return toBeShown
+    }
+
     return (
         <div style={{marginBottom: "30px"}}>
             <Container component={"main"} maxWidth={"lg"} className={classes.root}>
@@ -411,7 +443,7 @@ export default function Bar(props) {
                                     </Grid>
                                 </Paper>
                             </Grid>
-                            <Grid item xs={12} justify={'center'} alignItems="center" alignContent={"center"}>
+                            <Grid item xs={12}>
                                 <Paper className={classes.block}>
                                     <Grid container spacing={1} justify={'center'}>
                                         <Grid item xs={12} className={classes.bottomDivider}>
@@ -499,8 +531,6 @@ export default function Bar(props) {
                         </Grid>
                     )}
 
-                    <hr className={classes.hrColor}/>
-
                     <Grid item container xs={12}>
                         <ButtonGroup
                             fullWidth={true}
@@ -527,6 +557,63 @@ export default function Bar(props) {
                             )}
                         </ButtonGroup>
                     </Grid>
+
+                    <Grid item xs={12}>
+                        <Typography variant={'h6'} align="center">
+                            Reseñas de clientes
+                        </Typography>
+                    </Grid>
+
+                    <Grid item xs={12} align={"center"}>
+                        <Grid container spacing={1} alignContent={"center"} alignItems={"flex-start"} justify={"center"}>
+                            <Grid item>
+                                <Rating value={bar.avgRating? bar.avgRating : 2.} precision={0.1} readOnly />
+                            </Grid>
+                            <Grid item>
+                                <Typography>{" (" + bar.reviews?.length + ")"}</Typography>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+
+                    <Grid item xs={12} align={"center"}>
+                        <Grid container justify={"center"}>
+                            <Paper className={classes.block}>
+                                {shownReviews && shownReviews.length > 0?
+                                <List>
+                                    {shownReviews.map((review, idx) => (
+                                        <Grid item xs={12}>
+                                            <ListItem alignItems={"flex-start"}>
+                                                <ListItemText
+                                                    primary={<Rating value={review.value} precision={0.5} readOnly />}
+                                                    secondary={
+                                                        <React.Fragment>
+                                                            <Typography
+                                                                component="span"
+                                                                variant="body2"
+                                                                color="textPrimary">
+                                                                {review.description? review.description : ""}
+                                                            </Typography>
+                                                            {(review.description? " - " : "") + "Realizada por " + review.creator.username}
+                                                        </React.Fragment>
+                                                    }/>
+                                            </ListItem>
+                                            <Divider />
+                                        </Grid>
+                                    ))}
+                                    <Grid item xs={12}>
+                                        <ListItem style={{display:'flex', justifyContent:'center'}}>
+                                            <Pagination count={totalPages} page={currentPage} onChange={handlePageChange} />
+                                        </ListItem>
+                                    </Grid>
+                                </List>
+                                :
+                                <Typography>
+                                    No hay reseñas para este ítem
+                                </Typography>}
+                            </Paper>
+                        </Grid>
+                    </Grid>
+
                     <div className={useStyles.snak}>
                         <Snackbar
                             open={openSubmitIncorrect}

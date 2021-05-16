@@ -39,7 +39,7 @@ export default function Review(props) {
     const [bar, setBar] = useState({})
     const [itemsData, setItemsData] = useState({})
     const [loading, setLoading] = useState(false)
-    const [expanded, setExpanded] = useState(false)
+    const [expanded, setExpanded] = useState('')
     const [emptySubmit, setEmptySubmit] = useState(false)
     const [incorrectSubmit, setIncorrectSubmit] = useState(false)
     const [axiosError, setAxiosError] = useState(false)

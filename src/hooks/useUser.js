@@ -96,15 +96,13 @@ export default function useUser() {
     }, [history])
 
     const checkToken = useCallback(() => {
-        // setState({ loading: true, error: false })
         authService.checkToken()
             .then(() => {
-                // setState({ loading: false, error: false })
+                console.log("Valid token")
             })
             .catch((err) => {
                 window.localStorage.removeItem('user')
                 setAuth(null)
-                // setState({ loading: false, error: "Token expirado" })
             })
     }, [setAuth])
 

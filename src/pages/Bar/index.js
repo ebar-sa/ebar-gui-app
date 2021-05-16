@@ -171,7 +171,9 @@ export default function Bar(props) {
         let closingMins = closing.getHours() * 60 + closing.getMinutes()
         let now = new Date();
         let nowMins = now.getHours() * 60 + now.getMinutes()
-        if (nowMins >= openingMins && nowMins <= closingMins) {
+        if ((nowMins >= openingMins && nowMins <= closingMins) ||
+            (openingMins >= closingMins && nowMins >= openingMins && nowMins >= closingMins) ||
+            (openingMins >= closingMins && nowMins <= openingMins && nowMins <= closingMins)) {
             return Math.abs(nowMins - closingMins) > 60? setBarState("info") : setBarState("warning")
         } else {
             return setBarState("error")
@@ -304,7 +306,7 @@ export default function Bar(props) {
 
     function getClosingTime() {
         let closingTime = bar.closingTime? new Date(bar.closingTime) : new Date()
-        return closingTime.getHours() + ":" + closingTime.getMinutes();
+        return closingTime.getHours() + ":" + (closingTime.getMinutes() === 0? "00" : closingTime.getMinutes());
     }
 
     const handlePageChange = (event, value) => {
@@ -322,6 +324,10 @@ export default function Bar(props) {
         }
 
         return toBeShown
+    }
+
+    function anonymizeName(username) {
+        return username.charAt(0) + "*".repeat(username.length - 2) + username.charAt(username.length - 1);
     }
 
     return (
@@ -567,7 +573,7 @@ export default function Bar(props) {
                     <Grid item xs={12} align={"center"}>
                         <Grid container spacing={1} alignContent={"center"} alignItems={"flex-start"} justify={"center"}>
                             <Grid item>
-                                <Rating value={bar.avgRating? bar.avgRating : 2.} precision={0.1} readOnly />
+                                <Rating value={bar.avgRating? bar.avgRating : 0.} precision={0.1} readOnly />
                             </Grid>
                             <Grid item>
                                 <Typography>{" (" + bar.reviews?.length + ")"}</Typography>
@@ -593,7 +599,7 @@ export default function Bar(props) {
                                                                 color="textPrimary">
                                                                 {review.description? review.description : ""}
                                                             </Typography>
-                                                            {(review.description? " - " : "") + "Realizada por " + review.creator.username}
+                                                            {(review.description? " - " : "") + "Realizada por " + anonymizeName(review.creator.username)}
                                                         </React.Fragment>
                                                     }/>
                                             </ListItem>
@@ -608,7 +614,7 @@ export default function Bar(props) {
                                 </List>
                                 :
                                 <Typography>
-                                    No hay reseñas para este ítem
+                                    No hay reseñas para este bar
                                 </Typography>}
                             </Paper>
                         </Grid>

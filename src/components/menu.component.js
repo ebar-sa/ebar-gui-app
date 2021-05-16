@@ -48,6 +48,7 @@ export default class Menu extends Component {
     this.getShownReviews = this.getShownReviews.bind(this);
     this.handlePageChange = this.handlePageChange.bind(this);
     this.updateDimensions = this.updateDimensions.bind(this);
+    this.anonymizeName = this.anonymizeName.bind(this);
     this.state = {
       mapa: {},
       idBar: this.props.match.params.idBar,
@@ -199,6 +200,10 @@ export default class Menu extends Component {
         phoneScreen: false,
       });
     }
+  }
+
+  anonymizeName(username) {
+    return username.charAt(0) + "*".repeat(username.length - 2) + username.charAt(username.length - 1);
   }
 
   render() {
@@ -542,7 +547,7 @@ export default class Menu extends Component {
                                         color="textPrimary">
                                       {review.description? review.description : ""}
                                     </Typography>
-                                    {(review.description? " - " : "") + "Realizada por " + review.creator.username}
+                                    {(review.description? " - " : "") + "Realizada por " + this.anonymizeName(review.creator.username)}
                                   </React.Fragment>
                                 }/>
                           </ListItem>

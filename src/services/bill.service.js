@@ -22,7 +22,7 @@ class BillDataService {
     }
     deleteBill(idBill,idItemBill) { 
         return http.get(`/bill/deleteOrder/${idBill}/${idItemBill}`, {headers: authHeader()}); 
-    } 
+    }
 }
 
 export default new BillDataService()

@@ -118,7 +118,7 @@ describe('Render test suite', () => {
     it('Render with a correct list of employees', async () => {
         mockAxios.onGet().replyOnce(200, bar)
         mockAxios.onGet().replyOnce(200, barList)
-        window.sessionStorage.setItem("user",JSON.stringify(auth))
+        window.localStorage.setItem("user",JSON.stringify(auth))
 
         let rendered = render(
             <Context.Provider value={{auth, setAuth}}>

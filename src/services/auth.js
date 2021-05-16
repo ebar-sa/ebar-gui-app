@@ -51,6 +51,10 @@ export function updateBraintreeData(data) {
 
 }
 
+export function checkToken() {
+    return http.get("auth/checkToken", {headers: authHeader()})
+}
+
 export function getCurrentUser() {
-    return JSON.parse(sessionStorage.getItem('user'));
+    return JSON.parse(localStorage.getItem('user'));
 }

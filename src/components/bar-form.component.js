@@ -37,6 +37,10 @@ const useStyles = makeStyles(() => ({
     },
     form: {
         paddingTop: "15px"
+    },
+    imageTitle: {
+        wordWrap: "",
+        wordBreak: 'break-all'
     }
 }))
 
@@ -59,6 +63,7 @@ export default function BarForm(props) {
     const [openBraintreeDialog, setOpenBraintreeDialog] = useState(!(user.braintreeMerchantId && user.braintreePublicKey && user.braintreePrivateKey))
     const [axiosError, setAxiosError] = useState(false)
     const [openSubmitIncorrect, setOpenSubmitIncorrect] = useState(false)
+    const [openImageError, setOpenImageError] = useState(false)
 
     const braintreeLogo = require('../static/images/braintree-logo-black.png');
 
@@ -176,6 +181,7 @@ export default function BarForm(props) {
         }
         setAxiosError(false)
         setOpenSubmitIncorrect(false)
+        setOpenImageError(false)
     };
 
     const handleCloseDialog = () => {
@@ -202,17 +208,22 @@ export default function BarForm(props) {
 
     const selectFile = (e) => {
         Array.from(e.target.files).forEach(f => {
-            const fr = new FileReader()
-            fr.onload = () => {
-                let blob = btoa(fr.result)
-                let object = {
-                    "fileName": f.name,
-                    "fileType": f.type,
-                    "data": blob
+            if (f !== null && f.size < 3000000) {
+                const fr = new FileReader()
+                fr.onload = () => {
+                    let blob = btoa(fr.result)
+                    let object = {
+                        "fileName": f.name,
+                        "fileType": f.type,
+                        "data": blob
+                    }
+                    setSelectedFiles(prevFiles => [...prevFiles, object])
                 }
-                setSelectedFiles(prevFiles => [...prevFiles, object])
+                fr.readAsBinaryString(f)
+            } else if(f !== null) {
+                setOpenImageError(true)
             }
-            fr.readAsBinaryString(f)
+
 
         })
 
@@ -312,12 +323,15 @@ export default function BarForm(props) {
                                 Subida de imágenes
                             </Typography>
                             <label htmlFor="contained-button-file">
-
-
                                 <Button variant="contained" component="span">
                                     Subir imágenes
                                 </Button>
                             </label>
+                        </Grid>
+                        <Grid item xs={12} align="center">
+                            <Typography className='p' variant="body2" gutterBottom>
+                                Tamaño máximo de imagen: 3 MB
+                            </Typography>
                         </Grid>
                         <Grid item xs={12} align="center">
                             <List component="nav" aria-label="main mailbox folders">
@@ -329,7 +343,7 @@ export default function BarForm(props) {
                                             <Grid item xs={12} sm={12} md={6}>
                                                 <Grid container alignItems="center" justify="center" spacing={1}>
                                                     <Grid item xs={12} align="center">
-                                                        <Typography className='p' variant="subtitle1" gutterBottom>
+                                                        <Typography className={classes.imageTitle} variant="subtitle1" gutterBottom>
                                                             {file.fileName}
                                                         </Typography>
                                                     </Grid>
@@ -377,6 +391,11 @@ export default function BarForm(props) {
                         <Snackbar open={axiosError} autoHideDuration={6000} onClose={handleClose}>
                             <Alert onClose={handleClose} severity="error">
                                 Ha ocurrido un error al procesar la petición. Inténtelo de nuevo más tarde.
+                            </Alert>
+                        </Snackbar>
+                        <Snackbar open={openImageError} autoHideDuration={6000} onClose={handleClose}>
+                            <Alert onClose={handleClose} severity="error">
+                                Se han descartado algunas imágenes porque superaban los 3 MB de tamaño
                             </Alert>
                         </Snackbar>
                         <Dialog open={openBraintreeDialog}

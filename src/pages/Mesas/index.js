@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {useParams} from 'react-router-dom'
-import {makeStyles} from '@material-ui/core/styles'
-import {Grid} from '@material-ui/core'
+import {makeStyles, useTheme} from '@material-ui/core/styles'
+import {Grid, useMediaQuery} from '@material-ui/core'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Button from '@material-ui/core/Button'
 import Mesa from '../../components/Mesa'
@@ -16,6 +16,9 @@ const useStyles = makeStyles((theme) => ({
         padding: '5rem',
         marginBottom:"20%"
     },
+    rootPhone: {
+        marginBottom:"20%"
+    },
 }))
 
 export default function Mesas(props) {
@@ -25,6 +28,8 @@ export default function Mesas(props) {
     const params = useParams()
     const id = params.barId
     const history = useHistory()
+    const theme = useTheme();
+    const phoneScreen = useMediaQuery(theme.breakpoints.down('sm'));
     var isAdmin =
         user.roles.includes('ROLE_OWNER') || user.roles.includes('ROLE_EMPLOYEE')
     const barId = props.match.params.barId
@@ -48,7 +53,7 @@ export default function Mesas(props) {
 
     return (
         <div style={{marginBottom:"30px"}}>
-            <Container className={classes.root} maxWidth={"lg"}>
+            <Container className={phoneScreen? classes.rootPhone : classes.root} maxWidth={"lg"}>
                 <h1>Mesas</h1>
                 <Grid container spacing={3}>
                     {tables.map((table) => (
@@ -56,7 +61,7 @@ export default function Mesas(props) {
                             <Mesa {...table} isAdmin={isAdmin} idBar={id}/>
                         </Grid>
                     ))}
-                    {isAdmin ?
+                    {isAdmin &&
                         <Grid item container xs={12}>
                             <ButtonGroup
                                 fullWidth={true}
@@ -68,8 +73,6 @@ export default function Mesas(props) {
                                 <Button href={`/#/bares/${barId}`}>Volver</Button>
                             </ButtonGroup>
                         </Grid>
-                        :
-                        null
                     }
                 </Grid>
             </Container>

@@ -6,7 +6,7 @@ import { createMemoryHistory } from 'history';
 import MockAdapter from 'axios-mock-adapter';
 import Context from '../context/UserContext';
 import http from '../http-common';
-import BarTableCreate from '../pages/BarTableCRUD/createTable';
+import BarTableCreate from '../pages/BarTableCRUD/BarTableCreate';
 
 const setAuth = jest.fn()
 const mockAxios = new MockAdapter(http)

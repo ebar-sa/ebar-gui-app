@@ -24,11 +24,9 @@ import Header from './components/Header'
 import clsx from 'clsx'
 import EmployeeList from './pages/EmployeeList'
 import Mesas from './pages/Mesas'
-import BottomBar from './components/bottom-bar'
+import BottomBar from './components/SimpleBottomNavigation'
 import useUser from './hooks/useUser'
 import BarTableDetails from './components/BarTableDetails.component'
-import UserMenuDetails from './components/user-menu.component'
-import UserBillDetails from './components/user-bill.component'
 import MenuGestion from './components/menu.component'
 
 
@@ -36,8 +34,8 @@ import Bar from './pages/Bar'
 import PrivateRoute from './components/private-route.js'
 
 import NotFoundPage from './hooks/pageError'
-import BarTableCreate from './pages/BarTableCRUD/createTable'
-import BarTableUpdate from './pages/BarTableCRUD/updateTable'
+import BarTableCreate from './pages/BarTableCRUD/BarTableCreate'
+import BarTableUpdate from './pages/BarTableCRUD/BarTableUpdate'
 import AccessDenied from './pages/AccessDenied'
 
 import CreateEmployee from './pages/EmployeeCreate'
@@ -45,6 +43,7 @@ import UpdateEmployee from './pages/EmployeeUpdate'
 import EmployeeDetails from './pages/EmployeeDetails'
 import Checkout from './pages/Checkout'
 import Subscribe from './pages/Subscribe'
+import Review from "./pages/Review";
 
 const drawerWidth = 240
 
@@ -104,7 +103,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const theme = createMuiTheme({
+const muiTheme = createMuiTheme({
   palette: {
     primary: {
       main: '#006e85',
@@ -120,7 +119,7 @@ export function App() {
   const { isLogged } = useUser()
   return (
     <div className={classes.root}>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={muiTheme}>
         <Header classes={classes} />
         <main
           className={clsx(classes.content, {
@@ -144,8 +143,6 @@ export function App() {
             <PrivateRoute exact path={'/bares/:idBar/votings/voting/create'} component={CreateVotings} />
             <PrivateRoute exact path={'/bares/:idBar/votings/voting/:votingId/edit'} component={EditVoting} />
             <PrivateRoute path={'/bares/:idBar/votings/voting/:votingId'} component={VotingDetailUser} />
-            <PrivateRoute exact path={'/bar/bill/:id'} component={UserBillDetails} />
-            <PrivateRoute exact path={'/bar/menu/:id'} component={UserMenuDetails} />
             <PrivateRoute exact path={'/mesas/detallesMesa/:id'} component={BarTableDetails} />
             <PrivateRoute exact path={'/mesas/:id/create'} component={BarTableCreate} />
             <PrivateRoute exact path={'/mesas/bar/:idBar/mesa/:id/edit'} component={BarTableUpdate} />
@@ -161,6 +158,7 @@ export function App() {
             <PrivateRoute exact path={'/payments/add-card'} component={Checkout} />
             <PrivateRoute exact path={'/payments/subscribe/:id'} component={Subscribe} />
             <PrivateRoute exact path={'/payments/cancel/:id'} component={Checkout} />
+            <PrivateRoute exact path={'/reviews/:tableToken'} component={Review} />
             <PrivateRoute component={NotFoundPage} />
           </Switch>
         </main>

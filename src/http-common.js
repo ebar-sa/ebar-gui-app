@@ -2,7 +2,7 @@
 import axios from 'axios'
 
 export default axios.create({
-  baseURL: 'https://ebar-srv-sprint3-kjuk5gkiva-ew.a.run.app/api/',
+  baseURL: 'https://v4-srv.ebarapp.es/api/',
   headers: {
     'Content-type': 'application/json',
   },

@@ -249,7 +249,12 @@ export default function Review(props) {
                                         <Typography><strong>Aviso</strong></Typography>
                                     </Grid>
                                     <Grid item xs={12} align={"center"}>
+                                        {itemsData.billEmpty &&
+                                        <Typography>No hay ítems en la cuenta</Typography>
+                                        }
+                                        {!itemsData.billEmpty &&
                                         <Typography>Ya has realizado una reseña a los ítems de la cuenta</Typography>
+                                        }
                                     </Grid>
                                 </Grid>
                             </Paper>

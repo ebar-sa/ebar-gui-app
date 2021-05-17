@@ -74,7 +74,7 @@ export default function ServiceTerms() {
                                     web:
                                 </Typography>
                                 <Typography variant="body1" gutterBottom>
-                                    La titularidad de este sitio web, https://ebar-gui-sprint3-kjuk5gkiva-ew.a.run.app, (en
+                                    La titularidad de este sitio web, https://v4.ebarapp.es, (en
                                     adelante,
                                     Sitio Web) la ostenta: EBAR S.L., provista de NIF: A-8008000 e inscrita en el
                                     Registro

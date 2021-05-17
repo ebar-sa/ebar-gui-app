@@ -21,7 +21,7 @@ function NotFoundPage() {
     }
     return <Container component="main" maxWidth="xs">
         <CssBaseline />
-        <br></br>
+        <br/>
         <div>
             <img alt="error" style={useStyles.centerImage} src={PageNotFound} />
 

@@ -221,7 +221,7 @@ export default function BarList(props) {
                     data-testid="search_bar"
                     className = {classes.searchBar} 
                     id="input-with-icon-grid"
-                    variant="outlined" 
+                    variant="standard"
                     label="Buscar entre los bares" 
                     disabled={searchDisabled}
                     onChange={(evt) => setSearchValue(evt.target.value)}

@@ -58,7 +58,7 @@ describe('Testing create voting', () => {
 
         expect(header).toBeInTheDocument()
         expect(title).toBeInTheDocument()
-        expect(description).toHaveLength(2)
+        expect(description).toHaveLength(1)
         expect(openingHour).toBeInTheDocument()
         expect(closingHour).toBeInTheDocument()
         expect(options).toBeInTheDocument()

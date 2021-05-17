@@ -32,6 +32,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import Pagination from "@material-ui/lab/Pagination";
+import Container from "@material-ui/core/Container";
 
 export default class Menu extends Component {
   constructor(props) {
@@ -292,7 +293,7 @@ export default class Menu extends Component {
 
     return (
       <>
-        <div style={{ marginBottom: '45px' }}>
+        <Container style={{ marginBottom: '100px' }}>
           <Typography variant="h3" align="center" style={{ margin: '30px 0' }}>
             Carta
           </Typography>
@@ -322,81 +323,85 @@ export default class Menu extends Component {
                     </div>
                   )}
                   {Object.keys(mapa).map((category) => (
-                    <div style={{ textAlign: '-webkit-center' }}>
-                      <h2>{category}</h2>
+                      <Grid container spacing={1} justify={"center"} alignItems={"center"} alignContent={"center"}>
+                        <Grid item xs={12} align={"center"}>
+                         <h2>{category}</h2>
+                        </Grid>
                       {mapa[category].map((row) => (
-                        <StyledTableRow>
-                          <StyledTableCell>
-                            {row.image != null ? (
-                              <img
-                                alt=""
-                                src={
-                                  'data:' +
-                                  row.image.type +
-                                  ';base64,' +
-                                  row.image.data
-                                }
-                                style={{
-                                  width: '85px',
-                                  height: '85px',
-                                }}
-                              />
-                            ) : (
-                              <img
-                                alt=""
-                                src={logo.default}
-                                style={{
-                                  width: '85px',
-                                  height: '85px',
-                                }}
-                              />
-                            )}
-                            {isAdmin && row.image != null ? (
-                              <IconButton
-                                variant="contained"
-                                size="small"
-                                style={{ ...stylesComponent.buttonDeleteImage }}
-                                onClick={() => this.deleteImage(idBar, row.id)}
-                              >
-                                <HighlightOffIcon />
-                              </IconButton>
-                            ) : null}
-                          </StyledTableCell>
-                          <StyledTableCellFlex>
-                            <Button
-                              data-testid="nombreItem"
-                              type="button"
-                              onClick={() => this.handleShowModal(row)}
-                            >
-                              {row.name}
-                            </Button>
-                          </StyledTableCellFlex>
-                          <StyledTableCell>
-                            <span data-testid="priceItem">{row.price} €</span>
-                          </StyledTableCell>
-                          {isAdmin ? (
-                            <StyledTableCell>
-                              <IconButton
-                                variant="contained"
-                                size="small"
-                                color="primary"
-                                href={`/#/bares/${idBar}/menu/itemMenu/${row.id}`}
-                              >
-                                <EditIcon />
-                              </IconButton>
-                              <IconButton
-                                variant="contained"
-                                size="small"
-                                style={{ ...stylesComponent.buttonDelete }}
-                                onClick={() => this.deleteItem(idBar, row.id)}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </StyledTableCell>
-                          ) : null}
-                        </StyledTableRow>
+                          <Grid item xs={12} align={"center"}>
+                            <StyledTableRow>
+                              <StyledTableCell>
+                                {row.image != null ? (
+                                  <img
+                                    alt=""
+                                    src={
+                                      'data:' +
+                                      row.image.type +
+                                      ';base64,' +
+                                      row.image.data
+                                    }
+                                    style={{
+                                      width: '85px',
+                                      height: '85px',
+                                    }}
+                                  />
+                                ) : (
+                                  <img
+                                    alt=""
+                                    src={logo.default}
+                                    style={{
+                                      width: '85px',
+                                      height: '85px',
+                                    }}
+                                  />
+                                )}
+                                {isAdmin && row.image != null ? (
+                                  <IconButton
+                                    variant="contained"
+                                    size="small"
+                                    style={{ ...stylesComponent.buttonDeleteImage }}
+                                    onClick={() => this.deleteImage(idBar, row.id)}
+                                  >
+                                    <HighlightOffIcon />
+                                  </IconButton>
+                                ) : null}
+                              </StyledTableCell>
+                              <StyledTableCellFlex>
+                                <Button
+                                  data-testid="nombreItem"
+                                  type="button"
+                                  onClick={() => this.handleShowModal(row)}
+                                >
+                                  {row.name}
+                                </Button>
+                              </StyledTableCellFlex>
+                              <StyledTableCell>
+                                <span data-testid="priceItem">{row.price} €</span>
+                              </StyledTableCell>
+                              {isAdmin ? (
+                                <StyledTableCell>
+                                  <IconButton
+                                    variant="contained"
+                                    size="small"
+                                    color="primary"
+                                    href={`/#/bares/${idBar}/menu/itemMenu/${row.id}`}
+                                  >
+                                    <EditIcon />
+                                  </IconButton>
+                                  <IconButton
+                                    variant="contained"
+                                    size="small"
+                                    style={{ ...stylesComponent.buttonDelete }}
+                                    onClick={() => this.deleteItem(idBar, row.id)}
+                                  >
+                                    <DeleteIcon />
+                                  </IconButton>
+                                </StyledTableCell>
+                              ) : null}
+                            </StyledTableRow>
+                          </Grid>
                       ))}
-                    </div>
+                    </Grid>
                   ))}
                 </TableBody>
               </Table>
@@ -573,7 +578,7 @@ export default class Menu extends Component {
               </Button>
             </DialogActions>
           </Dialog>
-        </div>
+        </Container>
       </>
     );
   }

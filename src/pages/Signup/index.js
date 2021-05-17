@@ -159,7 +159,7 @@ export default function SignUp() {
                                            name={"username"}
                                            label={"Nombre de usuario"}
                                            autoComplete={"username"}
-                                           variant={"outlined"}
+                                           variant={"standard"}
                                            error={formErrors.username !== null && formErrors.username !== undefined && formErrors.username !== ''}
                                            helperText={formErrors.username}
                                            onChange={(e) => handleChange(e)}
@@ -171,7 +171,7 @@ export default function SignUp() {
                                            name="firstName"
                                            label="Nombre"
                                            autoComplete="fname"
-                                           variant="outlined"
+                                           variant="standard"
                                            error={formErrors.firstName !== null && formErrors.firstName !== undefined && formErrors.firstName !== ''}
                                            helperText={formErrors.firstName}
                                            onChange={(e) => handleChange(e)}
@@ -182,7 +182,7 @@ export default function SignUp() {
                                            id="lastName"
                                            name="lastName"
                                            label="Apellido"
-                                           variant="outlined"
+                                           variant="standard"
                                            autoComplete="lname"
                                            error={formErrors.lastName !== null && formErrors.lastName !== undefined && formErrors.lastName !== ''}
                                            helperText={formErrors.lastName}
@@ -195,7 +195,7 @@ export default function SignUp() {
                                            name="email"
                                            label="Email"
                                            autoComplete="email"
-                                           variant="outlined"
+                                           variant="standard"
                                            placeholder="example@mail.com"
                                            error={formErrors.email !== null && formErrors.email !== undefined && formErrors.email !== ''}
                                            helperText={formErrors.email}
@@ -207,7 +207,7 @@ export default function SignUp() {
                                            id="phoneNumber"
                                            name="phoneNumber"
                                            label="Teléfono"
-                                           variant="outlined"
+                                           variant="standard"
                                            autoComplete="phone"
                                            error={formErrors.phoneNumber !== null && formErrors.phoneNumber !== undefined && formErrors.phoneNumber !== ''}
                                            helperText={formErrors.phoneNumber}
@@ -219,7 +219,7 @@ export default function SignUp() {
                                            id="password"
                                            name="password"
                                            label="Contraseña"
-                                           variant="outlined"
+                                           variant="standard"
                                            type={passwordShown ? "text" : "password"}
                                            autoComplete="current-password"
                                            error={formErrors.password !== null && formErrors.password !== undefined && formErrors.password !== ''}

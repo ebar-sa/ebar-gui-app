@@ -188,7 +188,7 @@ export default function Review(props) {
                         <Grid item xs={12}>
                             {itemsData.barReviewed &&
                             <Grid item xs={12}>
-                                <Paper variant={"outlined"} className={classes.warning}>
+                                <Paper data-testid="alert-bar-review" variant={"outlined"} className={classes.warning}>
                                     <Grid container spacing={1} style={{margin: "10px"}} alignContent="space-between" justify={"center"}>
                                         <Grid item>
                                             <ReportProblemOutlined style={{color: "#ffa016"}}/>
@@ -240,7 +240,7 @@ export default function Review(props) {
                         </Grid>
                         {(!itemsData || !itemsData.items || itemsData.items.length === 0) &&
                         <Grid item xs={12}>
-                            <Paper variant={"outlined"} className={classes.warning}>
+                            <Paper data-testid="alert-item-review" variant={"outlined"} className={classes.warning}>
                                 <Grid container spacing={1} style={{margin: "10px"}} alignContent="space-between" justify={"center"}>
                                     <Grid item>
                                         <ReportProblemOutlined style={{color: "#ffa016"}}/>

@@ -69,7 +69,6 @@ describe('Render test suite', () => {
 
         mockAxios.onGet("/bar/1").replyOnce(200, bar)
         mockAxios.onGet("/tables/tableClient/test-owner").reply(200, barTable)
-        // mockAxios.onGet("/bar/1").replyOnce(200, bar)
         window.localStorage.setItem("user",JSON.stringify(auth))
 
         let rendered = render(

@@ -301,12 +301,12 @@ export default function Bar(props) {
 
     function getOpeningTime() {
         let openingTime = bar.openingTime? new Date(bar.openingTime) : new Date()
-        return openingTime.getHours() + ":" + openingTime.getMinutes();
+        return openingTime.getHours() + ":" + (openingTime.getMinutes() < 10? "0" + openingTime.getMinutes() : openingTime.getMinutes());
     }
 
     function getClosingTime() {
         let closingTime = bar.closingTime? new Date(bar.closingTime) : new Date()
-        return closingTime.getHours() + ":" + (closingTime.getMinutes() === 0? "00" : closingTime.getMinutes());
+        return closingTime.getHours() + ":" + (closingTime.getMinutes() < 10? "0" + closingTime.getMinutes() : closingTime.getMinutes());
     }
 
     const handlePageChange = (event, value) => {

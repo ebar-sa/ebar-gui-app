@@ -269,7 +269,7 @@ export default function BillCheckout(props) {
                                        name={"number"}
                                        label={'Número de tarjeta'}
                                        helperText={""}
-                                       variant={"outlined"}
+                                       variant={"standard"}
                                        InputLabelProps={{ shrink: true }}
                                        onChange={handleChange}
                                        onFocus={handleInputFocus}/>
@@ -280,7 +280,7 @@ export default function BillCheckout(props) {
                                        name={"name"}
                                        label={'Nombre'}
                                        helperText={errors.name}
-                                       variant={"outlined"}
+                                       variant={"standard"}
                                        InputLabelProps={{ shrink: true }}
                                        onChange={handleChange}
                                        onFocus={handleInputFocus}/>
@@ -295,7 +295,7 @@ export default function BillCheckout(props) {
                                        name={"expiry"}
                                        label={'Fecha de caducidad'}
                                        helperText={errors.expiry}
-                                       variant={"outlined"}
+                                       variant={"standard"}
                                        InputLabelProps={{ shrink: true }}
                                        onChange={handleChange}
                                        onFocus={handleInputFocus}/>
@@ -311,7 +311,7 @@ export default function BillCheckout(props) {
                                            pattern: "\\d{3,4}"
                                        }}
                                        helperText={errors.cvc}
-                                       variant={"outlined"}
+                                       variant={"standard"}
                                        InputLabelProps={{ shrink: true }}
                                        onChange={handleChange}
                                        onFocus={handleInputFocus}/>

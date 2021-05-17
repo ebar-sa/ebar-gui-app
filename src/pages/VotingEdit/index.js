@@ -320,7 +320,7 @@ function EditVoting(props) {
                                         <TextField data-testid="descriptionField" className='input-title'
                                                    value={state.description} id="description" label="Descripción"
                                                    name="description" onChange={(e) => handleChange(e)} multiline
-                                                   rows={4} variant="outlined"/>
+                                                   rows={4} variant="standard"/>
                                         <p className="p-style">{errors["description"]}</p>
                                     </Grid>
 

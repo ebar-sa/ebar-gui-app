@@ -1139,7 +1139,7 @@ export default class BarTableDetails extends Component {
                                       InputLabelProps={{
                                         shrink: true,
                                       }}
-                                      variant="outlined"
+                                      variant="standard"
                                   />
                                 </StyledTableCell>
                                 <StyledTableCell align="left">

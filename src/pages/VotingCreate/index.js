@@ -227,7 +227,7 @@ export default function CreateVotings(props) {
                                   alignItems="center">
                                 <TextField className='input-title' id="description" label="Descripción"
                                            name="description" onChange={(e) => handleChange(e)} multiline rows={4}
-                                           variant="outlined"/>
+                                           variant="standard"/>
                                 <p className="p-style">{errors["description"]}</p>
                             </Grid>
                             <MuiPickersUtilsProvider utils={DateFnsUtils}>

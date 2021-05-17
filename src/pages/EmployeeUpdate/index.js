@@ -163,7 +163,7 @@ export default function UpdateEmployee(props) {
                                         value={state.username}
                                         name={"username"}
                                         label={"Nombre de usuario"}
-                                        variant={"outlined"}
+                                        variant={"standard"}
                                     />
                                 </Grid>
                                 <Grid item xs={12} sm={6}>
@@ -173,7 +173,7 @@ export default function UpdateEmployee(props) {
                                         name="firstName"
                                         label="Nombre"
                                         autoComplete="fname"
-                                        variant="outlined"
+                                        variant="standard"
                                         error={formErrors.firstName !== null && formErrors.firstName !== undefined && formErrors.firstName !== ''}
                                         helperText={formErrors.firstName}
                                         onChange={(e) => handleChange(e)}
@@ -185,7 +185,7 @@ export default function UpdateEmployee(props) {
                                         defaultValue={state.lastName}
                                         name="lastName"
                                         label="Apellidos"
-                                        variant="outlined"
+                                        variant="standard"
                                         error={formErrors.lastName !== null && formErrors.lastName !== undefined && formErrors.lastName !== ''}
                                         helperText={formErrors.lastName}
                                         onChange={(e) => handleChange(e)}
@@ -197,7 +197,7 @@ export default function UpdateEmployee(props) {
                                         value={state.email}
                                         name="email"
                                         label="Email"
-                                        variant="outlined"
+                                        variant="standard"
                                         placeholder="example@mail.com"
                                         error={formErrors.email !== null && formErrors.email !== undefined && formErrors.email !== ''}
                                         helperText={formErrors.email}
@@ -210,7 +210,7 @@ export default function UpdateEmployee(props) {
                                         defaultValue={state.phoneNumber}
                                         name="Telefono"
                                         label="Número de teléfono"
-                                        variant="outlined"
+                                        variant="standard"
                                         error={formErrors.phoneNumber !== null && formErrors.phoneNumber !== undefined && formErrors.phoneNumber !== ''}
                                         helperText={formErrors.phoneNumber}
                                         onChange={(e) => handleChange(e)}
@@ -222,7 +222,7 @@ export default function UpdateEmployee(props) {
                                         defaultValue={state.dni}
                                         name="dni"
                                         label="DNI"
-                                        variant="outlined"
+                                        variant="standard"
                                         placeholder="12345678A"
                                         error={formErrors.dni !== null && formErrors.dni !== undefined && formErrors.dni !== ''}
                                         helperText={formErrors.dni}

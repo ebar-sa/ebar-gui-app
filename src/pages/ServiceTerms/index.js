@@ -61,7 +61,7 @@ export default function ServiceTerms() {
                                     <b>AVISO LEGAL Y CONDICIONES GENERALES DE USO DEL SITIO WEB</b>
                                 </Typography>
                                 <Typography variant="h6" component="h2" gutterBottom className={classes.centered}>
-                                    https://ebar-gui-sprint3-kjuk5gkiva-ew.a.run.app
+                                    https://v4.ebarapp.es
                                 </Typography>
                                 <Typography component="h2" gutterBottom>
                                     <b>I. INFORMACIÓN GENERAL</b>

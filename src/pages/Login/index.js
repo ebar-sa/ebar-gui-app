@@ -126,7 +126,7 @@ export default function Login() {
                                    id="username"
                                    name="username"
                                    label="Nombre de usuario"
-                                   variant="outlined"
+                                   variant="standard"
                                    margin="normal"
                                    autoComplete="username"
                                    error={formErrors.username !== null && formErrors.username !== undefined && formErrors.username !== ''}
@@ -137,7 +137,7 @@ export default function Login() {
                                    id="password"
                                    name="password"
                                    label="Contraseña"
-                                   variant="outlined"
+                                   variant="standard"
                                    margin="normal"
                                    type="password"
                                    autoComplete="current-password"

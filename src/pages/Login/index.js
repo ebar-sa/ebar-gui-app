@@ -15,6 +15,7 @@ import {useHistory, useLocation} from 'react-router'
 import useUser from '../../hooks/useUser'
 import {Alert, AlertTitle} from '@material-ui/lab'
 import Footer from "../../components/Footer";
+import {Backdrop, CircularProgress} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -35,6 +36,10 @@ const useStyles = makeStyles((theme) => ({
     submit: {
         margin: theme.spacing(3, 0, 2),
     },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    },
 }))
 
 export default function Login() {
@@ -43,6 +48,7 @@ export default function Login() {
 
     const [formData, setFormData] = useState({})
     const [formErrors, setFormErrors] = useState({})
+    const [loading, setLoading] = useState(false)
 
     const {isLogged, login, error} = useUser()
 
@@ -52,6 +58,12 @@ export default function Login() {
         }
     }, [isLogged, history])
 
+    useEffect(() => {
+        if (error) {
+            setLoading(false)
+        }
+    }, [error])
+
     const handleChange = (e) => {
         setFormData({...formData, [e.target.name]: e.target.value})
         setFormErrors({})
@@ -59,6 +71,7 @@ export default function Login() {
 
     const handleSubmit = (e) => {
         e.preventDefault()
+        setLoading(true)
         if (handleValidation()) {
             let username = formData.username
             let password = formData.password
@@ -151,6 +164,9 @@ export default function Login() {
                     </form>
                 </div>
             </Container>
+            <Backdrop className={classes.backdrop} open={loading}>
+                <CircularProgress color="secondary" />
+            </Backdrop>
             <Footer/>
         </div>
     )

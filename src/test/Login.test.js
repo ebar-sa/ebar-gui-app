@@ -1,6 +1,6 @@
 import React from 'react';
 import {Router} from 'react-router-dom';
-import {act, fireEvent, render} from "@testing-library/react";
+import {act, fireEvent, render, screen} from "@testing-library/react";
 
 import {createMemoryHistory} from 'history';
 import MockAdapter from 'axios-mock-adapter';
@@ -16,6 +16,17 @@ const history = createMemoryHistory()
 
 const {getComputedStyle} = window;
 window.getComputedStyle = (elt) => getComputedStyle(elt);
+
+const auth = {
+    "username": "dani11",
+    "password": "dani1234",
+    "firstName": "dani",
+    "lastName": "nose",
+    "email": "test3@admin.com",
+    "roles": [
+        "ROLE_CLIENT"
+    ]
+}
 
 describe('Login test suite', () => {
 
@@ -60,6 +71,35 @@ describe('Login test suite', () => {
 
     })
 
+    it("Correct login submit", async () => {
+
+        mockAxios.onPost().replyOnce(200, {})
+
+        let rendered = render(
+            <Context.Provider value={{ auth, setAuth }}>
+                <Router history={history}>
+                    <Login history={history}/>
+                </Router>
+            </Context.Provider>
+        )
+
+        let username = await rendered.getByRole('textbox', { name: /Nombre de usuario/i })
+        fireEvent.change(username, { target: { value: 'dani11' } })
+        expect(username.value).toBe('dani11')
+
+        let password = await rendered.getByLabelText(/Contraseña/i)
+        fireEvent.change(password, { target: { value: 'dani1234' } })
+        expect(password.value).toBe('dani1234')
+
+        let submit = await rendered.getByRole('button', { name: /Iniciar sesión/i })
+
+        await act(async () => {
+            fireEvent.click(submit)
+        })
+
+    })
+
+    
     it("Incorrect submit", async () => {
         mockAxios.onPost().replyOnce(200)
 

@@ -61,7 +61,7 @@ describe('Render test suite', () => {
     mockAxios.onGet().replyOnce(200, {"Carnes": menu.items})
     mockAxios.onGet().replyOnce(200, bar)
 
-    window.sessionStorage.setItem("user",JSON.stringify(auth))
+    window.localStorage.setItem("user",JSON.stringify(auth))
     let rendered = render(
       <UserContextProvider>
         <Router history={history}>

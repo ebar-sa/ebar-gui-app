@@ -166,7 +166,7 @@ describe('Profile test suite', () => {
     })
 
     it('Fill Braintree data form', async () => {
-        window.sessionStorage.setItem("user", JSON.stringify(ownerAuth))
+        window.localStorage.setItem("user", JSON.stringify(ownerAuth))
         mockAxios.onPatch().replyOnce(200, {message: 'Datos actualizados correctamente.'})
 
         let rendered = render(

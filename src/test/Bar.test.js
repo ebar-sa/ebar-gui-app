@@ -69,8 +69,7 @@ describe('Render test suite', () => {
 
         mockAxios.onGet("/bar/1").replyOnce(200, bar)
         mockAxios.onGet("/tables/tableClient/test-owner").reply(200, barTable)
-        // mockAxios.onGet("/bar/1").replyOnce(200, bar)
-        window.sessionStorage.setItem("user",JSON.stringify(auth))
+        window.localStorage.setItem("user",JSON.stringify(auth))
 
         let rendered = render(
             <UserContextProvider>
@@ -96,7 +95,7 @@ describe('Render test suite', () => {
         mockAxios.onGet().replyOnce(200, bar)
         mockAxios.onDelete().replyOnce(204)
 
-        window.sessionStorage.setItem("user",JSON.stringify(auth))
+        window.localStorage.setItem("user",JSON.stringify(auth))
 
         let rendered = render(
             <UserContextProvider>
@@ -127,7 +126,7 @@ describe('Render test suite', () => {
     it('Use carousel to pass images', async () => {
 
         mockAxios.onGet().replyOnce(200, bar)
-        window.sessionStorage.setItem("user",JSON.stringify(auth));
+        window.localStorage.setItem("user",JSON.stringify(auth));
 
         let rendered = render(
             <UserContextProvider>
@@ -159,7 +158,7 @@ describe('Render test suite', () => {
 
     it('Delete and edit button does not appear to wrong owner', async () => {
 
-        window.sessionStorage.setItem("user",JSON.stringify(wrongAuth))
+        window.localStorage.setItem("user",JSON.stringify(wrongAuth))
 
         mockAxios.onGet("/bar/1").replyOnce(200, bar)
         mockAxios.onGet("/tables/tableClient/test-owner2").reply(200, barTable)

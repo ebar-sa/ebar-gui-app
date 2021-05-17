@@ -14,12 +14,12 @@ export default function useUser() {
         setState({ loading: true, error: false })
         authService.login({ username, password })
             .then(user => {
-                window.sessionStorage.setItem('user', JSON.stringify(user))
+                window.localStorage.setItem('user', JSON.stringify(user))
                 setState({ loading: false, error: false })
                 setAuth(user)
             })
             .catch(err => {
-                window.sessionStorage.removeItem('user')
+                window.localStorage.removeItem('user')
 
                 const status = err.response.status
                 if (status === 401) {
@@ -76,11 +76,11 @@ export default function useUser() {
         setState({ loading: true, error: false })
         authService.updateBraintreeData(braintreeData)
             .then(() => {
-                let user = JSON.parse(window.sessionStorage.getItem('user'))
+                let user = JSON.parse(window.localStorage.getItem('user'))
                 user.braintreeMerchantId = braintreeData.merchantId
                 user.braintreePublicKey = braintreeData.publicKey
                 user.braintreePrivateKey = braintreeData.privateKey
-                window.sessionStorage.setItem('user', JSON.stringify(user))
+                window.localStorage.setItem('user', JSON.stringify(user))
                 setUpdate(true)
             })
             .catch((err) => {
@@ -95,9 +95,20 @@ export default function useUser() {
             })
     }, [history])
 
+    const checkToken = useCallback(() => {
+        authService.checkToken()
+            .then(() => {
+                console.log("Valid token")
+            })
+            .catch((err) => {
+                window.localStorage.removeItem('user')
+                setAuth(null)
+            })
+    }, [setAuth])
+
     const logout = useCallback(() => {
         history.push("/")
-        window.sessionStorage.removeItem('user')
+        window.localStorage.removeItem('user')
         setAuth(null)
     }, [setAuth, history])
  
@@ -116,6 +127,7 @@ export default function useUser() {
         currentBar,
         updateCurrentBar,
         updateBraintreeData,
+        checkToken,
         error: state.error
     }
 

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles'
+import {makeStyles, useTheme} from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import Alert from '@material-ui/lab/Alert';
 import Typography from '@material-ui/core/Typography'
-import { ButtonBase, Button, ButtonGroup, Grid, Snackbar } from '@material-ui/core'
+import {ButtonBase, Button, ButtonGroup, Grid, Snackbar, useMediaQuery} from '@material-ui/core'
 import MesaDataService from '../services/barTable.service'
 import { useHistory } from "react-router"
 
@@ -49,6 +49,8 @@ export function Mesa(props) {
   const [openRemoveInCorrect, setOpenRemoveInCorrect] = useState(false)
   const [openAvaliableIncorrect, setOpenAvaliableIncorrect] = useState(false)
   const [openDetailsIncorrect, setOpenDetailsIncorrect] = useState(false)
+  const theme = useTheme();
+  const phoneScreen = useMediaQuery(theme.breakpoints.down('xs'));
 
   const routeRedirect = () => {
     if (available) {
@@ -118,9 +120,10 @@ export function Mesa(props) {
           </CardContent>
         </ButtonBase>
       </Card>
-      {isAdmin ?
+      {isAdmin &&
         <Grid item container xs={12}>
-          <ButtonGroup fullWidth={true} aria-label="outlined primary button group" >
+          <ButtonGroup fullWidth={true} aria-label="outlined primary button group"
+                       orientation={phoneScreen? "vertical" : "horizontal"}>
             <Button className={classes.buttonEditar} href={`/#/mesas/bar/${idBar}/mesa/${id}/edit`}>Editar Mesa</Button>
             <Button className={classes.buttonBorrar} onClick={() => removeBarTable()}>Eliminar Mesa</Button>
             {
@@ -128,8 +131,6 @@ export function Mesa(props) {
             }
           </ButtonGroup>
         </Grid>
-        :
-        null
       }
       <Snackbar open={openRemoveCorrect} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">

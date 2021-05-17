@@ -5,18 +5,21 @@ import useUser from '../hooks/useUser'
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
 
-    const { auth } = useUser()
+    const { auth, checkToken } = useUser()
+
+    function checkTokenIsValid(props) {
+        checkToken()
+        if (auth) {
+            return <Component {...props} />
+        } else {
+            return <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
+        }
+    }
 
     return (
         <Route
             {...rest}
-            render={props =>
-                auth ? (
-                    <Component {...props} />
-                ) : (
-                    <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
-                )
-            }
+            render={props => checkTokenIsValid(props)}
         />
     )
 }

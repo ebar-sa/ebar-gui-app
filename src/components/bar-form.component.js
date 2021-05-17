@@ -247,7 +247,7 @@ export default function BarForm(props) {
                                        value={state.name}
                                        error={errors.name !== null && errors.name !== undefined && errors.name !== ''}
                                        helperText={errors.name}
-                                       variant={"outlined"}
+                                       variant={"standard"}
                                        InputLabelProps={{ shrink: true }}
                                        onChange={(e) => handleChange(e)}/>
                         </Grid>
@@ -259,7 +259,7 @@ export default function BarForm(props) {
                                        value={state.description}
                                        error={errors.description !== null && errors.description !== undefined && errors.description !== ''}
                                        helperText={errors.description}
-                                       variant={"outlined"}
+                                       variant={"standard"}
                                        InputLabelProps={{ shrink: true }}
                                        onChange={(e) => handleChange(e)}/>
                         </Grid>
@@ -271,7 +271,7 @@ export default function BarForm(props) {
                                        value={state.contact}
                                        error={errors.contact !== null && errors.contact !== undefined && errors.contact !== ''}
                                        helperText={errors.contact}
-                                       variant={"outlined"}
+                                       variant={"standard"}
                                        InputLabelProps={{ shrink: true }}
                                        onChange={(e) => handleChange(e)}/>
                         </Grid>
@@ -283,7 +283,7 @@ export default function BarForm(props) {
                                        value={state.location}
                                        error={errors.location !== null && errors.location !== undefined && errors.location !== ''}
                                        helperText={errors.location}
-                                       variant={"outlined"}
+                                       variant={"standard"}
                                        InputLabelProps={{ shrink: true }}
                                        onChange={(e) => handleChange(e)}/>
                         </Grid>

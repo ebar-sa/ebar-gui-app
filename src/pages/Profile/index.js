@@ -267,7 +267,7 @@ export default function Profile(props) {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField fullWidth autoFocus
-                                           id="email" label="Email" variant="outlined"
+                                           id="email" label="Email" variant="standard"
                                            autoComplete="email" name="email"
                                            error={formErrors.email !== null && formErrors.email !== undefined && formErrors.email !== ''}
                                            helperText={formErrors.email}
@@ -276,7 +276,7 @@ export default function Profile(props) {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField fullWidth autoFocus
-                                           id="oldPassword" label="Contraseña" variant="outlined"
+                                           id="oldPassword" label="Contraseña" variant="standard"
                                            autoComplete="oldPassword" name="oldPassword" type="password"
                                            error={formErrors.oldPassword !== null && formErrors.oldPassword !== undefined && formErrors.oldPassword !== ''}
                                            helperText={formErrors.oldPassword}
@@ -284,7 +284,7 @@ export default function Profile(props) {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField fullWidth autoFocus
-                                           id="password" label="Nueva contraseña" variant="outlined"
+                                           id="password" label="Nueva contraseña" variant="standard"
                                            autoComplete="password" type="password" name="password"
                                            error={formErrors.password !== null && formErrors.password !== undefined && formErrors.password !== ''}
                                            helperText={formErrors.password}
@@ -292,7 +292,7 @@ export default function Profile(props) {
                             </Grid>
                             <Grid item xs={12} sm={6}>
                                 <TextField fullWidth autoFocus
-                                           id="confirmPassword" label="Confirmar contraseña" variant="outlined"
+                                           id="confirmPassword" label="Confirmar contraseña" variant="standard"
                                            autoComplete="confirmPassword" type="password" name="confirmPassword"
                                            error={formErrors.confirmPassword !== null && formErrors.confirmPassword !== undefined && formErrors.confirmPassword !== ''}
                                            helperText={formErrors.confirmPassword}
@@ -363,7 +363,7 @@ export default function Profile(props) {
                                        label={'Id de comerciante'}
                                        error={formErrors.merchantId !== null && formErrors.merchantId !== undefined && formErrors.merchantId !== ''}
                                        helperText={formErrors.merchantId}
-                                       variant={"outlined"}
+                                       variant={"standard"}
                                        value={braintreeFormData.merchantId}
                                        InputLabelProps={{ shrink: true }}
                                        onChange={handleBraintreeChange}/>
@@ -376,7 +376,7 @@ export default function Profile(props) {
                                        label={'Clave pública'}
                                        error={formErrors.publicKey !== null && formErrors.publicKey !== undefined && formErrors.publicKey !== ''}
                                        helperText={formErrors.publicKey}
-                                       variant={"outlined"}
+                                       variant={"standard"}
                                        value={braintreeFormData.publicKey}
                                        InputLabelProps={{ shrink: true }}
                                        onChange={handleBraintreeChange}/>
@@ -389,7 +389,7 @@ export default function Profile(props) {
                                        label={'Clave privada'}
                                        error={formErrors.privateKey !== null && formErrors.privateKey !== undefined && formErrors.privateKey !== ''}
                                        helperText={formErrors.privateKey}
-                                       variant={"outlined"}
+                                       variant={"standard"}
                                        value={braintreeFormData.privateKey}
                                        InputLabelProps={{ shrink: true }}
                                        onChange={handleBraintreeChange}/>

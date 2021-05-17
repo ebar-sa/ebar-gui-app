@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
-import {makeStyles} from "@material-ui/core/styles";
+import {makeStyles, useTheme} from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Card from "react-credit-cards";
 import Grid from "@material-ui/core/Grid";
@@ -13,6 +13,7 @@ import {create as createClient} from 'braintree-web/client'
 import {create as createDataCollector} from 'braintree-web/data-collector'
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@material-ui/lab/Alert";
+import {useMediaQuery} from "@material-ui/core";
 
 const braintreeLogo = require('../../static/images/braintree-logo-black.png');
 
@@ -47,6 +48,8 @@ export default function BillCheckout(props) {
     const [openBraintreeError, setOpenBraintreeError] = useState(false)
     const [axiosError, setAxiosError] = useState(false)
     const [errors, setErrors] = useState({})
+    const theme = useTheme()
+    const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
 
     function clearNumber(value = "") {
@@ -334,17 +337,20 @@ export default function BillCheckout(props) {
             </div>
 
             <div>
-                <Snackbar open={openBraintreeError} autoHideDuration={6000} onClose={handleSnackbarClose}>
+                <Snackbar anchorOrigin={{vertical: (fullScreen? 'top': 'bottom'), horizontal: "center"}}
+                          open={openBraintreeError} autoHideDuration={6000} onClose={handleSnackbarClose}>
                     <Alert onClose={handleSnackbarClose} severity="error">
                         No se ha podido procesar el pago correctamente. Revise los datos e inténtelo de nuevo.
                     </Alert>
                 </Snackbar>
-                <Snackbar open={axiosError} autoHideDuration={6000} onClose={handleSnackbarClose}>
+                <Snackbar anchorOrigin={{vertical: (fullScreen? 'top': 'bottom'), horizontal: "center"}}
+                    open={axiosError} autoHideDuration={6000} onClose={handleSnackbarClose}>
                     <Alert onClose={handleSnackbarClose} severity="error">
                         Ha ocurrido un error al procesar la petición. Inténtelo de nuevo más tarde.
                     </Alert>
                 </Snackbar>
-                <Snackbar open={openProcessing} data-testid={"pay-processing"} onClose={handleSnackbarClose}>
+                <Snackbar anchorOrigin={{vertical: (fullScreen? 'top': 'bottom'), horizontal: "center"}}
+                    open={openProcessing} data-testid={"pay-processing"} onClose={handleSnackbarClose}>
                     <Alert onClose={handleSnackbarClose} severity="info">
                         Procesando el pago
                     </Alert>

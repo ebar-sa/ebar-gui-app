@@ -140,7 +140,7 @@ export default function CreateEmployee(props) {
                                 id={"username"}
                                 autoComplete={"username"}
                                 label={"Nombre de usuario"}
-                                variant={"outlined"}
+                                variant={"standard"}
                                 error={formErrors.username !== null && formErrors.username !== undefined && formErrors.username !== ''}
                                 helperText={formErrors.username}
                                 onChange={(e) => handleChange(e)}
@@ -152,7 +152,7 @@ export default function CreateEmployee(props) {
                                 id="firstName"
                                 autoComplete="fname"
                                 label="Nombre"
-                                variant="outlined"
+                                variant="standard"
                                 error={formErrors.firstName !== null && formErrors.firstName !== undefined && formErrors.firstName !== ''}
                                 helperText={formErrors.firstName}
                                 onChange={(e) => handleChange(e)}
@@ -162,7 +162,7 @@ export default function CreateEmployee(props) {
                             <TextField required fullWidth
                                 name="lastName"
                                 id="lastName"
-                                variant="outlined"
+                                variant="standard"
                                 label="Apellido"
                                 autoComplete="lname"
                                 error={formErrors.lastName !== null && formErrors.lastName !== undefined && formErrors.lastName !== ''}
@@ -176,7 +176,7 @@ export default function CreateEmployee(props) {
                                 id="email"
                                 autoComplete="email"
                                 label="Email"
-                                variant="outlined"
+                                variant="standard"
                                 placeholder="example@mail.com"
                                 error={formErrors.email !== null && formErrors.email !== undefined && formErrors.email !== ''}
                                 helperText={formErrors.email}
@@ -187,7 +187,7 @@ export default function CreateEmployee(props) {
                             <TextField required fullWidth
                                 name="phoneNumber"
                                 id="phoneNumber"
-                                variant="outlined"
+                                variant="standard"
                                 label="Telefono"
                                 autoComplete="phone"
                                 error={formErrors.phoneNumber !== null && formErrors.phoneNumber !== undefined && formErrors.phoneNumber !== ''}
@@ -199,7 +199,7 @@ export default function CreateEmployee(props) {
                             <TextField fullWidth
                                 name="dni"
                                 id="dni"
-                                variant="outlined"
+                                variant="standard"
                                 label="DNI"
                                 autoComplete="dni"
                                 placeholder="12345678A"
@@ -212,7 +212,7 @@ export default function CreateEmployee(props) {
                             <TextField required fullWidth
                                 name="password"
                                 id="password"
-                                variant="outlined"
+                                variant="standard"
                                 label="Contraseña"
                                 type="password"
                                 autoComplete="current-password"

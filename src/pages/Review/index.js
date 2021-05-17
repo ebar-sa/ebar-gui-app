@@ -224,7 +224,7 @@ export default function Review(props) {
                                                        id="bar-review"
                                                        name={"bar-" + bar.id}
                                                        label="Descripción"
-                                                       variant="outlined"
+                                                       variant="standard"
                                                        margin="normal"
                                                        onChange={(e) => handleDescriptionChange(e, null)}/>
                                         </Grid>
@@ -282,7 +282,7 @@ export default function Review(props) {
                                                            id={"item" + item.id + "-review"}
                                                            name={"item-" + item.id}
                                                            label="Descripción"
-                                                           variant="outlined"
+                                                           variant="standard"
                                                            margin="normal"
                                                            onChange={(e) => handleDescriptionChange(e, item.id)}/>
                                             </Grid>

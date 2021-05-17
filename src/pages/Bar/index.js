@@ -42,7 +42,7 @@ import Pagination from '@material-ui/lab/Pagination';
 const useStyles = makeStyles((theme) => ({
     root: {
         marginTop: theme.spacing(5),
-        marginBottom: "10px"
+        marginBottom: "30px"
     },
     block: {
         padding: theme.spacing(1),
@@ -515,7 +515,7 @@ export default function Bar(props) {
                                                     id="token"
                                                     name="token"
                                                     label={'Token'}
-                                                    variant={'outlined'}
+                                                    variant={'standard'}
                                                     InputLabelProps={{shrink: true}}
                                                     onChange={(e) => handleChange(e)}
                                                 />

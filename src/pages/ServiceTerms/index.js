@@ -61,7 +61,7 @@ export default function ServiceTerms() {
                                     <b>AVISO LEGAL Y CONDICIONES GENERALES DE USO DEL SITIO WEB</b>
                                 </Typography>
                                 <Typography variant="h6" component="h2" gutterBottom className={classes.centered}>
-                                    https://v4.ebarapp.es
+                                    https://ebarapp.es
                                 </Typography>
                                 <Typography component="h2" gutterBottom>
                                     <b>I. INFORMACIÓN GENERAL</b>
@@ -74,7 +74,7 @@ export default function ServiceTerms() {
                                     web:
                                 </Typography>
                                 <Typography variant="body1" gutterBottom>
-                                    La titularidad de este sitio web, https://v4.ebarapp.es, (en
+                                    La titularidad de este sitio web, https://ebarapp.es, (en
                                     adelante,
                                     Sitio Web) la ostenta: EBAR S.L., provista de NIF: A-8008000 e inscrita en el
                                     Registro
